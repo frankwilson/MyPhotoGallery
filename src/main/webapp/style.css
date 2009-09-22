@@ -1,0 +1,120 @@
+body
+{
+    background-color: #ffffff;
+    margin: 0px;
+    padding: 0px;
+    font-family:tahoma,arial;
+    font-size:10px;
+    color:#237;
+}
+
+.site_header
+{
+    font-size:24px;
+    font-weight:bold;
+    font-family:Verdana;
+}
+
+a:link
+{
+    font-size:10px;
+    color:#466;
+}
+
+a:hover
+{
+    font-size:10px;
+    color:#379;
+}
+
+a:visited
+{
+    font-size:10px;
+    color:#133;
+}
+
+
+#high_level_table
+{
+    width: 1000px;
+    background-color: #999999;
+    margin: 0px auto;
+    padding: 0px;
+    border-collapse: collapse;
+}
+
+.full_size {
+  width: 100%;
+  height: 100%;
+}
+
+.album_minitables
+{
+    margin:0px;
+    padding:0px;
+    border: 0px solid #aacc77;
+    border-collapse: collapse;
+}
+
+.album_minitables td
+{
+    margin:0px;
+    padding:0px;
+    width:192px;
+    text-align:center;
+    border: 1px solid #aacc77;
+    background-color:#eee;
+}
+
+.photo_caption
+{
+    font-family:tahoma,arial;
+    font-size:10px;
+    color:#466;
+}
+
+.menu
+{
+    font-family:Verdana;
+    font-size:14px;
+    color:#466;
+}
+
+.menu a:link
+{
+    color:#466;
+}
+
+.menu a:visited
+{
+    color:#133;
+}
+
+.menu a:hover
+{
+    color:#379;
+}
+
+.line table
+{
+    width:600px;
+    height:1px;
+    background-color:#125;
+    margin:0px;
+    padding:0px;
+    border-collapse:collapse;
+}
+
+.line td
+{
+    width:600px;
+    height:1px;
+    background-color:#125;
+    margin:0px;
+    padding:0px;
+}
+
+td
+{
+    font-size:12px;
+}

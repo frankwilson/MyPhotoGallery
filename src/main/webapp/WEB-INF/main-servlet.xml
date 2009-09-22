@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="urlMap" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<props>
+				<prop key="/index.html">Index</prop>
+				<prop key="/checkLogin.html">Login</prop>
+				<prop key="/changeUsersInfo.html">UserInfoForm</prop>
+				
+				<!--<prop key="/photoUpload.html">PhotoUpload</prop>-->
+				<prop key="/logout.html">Logout</prop>
+			</props>
+		</property>
+	</bean>
+
+    <bean id="Index" class="ru.pakaz.common.Index">
+        <property name="usersManager">
+            <ref bean="userDao" />
+        </property>
+    </bean>
+    
+    <bean id="Login" class="ru.pakaz.common.controller.LoginConroller">
+        <property name="sessionForm">
+            <value>true</value>
+        </property>
+        <property name="successView">
+            <value>redirect:index.html</value>
+        </property>
+        <property name="formView">
+            <value>login</value>
+        </property>
+        <property name="commandClass">
+            <value>ru.pakaz.common.model.User</value>
+        </property>
+        <property name="userDao">
+            <ref bean="userDao" />
+        </property>
+        <property name="validator">
+            <ref bean="LoginValidator" />
+        </property>
+    </bean>
+    <bean id="LoginValidator" class="ru.pakaz.common.controller.LoginValidator">
+        <property name="usersManager">
+            <ref bean="userDao" />
+        </property>
+    </bean>
+
+    <bean id="Logout" class="ru.pakaz.common.controller.LogoutController" />
+
+    <bean id="UserInfoForm" class="ru.pakaz.common.controller.UserInfoForm">
+        <property name="sessionForm">
+            <value>true</value>
+        </property>
+        <property name="formView">
+            <value>userInfoForm</value>
+        </property>
+        <property name="commandClass">
+            <value>ru.pakaz.common.model.User</value>
+        </property>
+        <property name="userDao">
+            <ref bean="userDao" />
+        </property>
+        <property name="validator">
+            <ref bean="LoginValidator" />
+        </property>
+    </bean>
+    <bean id="UserInfoValidator" class="ru.pakaz.common.controller.UserInfoValidator">
+        <property name="usersManager">
+            <ref bean="userDao" />
+        </property>
+    </bean>
+
+	<!-- View Resolver -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.168.1:3306/gallery?characterEncoding=utf8&amp;useUnicode=true" />
+        <!--<property name="url" value="jdbc:mysql://192.168.168.1:3306/tree?characterEncoding=cp1251" />-->
+        <property name="username" value="wilson"/>
+        <property name="password" value="wilson"/>
+    </bean>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation">
+            <value>
+                WEB-INF/hibernate.cfg.xml
+            </value>
+        </property>
+        <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop> 
+                <prop key="hibernate.hbm2ddl.auto">update</prop>                
+            </props>
+        </property>
+    </bean>
+
+    <bean id="urlFilenameController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+    
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <bean id="userDaoProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="target" ref="userDao" />
+        <property name="proxyTargetClass" value="true"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save*">PROPAGATION_REQUIRED</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED</prop>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="userDao" class="ru.pakaz.common.dao.UserDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <!-- Resource Bundle -->
+    <!-- <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"> -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>/WEB-INF/classes/pakaz</value>
+            </list>
+        </property>
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="fallbackToSystemLocale" value="true"/>
+    </bean>
+</beans>
