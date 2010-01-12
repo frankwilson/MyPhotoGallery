@@ -5,11 +5,6 @@ import org.springframework.validation.Errors;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
-/**
- * Validator for SignInController
- * @author anil
- * @see com.visualpatterns.timex.controller.SignInController
- */
 public class LoginValidator implements org.springframework.validation.Validator {
     static private Logger logger = Logger.getLogger( LoginValidator.class );
     private UserDao usersManager;
@@ -26,34 +21,39 @@ public class LoginValidator implements org.springframework.validation.Validator 
 
         String login    = user.getLogin();
         String password = user.getPassword();
+//        logger.debug( "We got a form \"User\" object" );
 
         if( login == null ) {
             logger.debug( "LoginValidator.validate: Login is null!" );
-            errors.reject( "error.login.miss" );
-//            System.out.println( "Login is null!" );
+            errors.rejectValue( "login", "error.login.miss" );
         }
         else if( login.length() < 3 ) {
             logger.debug( "LoginValidator.validate: Login is too short!" );
-            errors.reject( "error.login.tooShort" );
-//            System.out.println( "Login is not null but too short!" );
+            errors.rejectValue( "login", "error.login.tooShort" );
         }
         else {
-//            System.out.println( "Login is not null!" );
-            if( password == null || password.trim().length() > 10 ) {
-                logger.debug( "LoginValidator.validate: Password is null or too long!" );
-                errors.reject( "error.login.invalid" );
+            if( password == null || password.trim().length() == 0 ) {
+                logger.debug( "LoginValidator.validate: Password is empty!" );
+                errors.rejectValue( "password", "error.login.emptyPasswd" );
+            }
+            if( password.trim().length() > 10 ) {
+                logger.debug( "LoginValidator.validate: Password is too long!" );
+                errors.rejectValue( "password", "error.login.tooLongPasswd" );
             }
 
             User dbUser = usersManager.getUserByLogin( login );
+//            logger.debug( "We got a DB \"User\" object" );
             if( dbUser == null ) {
                 logger.debug( "LoginValidator.validate: User not found!" );
-                errors.reject( "error.login.invalid" );
+                errors.rejectValue( "login", "error.login.invalid.user" );
             }
             else if( !dbUser.getPassword().contentEquals( password ) ) {
                 logger.debug( "LoginValidator.validate: Password is not correct!" );
-                errors.reject( "error.login.invalid" );
+                errors.rejectValue( "password", "error.login.invalid.pass" );
             }
         }
+        
+        logger.debug( "LoginValidator.validate: validation of user '"+ login +"' is OK!" );
     }
     
     public void setUsersManager( UserDao usersManager ) {

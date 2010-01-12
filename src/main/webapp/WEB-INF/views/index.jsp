@@ -5,36 +5,35 @@
     <td>
       Последние обновленные альбомы:<br />
       <h3>Сегодня:</h3>
-      <table><!-- photos_start -->      {TR1}
+      <table>
+        <tr>
           <td style="text-align:center; vertical-align:top;">
             <table class="album_minitables">
               <tr>
                 <td style="height:120px;">
-                  <a href="{SYSTEM_PATH}/album/{ALBUM_ID}"><img {PARAMETERS} border="0" /></a>
+
                 </td>
               </tr>
               <tr>
                 <td style="height:20px;vertical-align:top;">
-                  <a href="{SYSTEM_PATH}/album/{ALBUM_ID}">{ALBUM_NAME}</a>
+
                 </td>
               </tr>
             </table>
-          </td>{TR2}<!-- photos_end --><!-- empty_start -->
+          </td>
           <td style="text-align:center; vertical-align:top;">
             <table class="album_minitables" style="border:0px;">
               <tr>
                 <td style="height:120px;"></td>
               </tr>
               <tr>
-                <td style="height:20px;vertical-align:top;">{ALBUM_NAME}</td>
+                <td style="height:20px;vertical-align:top;">
+
+                </td>
               </tr>
             </table>
-          </td><!-- empty_end -->
-{ALBUMS_LIST1}
-      </table>
-      <h3>Вчера:</h3>
-      <table>
-{ALBUMS_LIST2}
+          </td>
+        </tr>
       </table>
     </td>
   </tr>

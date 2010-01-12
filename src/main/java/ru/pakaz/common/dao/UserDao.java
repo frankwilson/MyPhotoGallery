@@ -3,6 +3,8 @@ package ru.pakaz.common.dao;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import ru.pakaz.common.model.User;
 
@@ -14,7 +16,7 @@ public class UserDao extends HibernateDaoSupport {
 
         users = getHibernateTemplate().find( "FROM User WHERE id = ?", userId );
 
-        if( users != null ) {
+        if( users != null && users.size() > 0 ) {
             return users.get(0);
         }
         else {
@@ -32,7 +34,7 @@ public class UserDao extends HibernateDaoSupport {
         }
         users = getHibernateTemplate().find( "FROM User WHERE login = ?", login );
 
-        if( users != null ) {
+        if( users != null && users.size() > 0 ) {
             return users.get(0);
         }
         else {
@@ -47,5 +49,36 @@ public class UserDao extends HibernateDaoSupport {
 
     public void setUserToSession(HttpServletRequest request, Object user) {
         request.getSession(true).setAttribute( "User", user );
+    }
+
+    public void createUser(HttpServletRequest request, Object user) {
+        try {
+            getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
+            getHibernateTemplate().save( user );
+        }
+        catch( DataAccessException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUser(HttpServletRequest request, Object user) {
+        try {
+            getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
+            getHibernateTemplate().update( user );
+            this.setUserToSession( request, user );
+        }
+        catch( DataAccessException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser(HttpServletRequest request, Object user) {
+        try {
+            getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
+            getHibernateTemplate().delete(user);
+        }
+        catch( DataAccessException e ) {
+            e.printStackTrace();
+        }
     }
 }
