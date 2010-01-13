@@ -15,32 +15,51 @@
         </colgroup>
         <tr>
           <td style="width:150px;">Логин:</td>
-          <td style="width:350px;"><form:input path="login" disabled="disabled"/></td>
-          <td><form:errors path="login"/></td>
+          <td>
+            <form:input path="login" disabled="disabled" cssStyle="width:200px;"/>&#160;
+            <form:errors path="login"/>
+          </td>
         </tr>
         <tr>
           <td>Псевдоним:</td>
-          <td><form:input path="nickName"/></td>
-          <td><form:errors path="nickName"/></td>
+          <td>
+            <form:input path="nickName" cssStyle="width:200px;"/>&#160;
+            <form:errors path="nickName"/>
+          </td>
         </tr>
         <tr>
           <td>Имя:</td>
-          <td><form:input path="firstName" /></td>
-          <td><form:errors path="firstName"/></td>
+          <td>
+            <form:input path="firstName" cssStyle="width:200px;"/>&#160;
+            <form:errors path="firstName"/>
+          </td>
         </tr>
         <tr>
           <td>Фамилия:</td>
-          <td><form:input path="lastName" /></td>
-          <td><form:errors path="lastName"/></td>
+          <td>
+            <form:input path="lastName" cssStyle="width:200px;"/>&#160;
+            <form:errors path="lastName"/>
+          </td>
         </tr>
         <tr>
           <td>e-mail:</td>
-          <td><form:input path="email" /></td>
-          <td><form:errors path="email"/></td>
+          <td>
+            <form:input path="email" cssStyle="width:200px;"/>&#160;
+            <form:errors path="email"/>
+          </td>
         </tr>
+        <tr><td colspan=3 style="height:10px;"></td></tr>
+        <tr>
+          <td>Новый пароль:</td>
+          <td>
+            <form:password path="password" cssStyle="width:200px;"/>&#160;
+            <form:errors path="password" />
+          </td>
+        </tr>
+        <tr><td colspan=2 style="height:10px;"></td></tr>
         <tr>
           <td></td>
-          <td style="padding-top:10px;"><input type="submit" value="Сохранить" /></td>
+          <td><input type="submit" value="Сохранить" /></td>
         </tr>
       </table>
     </td>

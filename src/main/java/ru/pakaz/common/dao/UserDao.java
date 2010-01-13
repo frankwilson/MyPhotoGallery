@@ -8,6 +8,12 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import ru.pakaz.common.model.User;
 
+/**
+ * Класс управления пользователями
+ * 
+ * @author wilson
+ *
+ */
 public class UserDao extends HibernateDaoSupport {
     static private Logger logger = Logger.getLogger( UserDao.class );
 
@@ -51,6 +57,12 @@ public class UserDao extends HibernateDaoSupport {
         request.getSession(true).setAttribute( "User", user );
     }
 
+    /**
+     * Сохранение нового пользователя в базу
+     * 
+     * @param request
+     * @param user
+     */
     public void createUser(HttpServletRequest request, Object user) {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
@@ -61,6 +73,12 @@ public class UserDao extends HibernateDaoSupport {
         }
     }
 
+    /**
+     * Обновление персональной информации о пользователе
+     * 
+     * @param request
+     * @param user
+     */
     public void updateUser(HttpServletRequest request, Object user) {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
@@ -72,13 +90,16 @@ public class UserDao extends HibernateDaoSupport {
         }
     }
 
+    /**
+     * Объявление пользователя удаленным (без фактического удаления из базы)
+     */
     public void deleteUser(HttpServletRequest request, Object user) {
-        try {
+/*        try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().delete(user);
         }
         catch( DataAccessException e ) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

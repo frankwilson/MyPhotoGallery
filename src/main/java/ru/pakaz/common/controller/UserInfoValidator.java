@@ -1,12 +1,13 @@
 package ru.pakaz.common.controller;
 
+import org.apache.commons.validator.EmailValidator;
 import org.apache.log4j.Logger;
 import org.springframework.validation.Errors;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
-import org.springframework.validation.Validator;
+//import org.springframework.validation.Validator;
 
-public class UserInfoValidator implements Validator {
+public class UserInfoValidator extends EmailValidator {
     static private Logger logger = Logger.getLogger( UserInfoValidator.class );
     private UserDao usersManager;
     
@@ -24,6 +25,7 @@ public class UserInfoValidator implements Validator {
         String firstName = user.getFirstName();
         String lastName  = user.getLastName();*/
         String email     = user.getEmail();
+        String password  = user.getPassword();
         
         /*if( nickName == null || nickName.length() == 0 ) {
             errors.reject( "error.nickname.tooShort" );
@@ -32,9 +34,20 @@ public class UserInfoValidator implements Validator {
             logger.error( "Ошибка валидации e-mail! адрес пустой!" );
             errors.rejectValue( "email", "error.user.email.tooShort" );
         }
-        else if( email.matches( "^(([A-Za-z0-9!#$%&amp;'*+/=?^_`{|}~-][A-Za-z0-9!#$%&amp;'*+/=?^_`{|}~\\.-]{0,63})|(\"[^(\\|\")]{0,255}\"))$" ) ) {
+        else if( !this.isValid( email ) ) {
+//        else if( !email.matches( "^(([A-Za-z0-9!#$%&amp;'*+/=?^_`{|}~-][A-Za-z0-9!#$%&amp;'*+/=?^_`{|}~\\.-]{0,63})|(\"[^(\\|\")]{0,255}\"))$" ) ) {
             logger.error( "Ошибка валидации e-mail! адрес не соответствует маске!" );
             errors.rejectValue( "email", "error.user.email.formatError" );
+        }
+        else {
+            logger.debug( "Email: "+ email );
+        }
+        
+        if( password != null && password.length() > 0 ) {
+            if( password.length() < 8 ) {
+                logger.error( "Ошибка валидации пароля! Длина пароля меньше 8 символов!" );
+                errors.rejectValue( "password", "error.user.passwd.tooShort" );
+            }
         }
     }
     

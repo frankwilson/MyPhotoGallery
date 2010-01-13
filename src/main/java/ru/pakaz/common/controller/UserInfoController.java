@@ -46,8 +46,9 @@ public class UserInfoController {
     }  
 
     @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.POST)  
-    public ModelAndView post( @ModelAttribute("form") User user, BindingResult result, HttpServletRequest request ) {
-        validator.validate( user, result );
+    public ModelAndView post( @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request ) {
+        new UserInfoValidator().validate( user, result );
+//        validator.validate( user, result );
 
         if( !result.hasErrors() ) {
             User dbUser = this.usersManager.getUserByLogin( user.getLogin() );
@@ -56,12 +57,16 @@ public class UserInfoController {
             dbUser.setEmail( user.getEmail() );
             dbUser.setNickName( user.getNickName() );
             
+            if( user.getPassword() != null && user.getPassword().length() > 0 ) {
+                dbUser.setPassword( user.getPassword() );
+            }
+            
             this.usersManager.updateUser( request, dbUser );
         }
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "userInfoForm" );
-        mav.addObject( "user", user );
+//        mav.addObject( "user", user );
         mav.addObject( "pageName", "Персональные данные" );
         return mav;
     }
