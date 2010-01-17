@@ -105,6 +105,10 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
+    <bean id="albumDao" class="ru.pakaz.photo.dao.AlbumDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
     <!-- Enable annotation-based validation using Bean Validation Framework -->
     <!-- Using these instead of vld namespace to prevent Eclipse from complaining -->
     <bean id="configurationLoader" class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader"/>

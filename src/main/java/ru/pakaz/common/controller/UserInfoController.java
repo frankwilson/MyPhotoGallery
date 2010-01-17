@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
@@ -39,7 +40,7 @@ public class UserInfoController {
             mav = new ModelAndView();
             mav.setViewName( "userInfoForm" );
             mav.addObject( "user", user );
-            mav.addObject( "pageName", "Персональные данные" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfoForm" ) );
         }
 
         return mav;
@@ -51,7 +52,8 @@ public class UserInfoController {
 //        validator.validate( user, result );
 
         if( !result.hasErrors() ) {
-            User dbUser = this.usersManager.getUserByLogin( user.getLogin() );
+            User dbUser = this.usersManager.getUserFromSession( request );
+//            User dbUser = this.usersManager.getUserByLogin( user.getLogin() );
             dbUser.setFirstName( user.getFirstName() );
             dbUser.setLastName( user.getLastName() );
             dbUser.setEmail( user.getEmail() );
@@ -67,7 +69,7 @@ public class UserInfoController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "userInfoForm" );
 //        mav.addObject( "user", user );
-        mav.addObject( "pageName", "Персональные данные" );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfoForm" ) );
         return mav;
     }
 

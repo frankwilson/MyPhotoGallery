@@ -31,7 +31,8 @@
 User user = (User)session.getAttribute( "User" );
 if( user != null ) { %>
                     <a href="<%=application.getContextPath() %>/changeUsersInfo.html" title="Личная информация"><%=user.getLogin() %></a> |
-                    <a href="<%=application.getContextPath() %>/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a> |
+                    <a href="<%=application.getContextPath() %>/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
+                    [<a href="<%=application.getContextPath() %>/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
                     <a href="<%=application.getContextPath() %>/logout.html" title="Выход">Выйти</a>
 <% } else {
     user = new User();

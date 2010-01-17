@@ -9,9 +9,9 @@
             </table>
           </td>
         </tr>
-        <tr>
+        <!--<tr>
           <td class="full_size" style="background-color:#ffffff; margin:0px; padding:0px;" colspan="3"></td>
-        </tr>
+        </tr>-->
       </table>
     </td>
   </tr>
