@@ -10,28 +10,33 @@
 </c:if>
 <c:if test="${albumsCount gt 0}">
   <div>
+<c:forEach items="${albums}" var="currentAlbum">
   <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
     <div style="float:left;">
         <table class="album_minitables main" style="height:100%;">
           <tr>
             <td style="height:120px;">
-              <a href="{SYSTEM_PATH}/album/{ALBUM_ID}"><img {PARAMETERS} border="0" /></a>
+              <a href="<%=application.getContextPath() %>/album/${currentAlbum.albumId}">
+<c:if test="${currentAlbum.preview eq null}"><img src="images/album_no_preview.png" /></c:if>
+<c:if test="${currentAlbum.preview != null}"><img src="images/album_no_preview.png" /></c:if>
+              </a>
             </td>
           </tr>
           <tr>
             <td style="height:20px;vertical-align:top;">
-              <a href="{SYSTEM_PATH}/album/{ALBUM_ID}">{ALBUM_NAME}</a>
+              <a href="<%=application.getContextPath() %>/album/${currentAlbum.albumId}">${currentAlbum.title}</a>
             </td>
           </tr>
           <tr style="height:100%;">
             <td class="photo_caption" style="text-align:left; padding-left:5px;">
-                Добавлен: {ADD_DATE}<br />
-                Обновлен: {UPDATE_DATE}
-                {DELETE_ALBUM_LINK}
+                Добавлен: ${currentAlbum.addDate}<br />
+                <%-- Тут будет дата загрузки последней фотографии --%>
+                <%-- Тут будет ссылка на удаление альбома --%>
             </td>
           </tr>
         </table>
     </div>
+</c:forEach>
   </div>
 </c:if>
 <c:if test="${albumsCount eq 0}">

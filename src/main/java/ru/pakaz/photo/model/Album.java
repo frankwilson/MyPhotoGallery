@@ -27,7 +27,7 @@ public class Album {
     @OneToOne
     private User user;
     
-    @Column
+    @Column(length=64)
     private String title;
     
     @Column
@@ -36,8 +36,8 @@ public class Album {
     @OneToOne
     private Photo preview;
     
-    @Column
-    private Date addDate;
+    @Column()
+    private Date addDate = new Date();
     
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Photo> photos = new ArrayList<Photo>();

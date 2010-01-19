@@ -63,7 +63,7 @@ public class UserDao extends HibernateDaoSupport {
      * @param request
      * @param user
      */
-    public void createUser(HttpServletRequest request, Object user) {
+    public void createUser(HttpServletRequest request, User user) {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().save( user );
@@ -79,7 +79,7 @@ public class UserDao extends HibernateDaoSupport {
      * @param request
      * @param user
      */
-    public void updateUser(HttpServletRequest request, Object user) {
+    public void updateUser(HttpServletRequest request, User user) {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().update( user );
@@ -93,7 +93,7 @@ public class UserDao extends HibernateDaoSupport {
     /**
      * Объявление пользователя удаленным (без фактического удаления из базы)
      */
-    public void deleteUser(HttpServletRequest request, Object user) {
+    public void deleteUser(HttpServletRequest request, User user) {
 /*        try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().delete(user);

@@ -27,7 +27,7 @@ public class AlbumCreateController {
     public ModelAndView get( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "createAlbum" );
-
+        mav.addObject( "album", new Album() );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
         return mav;
@@ -36,7 +36,11 @@ public class AlbumCreateController {
     @RequestMapping(value = "/createAlbum.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("album") Album album, BindingResult result, HttpServletRequest request ) {
         if( album.getTitle().length() > 0 ) {
-            
+            album.setUser( this.usersManager.getUserFromSession( request ) );
+            this.albumsManager.createAlbum( album );
+        }
+        else {
+            result.rejectValue( "title", "error.album.titleIsTooShort" );
         }
 
         ModelAndView mav = new ModelAndView();

@@ -3,35 +3,25 @@
 <beans>
     <!-- View Resolver -->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass">
-            <value>org.springframework.web.servlet.view.JstlView</value>
-        </property>
-        <property name="prefix">
-            <value>/WEB-INF/views/</value>
-        </property>
-        <property name="suffix">
-            <value>.jsp</value>
-        </property>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
     </bean>
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.168.1:3306/gallery?characterEncoding=utf8&amp;useUnicode=true" />
-        <!--<property name="url" value="jdbc:mysql://192.168.168.1:3306/tree?characterEncoding=cp1251" />-->
         <property name="username" value="wilson"/>
         <property name="password" value="wilson"/>
     </bean>
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation">
-            <value>
-                WEB-INF/hibernate.cfg.xml
-            </value>
-        </property>
+        <property name="configLocation" value="WEB-INF/hibernate.cfg.xml" />
         <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</prop> 
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.encoding">utf-8</prop> 
                 <prop key="hibernate.hbm2ddl.auto">update</prop>                
             </props>
         </property>

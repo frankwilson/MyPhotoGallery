@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
-<form method="post">
+<form:form commandName="album">
 <div class="page_header">Добавить альбом:</div>
 <table class="main" cellpadding="1" cellspacing="0" style="width:100%">
   <colgroup>
@@ -10,19 +11,21 @@
   <tr>
     <td>Название:</td>
     <td>
-      <input type="text" name="name" id="name" style="height:20px; width:300px;" value="" />
+      <form:input path="title" cssStyle="height:20px; width:300px;"/>
+      <form:errors path="title" />
     </td>
   </tr>
   <tr>
     <td>Описание:</td>
     <td>
-      <textarea name="desc" id="desc" cols=60 rows=4></textarea>
+      <form:textarea path="description" cols="60" rows="4" />
+      <form:errors path="description" />
     </td>
   </tr>
   <tr>
     <td></td>
-    <td><input type="submit" name="add" id="add" value="Создать" style="width:150px;" /></td>
+    <td><input type="submit" value="Создать" /></td>
   </tr>
 </table>
-</form>
+</form:form>
 <jsp:include page="footer.jsp" />

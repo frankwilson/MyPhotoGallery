@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
@@ -23,8 +24,14 @@ public class AlbumsListController {
     @Autowired
     private AlbumDao albumsManager;
     
+    /**
+     * Метод подготавливает к выводу список альбомов текущего пользователя
+     * 
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/albumsList.html", method = RequestMethod.GET)
-    public ModelAndView get( HttpServletRequest request ) {
+    public ModelAndView showList( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "albumsList" );
 
@@ -41,6 +48,34 @@ public class AlbumsListController {
         logger.debug( "Adding title string to the view: '"+ title +"'" );
 
         mav.addObject( "pageName", title );
+
+        return mav;
+    }
+    
+    /**
+     * Метод подготавливает к выводу спсиок альбомов указанного 
+     * в параметре albumId пользователя
+     * 
+     * @param albumId
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/album/(*:albumId).html", method = RequestMethod.GET)
+    public ModelAndView showAlbum( @RequestParam("albumId") int albumId, HttpServletRequest request ) {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName( "viewAlbum" );
+
+        Album album = this.albumsManager.getAlbumsById( albumId );
+        logger.debug( "We got albums list" );
+        if( album != null ) {
+            logger.debug( "We have album \""+ album.getTitle() +"\"" );
+            mav.addObject( "currentAlbum", album );
+        }
+
+        String title = new RequestContext(request).getMessage( "page.title.viewAlbum" );
+        logger.debug( "Adding title string to the view: '"+ title +"'" );
+
+        mav.addObject( "pageName", title +" "+ album.getTitle() );
 
         return mav;
     }

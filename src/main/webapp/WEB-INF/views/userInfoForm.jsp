@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
@@ -9,10 +10,9 @@
     <col style="width:90px;">
   </colgroup>
   <tr>
-    <td style="width:150px;">Логин:</td>
+    <td style="width:150px; height:22px;">Логин:</td>
     <td>
-      <form:input path="login" disabled="disabled" cssStyle="width:200px;"/>&#160;
-      <form:errors path="login"/>
+      <c:out value="${user.login}" />
     </td>
   </tr>
   <tr>
