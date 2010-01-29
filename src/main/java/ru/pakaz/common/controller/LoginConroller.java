@@ -18,12 +18,10 @@ public class LoginConroller {
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public ModelAndView get() {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "login" );
+        ModelAndView mav = new ModelAndView( "login" );
         mav.addObject( "user", new User() );
         mav.addObject( "pageName", "Логин" );
         return mav;
-//        return new ModelAndView( "login" ); 
     }
 
     @RequestMapping(value = "/login.html", method = RequestMethod.POST)
@@ -39,13 +37,11 @@ public class LoginConroller {
             mav.addObject( "user", user );
             mav.addObject( "pageName", "Логин" );
             return mav;
-//            return "redirect:login.html";
         }
         else {
             this.usersManager.setUserToSession( request, this.usersManager.getUserByLogin( user.getLogin() ) );
             mav.setViewName( "redirect:index.html" );
             return mav;
-//            return "redirect:index.html";
         }
     }
 

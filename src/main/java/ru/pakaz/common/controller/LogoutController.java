@@ -16,11 +16,6 @@ public class LogoutController {
     @RequestMapping(value = "/logout.html", method = RequestMethod.GET)
     public String get( HttpServletRequest request ) {
         request.getSession(true).removeAttribute( "User" );
-//        removeUser( request );
         return "redirect:index.html";
     }
-/*
-    public void removeUser(HttpServletRequest request) {
-        request.getSession(true).removeAttribute( "User" );
-    }*/
 }

@@ -4,8 +4,8 @@
   <groupId>ru.pakaz</groupId>
   <artifactId>pakaz</artifactId>
   <packaging>war</packaging>
-  <version>0.0.1</version>
-  <name>pakaz Maven Webapp</name>
+  <version>0.0.2</version>
+  <name>pakaz2 Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -16,13 +16,13 @@
     </dependency>
     <dependency>
     	<groupId>org.springframework</groupId>
-    	<artifactId>spring-hibernate3</artifactId>
-    	<version>2.0.8</version>
+    	<artifactId>spring-web</artifactId>
+    	<version>3.0.0.RELEASE</version>
     </dependency>
     <dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>hibernate-annotations</artifactId>
-    	<version>3.4.0.GA</version>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-orm</artifactId>
+    	<version>3.0.0.RELEASE</version>
     </dependency>
     <dependency>
     	<groupId>log4j</groupId>
@@ -30,116 +30,14 @@
     	<version>1.2.15</version>
     </dependency>
     <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>servlet-api</artifactId>
-    	<version>2.5</version>
-    </dependency>
-    <dependency>
-    	<groupId>commons-dbcp</groupId>
-    	<artifactId>commons-dbcp</artifactId>
-    	<version>20030825.184428</version>
-    </dependency>
-    <dependency>
-    	<groupId>commons-pool</groupId>
-    	<artifactId>commons-pool</artifactId>
-    	<version>20030825.183949</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-log4j12</artifactId>
-    	<version>1.5.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-api</artifactId>
-    	<version>1.5.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>jstl</artifactId>
-    	<version>1.2</version>
-    </dependency>
-    <dependency>
-    	<groupId>mysql</groupId>
-    	<artifactId>mysql-connector-java</artifactId>
-    	<version>5.1.6</version>
-    </dependency>
-    <dependency>
-    	<groupId>commons-fileupload</groupId>
-    	<artifactId>commons-fileupload</artifactId>
-    	<version>1.2.1</version>
-    </dependency>
-    <dependency>
-    	<groupId>commons-io</groupId>
-    	<artifactId>commons-io</artifactId>
-    	<version>1.4</version>
-    </dependency>
-    <dependency>
     	<groupId>org.springframework</groupId>
     	<artifactId>spring-webmvc</artifactId>
     	<version>3.0.0.RELEASE</version>
     </dependency>
     <dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-core</artifactId>
-    	<version>3.0.0.RELEASE</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-beans</artifactId>
-    	<version>3.0.0.RELEASE</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-context</artifactId>
-    	<version>3.0.0.RELEASE</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-jdbc</artifactId>
-    	<version>3.0.0.RELEASE</version>
-    </dependency>
-    <dependency>
-    	<groupId>groovy</groupId>
-    	<artifactId>groovy</artifactId>
-    	<version>1.1-rc-1</version>
-    </dependency>
-    <dependency>
-    	<groupId>jruby</groupId>
-    	<artifactId>jruby</artifactId>
-    	<version>0.9.8</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.beanshell</groupId>
-    	<artifactId>beanshell</artifactId>
-    	<version>2.0b4</version>
-    	<type>pom</type>
-    </dependency>
-    <dependency>
-    	<groupId>org.beanshell</groupId>
-    	<artifactId>bsh</artifactId>
-    	<version>2.0b4</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>hibernate</artifactId>
-    	<version>3.2.7.ga</version>
-    </dependency>
-    <dependency>
-    	<groupId>asm</groupId>
-    	<artifactId>asm</artifactId>
-    	<version>3.2</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>ejb3-persistence</artifactId>
-    	<version>3.3.2.Beta1</version>
-    	<type>pom</type>
-    </dependency>
-    <dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>hibernate-commons-annotations</artifactId>
-    	<version>3.3.0.ga</version>
+    	<groupId>commons-dbcp</groupId>
+    	<artifactId>commons-dbcp</artifactId>
+    	<version>1.2.2</version>
     </dependency>
     <dependency>
     	<groupId>org.hibernate</groupId>
@@ -147,34 +45,40 @@
     	<version>3.3.2.GA</version>
     </dependency>
     <dependency>
-    	<groupId>antlr</groupId>
-    	<artifactId>antlr</artifactId>
-    	<version>3.0ea8</version>
+    	<groupId>hibernate</groupId>
+    	<artifactId>hibernate-entitymanager</artifactId>
+    	<version>3.4.0.GA</version>
+    	<type>pom</type>
     </dependency>
     <dependency>
-    	<groupId>javassist</groupId>
-    	<artifactId>javassist</artifactId>
-    	<version>3.8.0.GA</version>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-log4j12</artifactId>
+    	<version>1.5.10</version>
     </dependency>
     <dependency>
-    	<groupId>cglib</groupId>
-    	<artifactId>cglib</artifactId>
-    	<version>2.2</version>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-api</artifactId>
+    	<version>1.5.10</version>
     </dependency>
     <dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>hibernate-validator</artifactId>
-    	<version>3.1.0.GA</version>
+    	<groupId>commons-fileupload</groupId>
+    	<artifactId>commons-fileupload</artifactId>
+    	<version>1.2.1</version>
     </dependency>
     <dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-mapper-asl</artifactId>
-    	<version>1.4.1</version>
+    	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>5.1.11</version>
     </dependency>
     <dependency>
-    	<groupId>org.springframework</groupId>
-    	<artifactId>spring-context-support</artifactId>
-    	<version>3.0.0.RELEASE</version>
+    	<groupId>javax.servlet</groupId>
+    	<artifactId>jstl</artifactId>
+    	<version>1.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>taglibs</groupId>
+    	<artifactId>standard</artifactId>
+    	<version>1.1.2</version>
     </dependency>
     <dependency>
     	<groupId>commons-validator</groupId>
@@ -183,6 +87,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>pakaz</finalName>
+    <finalName>pakaz2</finalName>
   </build>
 </project>

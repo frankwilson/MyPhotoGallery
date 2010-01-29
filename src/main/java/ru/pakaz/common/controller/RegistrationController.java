@@ -1,34 +1,27 @@
 package ru.pakaz.common.controller;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
-public class RegistrationController extends SimpleFormController
-{
+@Controller
+public class RegistrationController {
     private UserDao usersManager;
-    
-    public RegistrationController() {
-        setCommandClass( User.class );
-        setCommandName( "user" );
-    }
     
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         return new User();
     }
 
     public ModelAndView showForm( HttpServletRequest request, HttpServletResponse response,
-            BindException errors, Map controlModel ) throws Exception
+            BindException errors) throws Exception
     {
-        ModelAndView mav = new ModelAndView( getFormView() );
+        ModelAndView mav = new ModelAndView( "registration" );
         User model = new User();
         mav.addObject( "user", model );
-//        return super.showForm(request, response, errors, controlModel);
-//        ModelAndView mav = new ModelAndView( getFormView(), new ModelMap( "user", new User() ) );
         return mav;
     }
 
@@ -51,15 +44,9 @@ public class RegistrationController extends SimpleFormController
         }
     }
 
-    public ModelAndView onSubmit(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object command,
-            BindException errors) throws Exception
-    {
+    public ModelAndView onSubmit( Object command ) throws Exception {
         User formUser = (User) command;
-
-        return new ModelAndView( getSuccessView(), "user", formUser );
+        return new ModelAndView( "registration", "user", formUser );
     }
 
     public UserDao getUserDao() {

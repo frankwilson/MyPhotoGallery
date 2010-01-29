@@ -14,19 +14,14 @@ import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
 @Controller
+@RequestMapping("/changeUsersInfo.html")
 public class UserInfoController {
     static private Logger logger = Logger.getLogger( UserInfoController.class );
 
     @Autowired
     private UserDao usersManager;
     
-    @Autowired  
-    private Validator validator; 
-    public void setValidator( Validator validator ) {  
-        this.validator = validator;  
-    }
-    
-    @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.GET)  
+    @RequestMapping(method = RequestMethod.GET)  
     public ModelAndView get( HttpServletRequest request ) {
         User user = null;
         ModelAndView mav = null;
@@ -46,14 +41,12 @@ public class UserInfoController {
         return mav;
     }  
 
-    @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.POST)  
+    @RequestMapping(method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request ) {
         new UserInfoValidator().validate( user, result );
-//        validator.validate( user, result );
 
         if( !result.hasErrors() ) {
             User dbUser = this.usersManager.getUserFromSession( request );
-//            User dbUser = this.usersManager.getUserByLogin( user.getLogin() );
             dbUser.setFirstName( user.getFirstName() );
             dbUser.setLastName( user.getLastName() );
             dbUser.setEmail( user.getEmail() );
@@ -68,7 +61,6 @@ public class UserInfoController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "userInfoForm" );
-//        mav.addObject( "user", user );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfoForm" ) );
         return mav;
     }
