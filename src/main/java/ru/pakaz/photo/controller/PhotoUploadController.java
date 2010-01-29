@@ -145,7 +145,7 @@ public class PhotoUploadController {
      */
     private void uploadPhoto( String tmpPath, byte[] file ) {
         if( file != null ) {
-            PhotoUploadController.logger.debug( "File size is "+ file.length );
+        	this.logger.debug( "File size is "+ file.length );
 
             File tmpOutputDir = new File( tmpPath );
             File tmpOutputFile;
@@ -158,19 +158,19 @@ public class PhotoUploadController {
                         fileWriter = new FileOutputStream( tmpOutputFile );
                         fileWriter.write( file );
 
-                        PhotoUploadController.logger.debug( "File is sucessfully saved in "+ tmpOutputFile.getAbsolutePath() );
+                        this.logger.debug( "File is sucessfully saved in "+ tmpOutputFile.getAbsolutePath() );
                     }
                     catch( FileNotFoundException e ) {
                         e.printStackTrace();
-                        PhotoUploadController.logger.warn( "Can't open stream: "+ e.getMessage() );
+                        this.logger.warn( "Can't open stream: "+ e.getMessage() );
                     }
                     catch( IOException e ) {
                         e.printStackTrace();
-                        PhotoUploadController.logger.warn( "Can't write file: "+ e.getMessage() );
+                        this.logger.warn( "Can't write file: "+ e.getMessage() );
                     }
                 }
                 else {
-                    PhotoUploadController.logger.debug( "Can't create file "+ tmpOutputFile.getAbsolutePath() );
+                	this.logger.debug( "Can't create file "+ tmpOutputFile.getAbsolutePath() );
                 }
             }
             catch( IOException e1 ) {
@@ -179,7 +179,7 @@ public class PhotoUploadController {
             }
         }
         else {
-            PhotoUploadController.logger.debug( "There is no file!" );
+        	this.logger.debug( "There is no file!" );
         }
     }
 
