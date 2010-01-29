@@ -1,10 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
-<form method="POST" enctype="multipart/form-data">
+<form:form>
 <table width="400" cellpadding="0" cellspacing="0">
-  <tr>
-    <td><a href="{SYSTEM_PATH}/album/{ALBUM_ID}"><span style="font-size:22px;">{ALBUM_NAME}</span></a></td>
-  </tr>
   <tr>
     <td><span style="font-size:16px;">Загрузка фотографии в альбом</span></td>
   </tr>
@@ -19,5 +18,5 @@
     </td>
   </tr>
 </table>
-</form>
+</form:form>
 <jsp:include page="footer.jsp" />

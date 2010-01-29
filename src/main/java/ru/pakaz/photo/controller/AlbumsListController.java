@@ -60,7 +60,7 @@ public class AlbumsListController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/album/(*:albumId).html", method = RequestMethod.GET)
+    @RequestMapping(value = "/album_(*:albumId).html", method = RequestMethod.GET)
     public ModelAndView showAlbum( @RequestParam("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "viewAlbum" );
