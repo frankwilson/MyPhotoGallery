@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import javax.servlet.ServletException;
+import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
+import ru.pakaz.common.model.User;
 import ru.pakaz.photo.dao.AlbumDao;
+import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
+import ru.pakaz.photo.model.Photo;
+import ru.pakaz.photo.model.PhotoFile;
+import ru.pakaz.photo.service.PhotoFileService;
 
 @Controller
 public class PhotoUploadController {
@@ -31,6 +35,10 @@ public class PhotoUploadController {
     private UserDao usersManager;
     @Autowired
     private AlbumDao albumsManager;
+    @Autowired
+    private PhotoDao photoManager;
+    @Autowired
+    private PhotoFileService photoFileService;
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
@@ -39,6 +47,7 @@ public class PhotoUploadController {
      * @param request
      * @return
      */
+/*
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
@@ -48,7 +57,7 @@ public class PhotoUploadController {
 
         return mav;
     }
-
+*/
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
      * 
@@ -59,6 +68,8 @@ public class PhotoUploadController {
     @RequestMapping(value = "/upload.html", method = RequestMethod.GET)
     public ModelAndView get( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSession( request ) );
+        mav.addObject( "albums", albums );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
         return mav;
@@ -71,21 +82,37 @@ public class PhotoUploadController {
      * @return
      */
     @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
-    public ModelAndView upload( HttpServletRequest request, ServletRequestDataBinder binder,
+    public ModelAndView upload( HttpServletRequest request, HttpServletResponse response, 
             @RequestParam("file") MultipartFile file  ) {
-        
-        String tmpPath = request.getSession().getServletContext().getInitParameter( "catalog" ) +"/tmp";
+//        File galleryPath = new File( request.getSession().getServletContext().getInitParameter( "catalog" ), "tmp" );
 
         if( !file.isEmpty() ) {
+            this.logger.debug( "File is not empty" );
+
             try {
-                this.uploadPhoto( tmpPath, file.getBytes() );
-                this.logger.debug( "File is not empty" );
+                Photo newPhoto = new Photo();
+                newPhoto.setUser( this.usersManager.getUserFromSession( request ) );
+                newPhoto.setFileName( file.getOriginalFilename() );
+                newPhoto.setTitle( file.getOriginalFilename() );
+
+                PhotoFile original = this.photoFileService.saveOriginal( file.getBytes() );
+                original.setParentPhoto( newPhoto );
+                
+                newPhoto.setPhotoFile( "original", original );
+                this.photoManager.createPhoto( newPhoto );
+
+                /*
+                this.uploadPhoto( galleryPath, file.getBytes() );
+                
+                PhotoFile pFile = new PhotoFile();
+                pFile.copyFile( null );*/
             }
             catch( IOException e ) {
-                this.logger.debug( "Exeption during reading file!" );
+                this.logger.debug( "Exception during reading sent file!" );
                 e.printStackTrace();
             }
-        } else {
+        }
+        else {
             this.logger.debug( "File is empty" );
         }
 
@@ -102,27 +129,31 @@ public class PhotoUploadController {
     }
 
     /**
+     * 
      * 
      * @param albumId
      * @param result
      * @param request
      * @return
      */
+    /*
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)  
     public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request, 
             HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
-        String tmpPath = request.getSession().getServletContext().getInitParameter( "catalog" ) +"/tmp";
+        File galleryPath = new File( request.getSession().getServletContext().getInitParameter( "catalog" ), "tmp" );
 
         if( !file.isEmpty() ) {
+            this.logger.debug( "File is not empty" );
+
             try {
-                this.uploadPhoto( tmpPath, file.getBytes() );
-                this.logger.debug( "File is not empty" );
+                this.uploadPhoto( galleryPath, file.getBytes() );
             }
             catch( IOException e ) {
-                this.logger.debug( "Exeption during reading file!" );
+                this.logger.debug( "Exeption during reading sent file!" );
                 e.printStackTrace();
             }
-        } else {
+        }
+        else {
             this.logger.debug( "File is empty" );
         }
 
@@ -137,49 +168,46 @@ public class PhotoUploadController {
             return null;
         }
     }
-    
+*/
     /**
      * Обработка и сохранение полученной фотографии
      * 
-     * @param tmpPath
+     * @param tmpPath - Путь к временному каталогу для сохранения файла
+     * @param file    - файл в виде массива байтов
      */
-    private void uploadPhoto( String tmpPath, byte[] file ) {
+    private PhotoFile uploadPhoto( File tmpOutputDir, byte[] file ) {
         if( file != null ) {
         	this.logger.debug( "File size is "+ file.length );
-
-            File tmpOutputDir = new File( tmpPath );
             File tmpOutputFile;
+
             try {
                 tmpOutputFile = File.createTempFile( "photo_", ".jpg", tmpOutputDir );
-                if( tmpOutputFile.exists() && tmpOutputFile.canWrite() ) {
-                    FileOutputStream fileWriter;
+                FileOutputStream fileWriter;
 
-                    try {
-                        fileWriter = new FileOutputStream( tmpOutputFile );
-                        fileWriter.write( file );
+                try {
+                    fileWriter = new FileOutputStream( tmpOutputFile );
+                    fileWriter.write( file );
 
-                        this.logger.debug( "File is sucessfully saved in "+ tmpOutputFile.getAbsolutePath() );
-                    }
-                    catch( FileNotFoundException e ) {
-                        e.printStackTrace();
-                        this.logger.warn( "Can't open stream: "+ e.getMessage() );
-                    }
-                    catch( IOException e ) {
-                        e.printStackTrace();
-                        this.logger.warn( "Can't write file: "+ e.getMessage() );
-                    }
+                    this.logger.debug( "File is sucessfully saved at "+ tmpOutputFile.getAbsolutePath() );
                 }
-                else {
-                	this.logger.debug( "Can't create file "+ tmpOutputFile.getAbsolutePath() );
+                catch( FileNotFoundException e ) {
+                    this.logger.error( "Can't open file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
+                }
+                catch( IOException e ) {
+                    this.logger.error( "Can't write into file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
                 }
             }
-            catch( IOException e1 ) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            catch( IOException ex ) {
+                this.logger.error( "Can't create temp file in folder '"+ tmpOutputDir.getAbsolutePath() +"': "+ ex.getMessage() );
             }
+            
+            PhotoFile pFile = new PhotoFile();
+//            pFile.copyFile( tmpOutputFile.getAbsolutePath() );
+            return pFile;
         }
         else {
         	this.logger.debug( "There is no file!" );
+        	return null;
         }
     }
 
@@ -195,5 +223,19 @@ public class PhotoUploadController {
     }
     public void setUserDao( UserDao userDao ) {
         this.usersManager = userDao;
+    }
+
+    public PhotoDao getPhotoDao() {
+        return this.photoManager;
+    }
+    public void setUserDao( PhotoDao photoDao ) {
+        this.photoManager = photoDao;
+    }
+
+    public PhotoFileService getPhotoFileService() {
+        return this.photoFileService;
+    }
+    public void setUserDao( PhotoFileService photoFileService ) {
+        this.photoFileService = photoFileService;
     }
 }

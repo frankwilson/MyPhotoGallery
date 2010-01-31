@@ -25,4 +25,16 @@
     <bean id="albumDao" class="ru.pakaz.photo.dao.AlbumDao">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
+
+    <bean id="photoFileDao" class="ru.pakaz.photo.dao.PhotoFileDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="photoDao" class="ru.pakaz.photo.dao.PhotoDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="photoFileService" class="ru.pakaz.photo.service.PhotoFileService">
+        <property name="destinationPath" value="A:/gallery" />
+    </bean>
 </beans>

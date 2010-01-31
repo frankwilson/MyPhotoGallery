@@ -9,10 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.log4j.Logger;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,7 +36,7 @@ public class PhotoFile {
     @Column
     private Date fileAddDate = new Date();
     
-    @Column
+    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private Photo parentPhoto;
     
     @Column
@@ -43,7 +46,7 @@ public class PhotoFile {
     private int photoWidth;
     
     static private Logger logger = Logger.getLogger( PhotoFile.class );
-    
+
     private static String rootPhotoCatalog;
 
     public static String getRootPhotoCatalog() {

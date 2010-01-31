@@ -10,7 +10,7 @@ import ru.pakaz.photo.model.PhotoFile;
 public class PhotoFileDao extends HibernateDaoSupport {
     static private Logger logger = Logger.getLogger( PhotoFileDao.class );
 
-    public PhotoFile getUserById( int fileId ) {
+    public PhotoFile getFileById( int fileId ) {
         List<PhotoFile> filesList;
 
         filesList = getHibernateTemplate().find( "FROM PhotoFile WHERE id = ?", fileId );

@@ -5,7 +5,7 @@
   <artifactId>pakaz</artifactId>
   <packaging>war</packaging>
   <version>0.0.2</version>
-  <name>pakaz2 Maven Webapp</name>
+  <name>pakaz Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -85,8 +85,13 @@
     	<artifactId>commons-validator</artifactId>
     	<version>1.3.1</version>
     </dependency>
+    <dependency>
+    	<groupId>commons-io</groupId>
+    	<artifactId>commons-io</artifactId>
+    	<version>1.4</version>
+    </dependency>
   </dependencies>
   <build>
-    <finalName>pakaz2</finalName>
+    <finalName>pakaz</finalName>
   </build>
 </project>

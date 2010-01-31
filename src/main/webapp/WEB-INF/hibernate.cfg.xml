@@ -10,5 +10,6 @@
 		<mapping class="ru.pakaz.common.model.User" />
 		<mapping class="ru.pakaz.photo.model.Album" />
 		<mapping class="ru.pakaz.photo.model.Photo" />
+		<mapping class="ru.pakaz.photo.model.PhotoFile" />
 	</session-factory>
 </hibernate-configuration>

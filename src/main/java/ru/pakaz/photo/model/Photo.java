@@ -1,7 +1,9 @@
 package ru.pakaz.photo.model;
 
+import java.util.ArrayList;
 import java.util.Date;
-import javax.persistence.CascadeType;
+import java.util.HashMap;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,14 +37,8 @@ public class Photo {
     @Column
     private String fileName;
     
-    @Column
-    private int originalHeight;
-    
-    @Column
-    private int originalWidth;
-
-    @Column
-    private int originalFileSize;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="parentPhoto")
+    private List<PhotoFile> files = new ArrayList<PhotoFile>(); 
 
     public int getPhotoId() {
         return this.photoId;
@@ -91,32 +87,12 @@ public class Photo {
     public void setFileName( String fileName ) {
         this.fileName = fileName;
     }
-
-    public int getOriginalHeight() {
-        return this.originalHeight;
-    }
-
-    public void setOriginalHeight( int originalHeight ) {
-        this.originalHeight = originalHeight;
-    }
-
-    public int getOriginalWidth() {
-        return this.originalWidth;
-    }
-
-    public void setOriginalWidth( int originalWidth ) {
-        this.originalWidth = originalWidth;
-    }
-
-    public int getOriginalFileSize() {
-        return this.originalFileSize;
-    }
-
-    public void setOriginalFileSize( int originalFileSize ) {
-        this.originalFileSize = originalFileSize;
+    
+    public void setPhotoFile( String size, PhotoFile file ) {
+        this.files.add( file );
     }
     
-    public void fillInfoFromFile() {
-        
+    public PhotoFile getPhotoFile( int index ) {
+        return this.files.get( index );
     }
 }
