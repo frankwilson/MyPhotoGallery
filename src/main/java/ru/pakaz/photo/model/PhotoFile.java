@@ -87,12 +87,7 @@ public class PhotoFile {
         this.photoWidth = photoWidth;
     }
     
-    /**
-     * Copy file to repository
-     * 
-     * @param srcPath
-     * @return
-     */
+/*
     public boolean copyFile( String srcPath ) {
         String sp = File.separator;
         String currentDate = new SimpleDateFormat( sp +"yyyy"+ sp +"MM-dd").format( this.fileAddDate );
@@ -140,4 +135,5 @@ public class PhotoFile {
         
         return true;
     }
+*/
 }

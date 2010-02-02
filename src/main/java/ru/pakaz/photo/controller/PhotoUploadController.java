@@ -84,7 +84,6 @@ public class PhotoUploadController {
     @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
     public ModelAndView upload( HttpServletRequest request, HttpServletResponse response, 
             @RequestParam("file") MultipartFile file  ) {
-//        File galleryPath = new File( request.getSession().getServletContext().getInitParameter( "catalog" ), "tmp" );
 
         if( !file.isEmpty() ) {
             this.logger.debug( "File is not empty" );
@@ -98,14 +97,12 @@ public class PhotoUploadController {
                 PhotoFile original = this.photoFileService.saveOriginal( file.getBytes() );
                 original.setParentPhoto( newPhoto );
                 
-                newPhoto.setPhotoFile( "original", original );
+                newPhoto.setPhotoFile( original );
                 this.photoManager.createPhoto( newPhoto );
-
-                /*
-                this.uploadPhoto( galleryPath, file.getBytes() );
                 
-                PhotoFile pFile = new PhotoFile();
-                pFile.copyFile( null );*/
+                PhotoFile bigPhotoFile = this.photoFileService.scalePhoto( original, 640 );
+                newPhoto.setPhotoFile( bigPhotoFile );
+
             }
             catch( IOException e ) {
                 this.logger.debug( "Exception during reading sent file!" );
@@ -169,47 +166,6 @@ public class PhotoUploadController {
         }
     }
 */
-    /**
-     * Обработка и сохранение полученной фотографии
-     * 
-     * @param tmpPath - Путь к временному каталогу для сохранения файла
-     * @param file    - файл в виде массива байтов
-     */
-    private PhotoFile uploadPhoto( File tmpOutputDir, byte[] file ) {
-        if( file != null ) {
-        	this.logger.debug( "File size is "+ file.length );
-            File tmpOutputFile;
-
-            try {
-                tmpOutputFile = File.createTempFile( "photo_", ".jpg", tmpOutputDir );
-                FileOutputStream fileWriter;
-
-                try {
-                    fileWriter = new FileOutputStream( tmpOutputFile );
-                    fileWriter.write( file );
-
-                    this.logger.debug( "File is sucessfully saved at "+ tmpOutputFile.getAbsolutePath() );
-                }
-                catch( FileNotFoundException e ) {
-                    this.logger.error( "Can't open file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
-                }
-                catch( IOException e ) {
-                    this.logger.error( "Can't write into file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
-                }
-            }
-            catch( IOException ex ) {
-                this.logger.error( "Can't create temp file in folder '"+ tmpOutputDir.getAbsolutePath() +"': "+ ex.getMessage() );
-            }
-            
-            PhotoFile pFile = new PhotoFile();
-//            pFile.copyFile( tmpOutputFile.getAbsolutePath() );
-            return pFile;
-        }
-        else {
-        	this.logger.debug( "There is no file!" );
-        	return null;
-        }
-    }
 
     public AlbumDao getAlbumDao() {
         return this.albumsManager;

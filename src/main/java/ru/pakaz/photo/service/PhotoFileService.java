@@ -1,9 +1,14 @@
 package ru.pakaz.photo.service;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.pakaz.photo.dao.PhotoFileDao;
@@ -29,10 +34,13 @@ public class PhotoFileService {
      */
     public PhotoFile saveOriginal( byte[] data ) {
         PhotoFile original = new PhotoFile();
-        getImageParams( data, original );
+        
+        this.getImageParams( data, original );
         photoFilesManager.createFile( original );
+
         logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
-        saveFile( data );
+
+        this.saveFile( data, original );
 
         return original;
     }
@@ -43,11 +51,36 @@ public class PhotoFileService {
      * @param srcPhoto
      * @return
      */
-    public PhotoFile scalePhoto( PhotoFile srcPhoto ) {
+    public PhotoFile scalePhoto( PhotoFile srcPhoto, int bigSide ) {
         PhotoFile dstPhoto = new PhotoFile();
         dstPhoto.setParentPhoto( srcPhoto.getParentPhoto() );
         
+        
         return dstPhoto;
+    }
+    
+    public byte[] resizeImage( byte[] srcImageData, int bigSide ) {
+        InputStream in = new ByteArrayInputStream( srcImageData );
+        try {
+            BufferedImage image = javax.imageio.ImageIO.read(in);
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+            if( height > width )  {
+                height = bigSide;
+                width  = -1;
+            }
+            else {
+                height = -1;
+                width  = bigSide;
+            }
+            
+            Image newImage = image.getScaledInstance( width, height, java.awt.Image.SCALE_DEFAULT );
+            newImage.getSource()
+        }
+        catch( IOException e ) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -69,45 +102,60 @@ public class PhotoFileService {
     }
     
     /**
-     * Сохраняет массив байтов по переданному пути
+     * Сохраняет массив байтов в файл
      * 
-     * @param dstFile
+     * @param photoFile
      * @param data
      */
-    public void saveFile( byte[] data ) {
+    public boolean saveFile( byte[] data, PhotoFile photoFile ) {
+
         if( data != null && data.length > 0 ) {
-            this.logger.debug( "File size is "+ data.length );
-            File tmpOutputFile;
+            File dstFile = new File( this.getFilePath( photoFile ) );
+            File todayPhotosCatalog = dstFile.getParentFile();
+            
+            if( !todayPhotosCatalog.exists() && !todayPhotosCatalog.mkdirs() ) {
+                this.logger.error( "Can't create destination directory '"+ todayPhotosCatalog.getAbsolutePath() +"'" );
+                return false;
+            }
+
+            this.logger.debug( "Data to output: "+ data.length +" bytes" );
+            FileOutputStream fileWriter;
 
             try {
-                tmpOutputFile = File.createTempFile( "photo_", ".jpg", tmpOutputDir );
-                FileOutputStream fileWriter;
+                dstFile.createNewFile();
+                fileWriter = new FileOutputStream( dstFile );
+                fileWriter.write( data );
 
-                try {
-                    fileWriter = new FileOutputStream( tmpOutputFile );
-                    fileWriter.write( file );
-
-                    this.logger.debug( "File is sucessfully saved at "+ tmpOutputFile.getAbsolutePath() );
-                }
-                catch( FileNotFoundException e ) {
-                    this.logger.error( "Can't open file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
-                }
-                catch( IOException e ) {
-                    this.logger.error( "Can't write into file '"+ tmpOutputFile.getAbsolutePath() +"': "+ e.getMessage() );
-                }
+                this.logger.debug( "File is sucessfully saved at "+ dstFile.getAbsolutePath() );
             }
-            catch( IOException ex ) {
-                this.logger.error( "Can't create temp file in folder '"+ tmpOutputDir.getAbsolutePath() +"': "+ ex.getMessage() );
+            catch( FileNotFoundException e ) {
+                this.logger.error( "Can't open file '"+ dstFile.getAbsolutePath() +"': "+ e.getMessage() );
+            }
+            catch( IOException e ) {
+                this.logger.error( "Can't write into file '"+ dstFile.getAbsolutePath() +"': "+ e.getMessage() );
             }
             
-            PhotoFile pFile = new PhotoFile();
-//            pFile.copyFile( tmpOutputFile.getAbsolutePath() );
-            return pFile;
+            return true;
         }
         else {
             this.logger.debug( "There is no file!" );
-            return null;
+            return false;
         }
+    }
+    
+    /**
+     * Возвращает путь к файлу фотографии
+     * 
+     * @param file
+     * @return
+     */
+    private String getFilePath( PhotoFile file ) {
+        String sp = File.separator;
+        String date = new SimpleDateFormat( sp +"yyyy"+ sp +"MM-dd").format( file.getFileAddDate() );
+        File todayPhotosCatalog = new File( this.destinationPath, date );
+        File dstFile = new File( todayPhotosCatalog, String.format( "%010d", file.getFileId() ) +".jpg" );
+        
+        return dstFile.getAbsolutePath();
     }
 
     public PhotoFileDao getPhotoFileManager() {

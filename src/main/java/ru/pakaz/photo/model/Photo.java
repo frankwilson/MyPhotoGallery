@@ -2,7 +2,6 @@ package ru.pakaz.photo.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,7 +87,7 @@ public class Photo {
         this.fileName = fileName;
     }
     
-    public void setPhotoFile( String size, PhotoFile file ) {
+    public void setPhotoFile( PhotoFile file ) {
         this.files.add( file );
     }
     
