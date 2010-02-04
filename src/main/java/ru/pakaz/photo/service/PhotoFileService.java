@@ -1,14 +1,20 @@
 package ru.pakaz.photo.service;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.pakaz.photo.dao.PhotoFileDao;
@@ -54,8 +60,34 @@ public class PhotoFileService {
     public PhotoFile scalePhoto( PhotoFile srcPhoto, int bigSide ) {
         PhotoFile dstPhoto = new PhotoFile();
         dstPhoto.setParentPhoto( srcPhoto.getParentPhoto() );
-        
-        
+
+        try {
+            File srcFile = new File( getFilePath( srcPhoto ) );
+            FileInputStream in = new FileInputStream( srcFile );
+            
+            byte[] buf = new byte[(int)srcFile.length()];
+            
+            in.read( buf, 0, in.available() );
+            in.close();
+            
+            byte[] resultImage = resizeImage( buf, bigSide );
+            getImageParams( resultImage, dstPhoto );
+            
+            photoFilesManager.createFile( dstPhoto );
+
+            logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
+            
+            this.saveFile( resultImage, dstPhoto );
+        }
+        catch( FileNotFoundException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         return dstPhoto;
     }
     
@@ -66,20 +98,40 @@ public class PhotoFileService {
             int width = image.getWidth();
             int height = image.getHeight();
 
+//            double aspectRatio;
+            
             if( height > width )  {
                 height = bigSide;
                 width  = -1;
+//                aspectRatio = height / bigSide;
             }
             else {
                 height = -1;
                 width  = bigSide;
+//                aspectRatio = width / bigSide;
             }
+
+            Image newImage = image.getScaledInstance( width, height, Image.SCALE_AREA_AVERAGING );
+            BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = changedImage.createGraphics();
+            g2d.drawImage(newImage, 0, 0, null);
+            g2d.dispose();
             
-            Image newImage = image.getScaledInstance( width, height, java.awt.Image.SCALE_DEFAULT );
-            newImage.getSource()
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write( changedImage, "jpg", out );
+            byte[] result = out.toByteArray();
+            return result;
+            
+//            OutputStream out = new ByteArrayOutputStream();
+//            javax.imageio.ImageIO.write( newImage, "jpg", out );
+            
+//            Graphics2D image2 = image.createGraphics();
+//            image2.scale( aspectRatio, aspectRatio );
+
         }
         catch( IOException e ) {
             e.printStackTrace();
+            return null;
         }
     }
     
