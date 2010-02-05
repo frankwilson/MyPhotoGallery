@@ -46,7 +46,7 @@ public class PhotoFileService {
 
         logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
 
-        this.saveFile( data, original );
+        this.saveFile( data, this.getFilePath( original ) );
 
         return original;
     }
@@ -77,7 +77,7 @@ public class PhotoFileService {
 
             logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
             
-            this.saveFile( resultImage, dstPhoto );
+            this.saveFile( resultImage, this.getFilePath( dstPhoto ) );
         }
         catch( FileNotFoundException e ) {
             // TODO Auto-generated catch block
@@ -98,17 +98,18 @@ public class PhotoFileService {
             int width = image.getWidth();
             int height = image.getHeight();
 
-//            double aspectRatio;
+            double aspectRatio;
             
             if( height > width )  {
+                aspectRatio = height / width;
                 height = bigSide;
-                width  = -1;
-//                aspectRatio = height / bigSide;
+                width  = (int)Math.round( height / aspectRatio );
             }
             else {
-                height = -1;
+                aspectRatio = width / height;
                 width  = bigSide;
-//                aspectRatio = width / bigSide;
+                height = (int)Math.round( width / aspectRatio );
+                
             }
 
             Image newImage = image.getScaledInstance( width, height, Image.SCALE_AREA_AVERAGING );
@@ -159,10 +160,10 @@ public class PhotoFileService {
      * @param photoFile
      * @param data
      */
-    public boolean saveFile( byte[] data, PhotoFile photoFile ) {
+    public boolean saveFile( byte[] data, String dstPath ) {
 
         if( data != null && data.length > 0 ) {
-            File dstFile = new File( this.getFilePath( photoFile ) );
+            File dstFile = new File( dstPath );
             File todayPhotosCatalog = dstFile.getParentFile();
             
             if( !todayPhotosCatalog.exists() && !todayPhotosCatalog.mkdirs() ) {
@@ -201,8 +202,22 @@ public class PhotoFileService {
      * @param file
      * @return
      */
-    private String getFilePath( PhotoFile file ) {
+    public String getFilePath( PhotoFile file ) {
         String sp = File.separator;
+        
+        if( file.getFileAddDate() == null ) {
+            this.logger.debug( "Date for file is not set!" );
+            return null;
+        }
+        if( file.getFileId() == 0 ) {
+            this.logger.debug( "FileID is not set!" );
+            return null;
+        }
+        if( this.destinationPath == null ) {
+            this.logger.debug( "Destination path for saving files is not set!" );
+            return null;
+        }
+
         String date = new SimpleDateFormat( sp +"yyyy"+ sp +"MM-dd").format( file.getFileAddDate() );
         File todayPhotosCatalog = new File( this.destinationPath, date );
         File dstFile = new File( todayPhotosCatalog, String.format( "%010d", file.getFileId() ) +".jpg" );
