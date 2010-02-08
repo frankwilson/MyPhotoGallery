@@ -57,7 +57,8 @@ public class PhotoFileServiceTest extends TestCase {
     }
     
     public void testResizeImage() {
-        File srcFile = new File( "A:\\Pictures\\1405899.jpg" );
+//        File srcFile = new File( "A:\\Pictures\\1405899.jpg" );
+        File srcFile = new File( "A:\\Pictures\\фотографии\\Свои\\2009-05-01\\IMG_0016.JPG" );
         String dstPath = "A:\\gallery\\tmp";
         FileInputStream in;
         byte[] buf = null;
@@ -77,10 +78,11 @@ public class PhotoFileServiceTest extends TestCase {
             e.printStackTrace();
         }
         
-        this.service.resizeImage( buf, 640 );
+        byte[] resizeResult = this.service.resizeImage( buf, 1575 );
+        assertNotNull( resizeResult );
         
         try {
-            this.service.saveFile( buf, File.createTempFile( "photo_", ".jpg", new File( dstPath ) ).getCanonicalPath() );
+            this.service.saveFile( resizeResult, File.createTempFile( "photo_", ".jpg", new File( dstPath ) ).getCanonicalPath() );
         }
         catch( IOException e ) {
             // TODO Auto-generated catch block

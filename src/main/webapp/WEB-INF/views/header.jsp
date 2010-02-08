@@ -25,7 +25,7 @@ if( user != null ) { %>
 	      <a href="<%=application.getContextPath() %>/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
 	      [<a href="<%=application.getContextPath() %>/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
 	      <a href="<%=application.getContextPath() %>/upload.html" title="Загрузить фотографию">Загрузить</a> |
-	      <a href="<%=application.getContextPath() %>/unallocatedPhotos.html" title="Свободные фотографии">Нераспределенные фотографии (0)</a> |
+	      <a href="<%=application.getContextPath() %>/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (0)</a> |
 	      <a href="<%=application.getContextPath() %>/logout.html" title="Выход">Выйти</a>
 <% } else {
     user = new User();

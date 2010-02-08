@@ -25,13 +25,13 @@ public class PhotoDao extends HibernateDaoSupport {
         }
     }
 
-    public Photo getPhotoByAlbumId( int albumId ) {
+    public List<Photo> getPhotosByAlbumId( int albumId ) {
         List<Photo> photosList;
 
         photosList = getHibernateTemplate().find( "FROM Photo WHERE albumId = ?", albumId );
 
         if( photosList != null ) {
-            return photosList.get(0);
+            return photosList;
         }
         else {
             logger.debug( "File not found!" );
@@ -39,13 +39,27 @@ public class PhotoDao extends HibernateDaoSupport {
         }
     }
 
-    public Photo getPhotoByUser( User user ) {
+    public List<Photo> getUnallocatedPhotos( User user ) {
+        List<Photo> photosList;
+
+        photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and albumId is null", user );
+
+        if( photosList != null ) {
+            return photosList;
+        }
+        else {
+            logger.debug( "File not found!" );
+            return null;
+        }
+    }
+
+    public List<Photo> getPhotosByUser( User user ) {
         List<Photo> photosList;
 
         photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ?", user );
 
         if( photosList != null ) {
-            return photosList.get(0);
+            return photosList;
         }
         else {
             logger.debug( "File not found!" );

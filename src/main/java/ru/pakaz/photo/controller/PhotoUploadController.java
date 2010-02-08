@@ -1,8 +1,5 @@
 package ru.pakaz.photo.controller;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
@@ -93,16 +90,9 @@ public class PhotoUploadController {
                 newPhoto.setUser( this.usersManager.getUserFromSession( request ) );
                 newPhoto.setFileName( file.getOriginalFilename() );
                 newPhoto.setTitle( file.getOriginalFilename() );
-
-                PhotoFile original = this.photoFileService.saveOriginal( file.getBytes() );
-                original.setParentPhoto( newPhoto );
                 
-                newPhoto.setPhotoFile( original );
+                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
                 this.photoManager.createPhoto( newPhoto );
-                
-                PhotoFile bigPhotoFile = this.photoFileService.scalePhoto( original, 640 );
-                newPhoto.setPhotoFile( bigPhotoFile );
-
             }
             catch( IOException e ) {
                 this.logger.debug( "Exception during reading sent file!" );
@@ -167,29 +157,14 @@ public class PhotoUploadController {
     }
 */
 
-    public AlbumDao getAlbumDao() {
-        return this.albumsManager;
-    }
     public void setAlbumDao( AlbumDao albumDao ) {
         this.albumsManager = albumDao;
-    }
-
-    public UserDao getUserDao() {
-        return this.usersManager;
     }
     public void setUserDao( UserDao userDao ) {
         this.usersManager = userDao;
     }
-
-    public PhotoDao getPhotoDao() {
-        return this.photoManager;
-    }
     public void setUserDao( PhotoDao photoDao ) {
         this.photoManager = photoDao;
-    }
-
-    public PhotoFileService getPhotoFileService() {
-        return this.photoFileService;
     }
     public void setUserDao( PhotoFileService photoFileService ) {
         this.photoFileService = photoFileService;

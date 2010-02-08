@@ -1,7 +1,7 @@
 package ru.pakaz.photo.service;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,13 +11,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import ru.pakaz.photo.dao.PhotoFileDao;
+import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
 
 public class PhotoFileService {
@@ -28,8 +29,28 @@ public class PhotoFileService {
 
     private String destinationPath;
 
-    public void savePhoto() {
+    public void savePhoto( byte[] data, Photo resultPhoto ) {
+        PhotoFile scaled = null;
         
+        PhotoFile original = saveOriginal( data );
+        original.setParentPhoto( resultPhoto );
+        resultPhoto.addPhotoFile( original );
+
+        scaled = scalePhoto( data, 640 );
+        scaled.setParentPhoto( resultPhoto );
+        resultPhoto.addPhotoFile( scaled );
+
+        scaled = scalePhoto( data, 480 );
+        scaled.setParentPhoto( resultPhoto );
+        resultPhoto.addPhotoFile( scaled );
+
+        scaled = scalePhoto( data, 320 );
+        scaled.setParentPhoto( resultPhoto );
+        resultPhoto.addPhotoFile( scaled );
+
+        scaled = scalePhoto( data, 200 );
+        scaled.setParentPhoto( resultPhoto );
+        resultPhoto.addPhotoFile( scaled );
     }
     
     /**
@@ -58,26 +79,16 @@ public class PhotoFileService {
      * @return
      */
     public PhotoFile scalePhoto( PhotoFile srcPhoto, int bigSide ) {
-        PhotoFile dstPhoto = new PhotoFile();
-        dstPhoto.setParentPhoto( srcPhoto.getParentPhoto() );
-
+        PhotoFile dstPhoto = null;
+        
         try {
             File srcFile = new File( getFilePath( srcPhoto ) );
             FileInputStream in = new FileInputStream( srcFile );
-            
             byte[] buf = new byte[(int)srcFile.length()];
-            
             in.read( buf, 0, in.available() );
             in.close();
-            
-            byte[] resultImage = resizeImage( buf, bigSide );
-            getImageParams( resultImage, dstPhoto );
-            
-            photoFilesManager.createFile( dstPhoto );
 
-            logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
-            
-            this.saveFile( resultImage, this.getFilePath( dstPhoto ) );
+            dstPhoto = scalePhoto( buf, bigSide );
         }
         catch( FileNotFoundException e ) {
             // TODO Auto-generated catch block
@@ -91,6 +102,26 @@ public class PhotoFileService {
         return dstPhoto;
     }
     
+    public PhotoFile scalePhoto( byte[] srcImageData, int bigSide ) {
+        PhotoFile dstPhoto = new PhotoFile();
+        
+        byte[] resultImage = resizeImage( srcImageData, bigSide );
+        getImageParams( resultImage, dstPhoto );
+        photoFilesManager.createFile( dstPhoto );
+        logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
+        
+        this.saveFile( resultImage, this.getFilePath( dstPhoto ) );
+        
+        return dstPhoto;
+    }
+    
+    /**
+     * Метод выполняет масштабирование изображения
+     * 
+     * @param srcImageData - массив с байтами оригинального изображения
+     * @param bigSide      - размер длинной стороны итогового изображения
+     * @return
+     */
     public byte[] resizeImage( byte[] srcImageData, int bigSide ) {
         InputStream in = new ByteArrayInputStream( srcImageData );
         try {
@@ -98,37 +129,53 @@ public class PhotoFileService {
             int width = image.getWidth();
             int height = image.getHeight();
 
+            logger.debug( "Source image size is "+ width +"x"+ height );
+            
             double aspectRatio;
             
             if( height > width )  {
-                aspectRatio = height / width;
+                // Вертикальное изображение
+                aspectRatio = Integer.valueOf( height ).doubleValue() / Integer.valueOf( width ).doubleValue();
                 height = bigSide;
                 width  = (int)Math.round( height / aspectRatio );
             }
             else {
-                aspectRatio = width / height;
+                // Горизонтальное изображение
+                aspectRatio = Integer.valueOf( width ).doubleValue() / Integer.valueOf( height ).doubleValue();
                 width  = bigSide;
                 height = (int)Math.round( width / aspectRatio );
-                
             }
+            
+            logger.debug( "Aspect ratio is "+ aspectRatio );
+            logger.debug( "Result image size will be "+ width +"x"+ height );
 
-            Image newImage = image.getScaledInstance( width, height, Image.SCALE_AREA_AVERAGING );
             BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = changedImage.createGraphics();
-            g2d.drawImage(newImage, 0, 0, null);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            if( g2d.drawImage( image, 0, 0, width, height, null ) == false ) {
+                logger.error( "Error during drawing scaled image on graphics!" );
+            }
             g2d.dispose();
             
+            logger.debug( "Result image size is "+ changedImage.getWidth() +"x"+ changedImage.getHeight() );
+            
+            
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write( changedImage, "jpg", out );
-            byte[] result = out.toByteArray();
-            return result;
-            
-//            OutputStream out = new ByteArrayOutputStream();
-//            javax.imageio.ImageIO.write( newImage, "jpg", out );
-            
-//            Graphics2D image2 = image.createGraphics();
-//            image2.scale( aspectRatio, aspectRatio );
+            /*if( ImageIO.write( changedImage, "jpg", out ) == false ) {
+                logger.error( "Error during saving graphics as byte array!" );
+            }*/
 
+            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
+            param.setQuality(0.62f, false);
+            encoder.setJPEGEncodeParam(param);
+            encoder.encode(changedImage); 
+
+            byte[] result = out.toByteArray();
+            logger.debug( "The size of resulting image is "+ result.length );
+            out.close();
+            
+            return result;
         }
         catch( IOException e ) {
             e.printStackTrace();

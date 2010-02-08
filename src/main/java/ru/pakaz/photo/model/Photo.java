@@ -87,7 +87,7 @@ public class Photo {
         this.fileName = fileName;
     }
     
-    public void setPhotoFile( PhotoFile file ) {
+    public void addPhotoFile( PhotoFile file ) {
         this.files.add( file );
     }
     
