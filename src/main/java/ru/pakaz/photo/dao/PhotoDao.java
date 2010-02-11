@@ -42,7 +42,7 @@ public class PhotoDao extends HibernateDaoSupport {
     public List<Photo> getUnallocatedPhotos( User user ) {
         List<Photo> photosList;
 
-        photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and albumId is null", user );
+        photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and album is null", user );
 
         if( photosList != null ) {
             return photosList;

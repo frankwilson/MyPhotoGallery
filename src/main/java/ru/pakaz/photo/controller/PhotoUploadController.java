@@ -163,10 +163,10 @@ public class PhotoUploadController {
     public void setUserDao( UserDao userDao ) {
         this.usersManager = userDao;
     }
-    public void setUserDao( PhotoDao photoDao ) {
+    public void setPhotoDao( PhotoDao photoDao ) {
         this.photoManager = photoDao;
     }
-    public void setUserDao( PhotoFileService photoFileService ) {
+    public void setPhotoFileService( PhotoFileService photoFileService ) {
         this.photoFileService = photoFileService;
     }
 }

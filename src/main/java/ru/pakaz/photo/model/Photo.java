@@ -94,4 +94,8 @@ public class Photo {
     public PhotoFile getPhotoFile( int index ) {
         return this.files.get( index );
     }
+    
+    public List<PhotoFile> getPhotoFilesList() {
+        return this.files;
+    }
 }
