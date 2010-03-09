@@ -3,29 +3,30 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
 <form:form commandName="album">
-<div class="page_header">Добавить альбом:</div>
-<table class="main" cellpadding="1" cellspacing="0" style="width:100%">
-  <colgroup>
-    <col style="width:120px;"/>
-  </colgroup>
-  <tr>
-    <td>Название:</td>
-    <td>
+<div class="top_level">
+  <div class="content">
+    <div class="page_header">Добавить альбом:</div>
+    <div class="main">
+      Название:
+      <br /><br />
       <form:input path="title" cssStyle="height:20px; width:300px;"/>
       <form:errors path="title" />
-    </td>
-  </tr>
-  <tr>
-    <td>Описание:</td>
-    <td>
+      <br /><br />
+      Описание:
+      <br /><br />
       <form:textarea path="description" cols="60" rows="4" />
       <form:errors path="description" />
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td><input type="submit" value="Создать" /></td>
-  </tr>
-</table>
+      <br /><br />
+      <input type="submit" value="Создать" />
+    </div>
+  </div>
+  <div>
+    <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
+      <tr>
+        <td style="vertical-align:top;"></td>
+      </tr>
+    </table>
+  </div>
+</div>
 </form:form>
 <jsp:include page="footer.jsp" />

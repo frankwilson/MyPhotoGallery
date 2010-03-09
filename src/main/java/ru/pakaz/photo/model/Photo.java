@@ -3,6 +3,7 @@ package ru.pakaz.photo.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,18 +32,20 @@ public class Photo {
     private String title;
     
     @Column
-    private Date addDate;
+    private Date addDate = new Date();
     
     @Column
     private String fileName;
     
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="parentPhoto")
+    @Column
+    private boolean deleted = true;
+    
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="parentPhoto")
     private List<PhotoFile> files = new ArrayList<PhotoFile>(); 
 
     public int getPhotoId() {
         return this.photoId;
     }
-
     public void setPhotoId( int photoId ) {
         this.photoId = photoId;
     }
@@ -50,7 +53,6 @@ public class Photo {
     public User getUser() {
         return this.user;
     }
-
     public void setUser( User user ) {
         this.user = user;
     }
@@ -58,7 +60,6 @@ public class Photo {
     public Album getAlbum() {
         return this.album;
     }
-
     public void setAlbum( Album album ) {
         this.album = album;
     }
@@ -66,7 +67,6 @@ public class Photo {
     public String getTitle() {
         return this.title;
     }
-
     public void setTitle( String title ) {
         this.title = title;
     }
@@ -74,7 +74,6 @@ public class Photo {
     public Date getAddDate() {
         return this.addDate;
     }
-
     public void setAddDate( Date addDate ) {
         this.addDate = addDate;
     }
@@ -82,7 +81,6 @@ public class Photo {
     public String getFileName() {
         return this.fileName;
     }
-
     public void setFileName( String fileName ) {
         this.fileName = fileName;
     }
@@ -90,12 +88,11 @@ public class Photo {
     public void addPhotoFile( PhotoFile file ) {
         this.files.add( file );
     }
-    
-    public PhotoFile getPhotoFile( int index ) {
-        return this.files.get( index );
-    }
-    
     public List<PhotoFile> getPhotoFilesList() {
         return this.files;
+    }
+    
+    public void setDeleted( boolean isDeleted ) {
+        this.deleted = isDeleted;
     }
 }

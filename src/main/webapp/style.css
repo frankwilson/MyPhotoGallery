@@ -86,3 +86,13 @@ a:visited {
     color:#133;
 }
 
+.album_minitables {
+	width: 220px;
+	margin: 5px;
+	border: 1px solid #aacc77;
+	text-align: center;
+}
+
+.photo_caption {
+    font-size: 10px;	
+}

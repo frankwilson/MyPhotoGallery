@@ -12,7 +12,7 @@
         <select name="album">
           <option value=0>Отсутствует</option>
 <c:forEach items="${albums}" var="album">
-          <option value=<c:out value="${album.albumId}"></c:out>><c:out value="${album.title}"></c:out></option>
+          <option value="<c:out value="${album.albumId}"></c:out>"<c:if test="${currentAlbum.albumId eq album.albumId}"> selected="selected"</c:if>><c:out value="${album.title}"></c:out></option>
 </c:forEach>
         </select>
         <br /><br />

@@ -48,7 +48,7 @@ public class PhotoFileService {
         scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
 
-        scaled = scalePhoto( data, 200 );
+        scaled = scalePhoto( data, 150 );
         scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
     }
@@ -81,27 +81,19 @@ public class PhotoFileService {
     public PhotoFile scalePhoto( PhotoFile srcPhoto, int bigSide ) {
         PhotoFile dstPhoto = null;
         
-        try {
-            File srcFile = new File( getFilePath( srcPhoto ) );
-            FileInputStream in = new FileInputStream( srcFile );
-            byte[] buf = new byte[(int)srcFile.length()];
-            in.read( buf, 0, in.available() );
-            in.close();
-
-            dstPhoto = scalePhoto( buf, bigSide );
-        }
-        catch( FileNotFoundException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch( IOException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        byte[] buf = readFile( srcPhoto );
+        dstPhoto = scalePhoto( buf, bigSide );
 
         return dstPhoto;
     }
     
+    /**
+     * Масштабирует изображение
+     * 
+     * @param srcImageData
+     * @param bigSide
+     * @return
+     */
     public PhotoFile scalePhoto( byte[] srcImageData, int bigSide ) {
         PhotoFile dstPhoto = new PhotoFile();
         
@@ -241,6 +233,28 @@ public class PhotoFileService {
             this.logger.debug( "There is no file!" );
             return false;
         }
+    }
+    
+    public byte[] readFile( PhotoFile file ) {
+        byte[] buf = new byte[0];
+
+        try {
+            File srcFile = new File( getFilePath( file ) );
+            FileInputStream in = new FileInputStream( srcFile );
+            buf = new byte[(int)srcFile.length()];
+            in.read( buf, 0, in.available() );
+            in.close();
+        }
+        catch( FileNotFoundException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch( IOException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        return buf;
     }
     
     /**

@@ -32,8 +32,7 @@ public class AlbumsListController {
      */
     @RequestMapping(value = "/albumsList.html", method = RequestMethod.GET)
     public ModelAndView showList( HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "albumsList" );
+        ModelAndView mav = new ModelAndView( "albumsList" );
 
         User user = this.usersManager.getUserFromSession( request );
         ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
@@ -65,10 +64,10 @@ public class AlbumsListController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "viewAlbum" );
 
-        Album album = this.albumsManager.getAlbumsById( albumId );
-        logger.debug( "We got albums list" );
+        Album album = this.albumsManager.getAlbumById( albumId );
+//        logger.debug( "We got albums list" );
         if( album != null ) {
-            logger.debug( "We have album \""+ album.getTitle() +"\"" );
+//            logger.debug( "We have album \""+ album.getTitle() +"\"" );
             mav.addObject( "currentAlbum", album );
         }
 

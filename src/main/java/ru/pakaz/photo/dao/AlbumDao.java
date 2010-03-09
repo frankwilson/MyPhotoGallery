@@ -25,7 +25,7 @@ public class AlbumDao extends HibernateDaoSupport {
         return albums;
     }
     
-    public Album getAlbumsById( int albumId ) {
+    public Album getAlbumById( int albumId ) {
         ArrayList<Album> albums;
 
         if( albumId <= 0 ) {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
+import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
@@ -25,7 +26,7 @@ public class PhotosListController {
     @Autowired
     private PhotoDao photoManager;
     @Autowired
-    private PhotoFileService photoFileService;
+    private AlbumDao albumManager;
 
     @RequestMapping(value = "/unallocatedPhotos.html", method = RequestMethod.GET)
     public ModelAndView showUnallocatedPhotosList( HttpServletRequest request ) {
@@ -44,22 +45,25 @@ public class PhotosListController {
 
         return mav;
     }
-/*
+
     @RequestMapping(value = "/album_{albumId}.html", method = RequestMethod.GET)
     public ModelAndView showPhotosListByAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) );
+        Album album = this.albumManager.getAlbumById( albumId );
+        ModelAndView mav = new ModelAndView( "photosList" );
+        mav.addObject( "album", album );
+        mav.addObject( "photos", album.getPhotos() );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );
 
         return mav;
     }
-*/
+
     public void setUserDao( UserDao userDao ) {
         this.usersManager = userDao;
     }
     public void setPhotoDao( PhotoDao photoDao ) {
         this.photoManager = photoDao;
     }
-    public void setPhotoFileService( PhotoFileService photoFileService ) {
-        this.photoFileService = photoFileService;
+    public void setAlbumDao( AlbumDao albumDao ) {
+        this.albumManager = albumDao;
     }
 }

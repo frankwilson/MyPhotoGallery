@@ -44,17 +44,19 @@ public class PhotoUploadController {
      * @param request
      * @return
      */
-/*
+
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        Album album = this.albumsManager.getAlbumsById( albumId );
-        mav.addObject( "album", album );
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSession( request ) );
+        Album album = this.albumsManager.getAlbumById( albumId );
+        mav.addObject( "albums", albums );
+        mav.addObject( "currentAlbum", album );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
         return mav;
     }
-*/
+
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
      * 
@@ -91,8 +93,8 @@ public class PhotoUploadController {
                 newPhoto.setFileName( file.getOriginalFilename() );
                 newPhoto.setTitle( file.getOriginalFilename() );
                 
-                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
                 this.photoManager.createPhoto( newPhoto );
+                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
             }
             catch( IOException e ) {
                 this.logger.debug( "Exception during reading sent file!" );
