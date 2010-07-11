@@ -28,7 +28,7 @@ public class Photo {
     @OneToOne
     private Album album;
     
-    @Column
+    @Column(updatable=true)
     private String title;
     
     @Column
@@ -36,6 +36,9 @@ public class Photo {
     
     @Column
     private String fileName;
+    
+    @Column(updatable=true)
+    private String description;
     
     @Column
     private boolean deleted = true;
@@ -83,6 +86,13 @@ public class Photo {
     }
     public void setFileName( String fileName ) {
         this.fileName = fileName;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+    public void setDescription( String description ) {
+        this.description = description;
     }
     
     public void addPhotoFile( PhotoFile file ) {
