@@ -12,11 +12,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+
+import javax.imageio.ImageIO;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGEncodeParam;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import ru.pakaz.photo.dao.PhotoFileDao;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
@@ -28,6 +31,7 @@ public class PhotoFileService {
     private PhotoFileDao photoFilesManager;
 
     private String destinationPath;
+
 
     public void savePhoto( byte[] data, Photo resultPhoto ) {
         PhotoFile scaled = null;
@@ -153,16 +157,16 @@ public class PhotoFileService {
             
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            /*if( ImageIO.write( changedImage, "jpg", out ) == false ) {
+            if( ImageIO.write( changedImage, "jpg", out ) == false ) {
                 logger.error( "Error during saving graphics as byte array!" );
-            }*/
-
+            }
+/*
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
             JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
             param.setQuality(0.62f, false);
             encoder.setJPEGEncodeParam(param);
             encoder.encode(changedImage); 
-
+*/
             byte[] result = out.toByteArray();
             logger.debug( "The size of resulting image is "+ result.length );
             out.close();
@@ -246,8 +250,8 @@ public class PhotoFileService {
             in.close();
         }
         catch( FileNotFoundException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // TODO nothing
+        	logger.debug("File with ID "+ file.getFileId() + " was not found.");
         }
         catch( IOException e ) {
             // TODO Auto-generated catch block
@@ -267,15 +271,15 @@ public class PhotoFileService {
         String sp = File.separator;
         
         if( file.getFileAddDate() == null ) {
-            this.logger.debug( "Date for file is not set!" );
+            this.logger.error( "Date for file is not set!" );
             return null;
         }
         if( file.getFileId() == 0 ) {
-            this.logger.debug( "FileID is not set!" );
+            this.logger.error( "FileID is not set!" );
             return null;
         }
         if( this.destinationPath == null ) {
-            this.logger.debug( "Destination path for saving files is not set!" );
+            this.logger.error( "Destination path for saving files is not set!" );
             return null;
         }
 

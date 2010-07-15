@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
@@ -19,7 +20,7 @@
                 <td style="height:120px;">
                   <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">
                     <c:if test="${currentAlbum.preview eq null}"><img src="images/album_no_preview.png" /></c:if>
-                    <c:if test="${currentAlbum.preview != null}"><img src="photo_${currentAlbum.preview.id}/size_200/show.html" /></c:if>
+                    <c:if test="${currentAlbum.preview != null}"><img src="photo_${currentAlbum.preview.id}/size_150/show.html" /></c:if>
                   </a>
                 </td>
               </tr>
@@ -30,7 +31,7 @@
               </tr>
               <tr style="height:100%;">
                 <td class="photo_caption" style="text-align:left; padding-left:5px;">
-                    Добавлен: ${currentAlbum.addDate}<br />
+                    Добавлено: <fmt:formatDate value="${currentAlbum.addDate}" pattern="yyyy-MM-dd hh:mm" /><br />
                     <%-- Тут будет дата загрузки последней фотографии --%>
                     <%-- Тут будет ссылка на удаление альбома --%>
                 </td>

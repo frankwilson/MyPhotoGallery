@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:include page="header.jsp" />
 <div class="top_level">
@@ -13,7 +13,7 @@
         <tr>
           <td style="height:210px; width:210px; background-color:#cfcfcf;">
             <a href="" title="<c:out value="${photo.title}"></c:out>">
-              <img src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_200/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
+              <img src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_150/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
             </a>
           </td>
         </tr>
@@ -24,7 +24,7 @@
         </tr>
         <tr>
           <td class="photo_caption" style="text-align:left; padding-left:5px;">
-              Добавлено: <fmt:formatDate value="${photo.addDate}" pattern="yyyy-MM-dd hh:mm:ss" />
+              Добавлено: <fmt:formatDate value="${photo.addDate}" pattern="yyyy-MM-dd hh:mm" />
           </td>
         </tr>
       </table>

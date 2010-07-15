@@ -1,13 +1,12 @@
 package ru.pakaz.common.controller;
 
-import org.apache.commons.validator.EmailValidator;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
-public class UserInfoValidator extends EmailValidator {
+public class UserInfoValidator {
     static private Logger logger = Logger.getLogger( UserInfoValidator.class );
 
     @Autowired
@@ -30,7 +29,7 @@ public class UserInfoValidator extends EmailValidator {
             logger.error( "Ошибка валидации e-mail! адрес пустой!" );
             errors.rejectValue( "email", "error.user.email.tooShort" );
         }
-        else if( !this.isValid( email ) ) {
+        else if( !this.isEmailValid( email ) ) {
             logger.error( "Ошибка валидации e-mail! адрес не соответствует маске!" );
             errors.rejectValue( "email", "error.user.email.formatError" );
         }
@@ -44,6 +43,11 @@ public class UserInfoValidator extends EmailValidator {
                 errors.rejectValue( "password", "error.user.passwd.tooShort" );
             }
         }
+    }
+    
+    public boolean isEmailValid( String email ) {
+    	
+    	return true;
     }
     
     public void setUsersManager( UserDao usersManager ) {

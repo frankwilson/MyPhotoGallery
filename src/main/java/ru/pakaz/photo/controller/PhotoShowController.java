@@ -49,20 +49,29 @@ public class PhotoShowController {
             logger.debug( "photoFile Height: "+ photoFile.getPhotoHeight() );
             
             if( photoFile.getPhotoWidth() == size || photoFile.getPhotoHeight() == size ) {
-                data = this.photoFileService.readFile( photoFile );
+            	data = this.photoFileService.readFile( photoFile );
                 break;
             }
         }
         
-        response.setContentType( "image/jpeg" );
-        response.setContentLength( data.length );
-        try {
-            OutputStream out = response.getOutputStream();
-            out.write( data );
+        if( data.length > 0 ) {
+        	response.setContentType( "image/jpeg" );
+        	response.setContentLength( data.length );
+        	try {
+        		OutputStream out = response.getOutputStream();
+        		out.write( data );
+        	}
+        	catch( IOException e ) {
+        		// TODO Auto-generated catch block
+        		e.printStackTrace();
+        	}
         }
-        catch( IOException e ) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        else {
+        	try {
+				response.sendRedirect(request.getContextPath() +"/images/album_no_preview.png");
+			} catch (IOException e) {
+				logger.error("Error on sending redirect to FileNotFound service image!");
+			}
         }
     }
     
