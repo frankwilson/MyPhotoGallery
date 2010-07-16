@@ -1,6 +1,10 @@
 package ru.pakaz.photo.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,10 +38,17 @@ public class AlbumCreateController {
     }
 
     @RequestMapping(value = "/createAlbum.html", method = RequestMethod.POST)  
-    public ModelAndView post( @ModelAttribute("album") Album album, BindingResult result, HttpServletRequest request ) {
+    public ModelAndView post( @ModelAttribute("album") Album album, BindingResult result,
+    		HttpServletRequest request, HttpServletResponse response ) {
         if( album.getTitle().length() > 0 ) {
             album.setUser( this.usersManager.getUserFromSession( request ) );
             this.albumsManager.createAlbum( album );
+            
+            try {
+				response.sendRedirect(request.getContextPath() +"/album_"+ album.getAlbumId() +".html");
+			} catch (IOException e) {
+				logger.error("Error on sending redirect to the new album page!");
+			}
         }
         else {
             result.rejectValue( "title", "error.album.titleIsTooShort" );

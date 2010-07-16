@@ -1,13 +1,6 @@
 package ru.pakaz.photo.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.apache.log4j.Logger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,7 +28,7 @@ public class PhotoFile {
     
     @Column
     private Date fileAddDate = new Date();
-    
+
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private Photo parentPhoto;
     
@@ -45,7 +38,8 @@ public class PhotoFile {
     @Column
     private int photoWidth;
     
-    static private Logger logger = Logger.getLogger( PhotoFile.class );
+    @Column
+    private boolean deleted = false;
 
     private static String rootPhotoCatalog;
 
@@ -85,6 +79,10 @@ public class PhotoFile {
     }
     public void setPhotoWidth( int photoWidth ) {
         this.photoWidth = photoWidth;
+    }
+    
+    public void setDeleted( boolean isDeleted ) {
+        this.deleted = isDeleted;
     }
     
 /*

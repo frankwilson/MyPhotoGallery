@@ -12,7 +12,7 @@ import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
 @Controller
-public class LoginConroller {
+public class LoginController {
     @Autowired
     private UserDao usersManager;
 

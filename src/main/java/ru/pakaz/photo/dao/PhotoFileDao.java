@@ -18,7 +18,7 @@ public class PhotoFileDao extends HibernateDaoSupport {
         List<PhotoFile> filesList;
 
         filesList = sessionFactory.getCurrentSession()
-	        .createQuery("FROM PhotoFile WHERE id = ?")
+	        .createQuery("FROM PhotoFile WHERE id = ? and deleted = false")
 	        .setInteger(0, fileId)
 	        .list();
 /*
@@ -36,20 +36,21 @@ public class PhotoFileDao extends HibernateDaoSupport {
     @Transactional
     public void createFile( PhotoFile file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
-        getHibernateTemplate().save( file );
+        getHibernateTemplate().save(file);
+        getHibernateTemplate().flush();
         
     }
 
     @Transactional
     public void deleteFile( PhotoFile file ) {
-        getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
-        getHibernateTemplate().delete( file );
-        
+//        getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
+//        getHibernateTemplate().delete( file );
     }
 
     @Transactional
     public void updateFile( PhotoFile file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
-        getHibernateTemplate().update( file );
+        getHibernateTemplate().update(file);
+        getHibernateTemplate().flush();
     }
 }

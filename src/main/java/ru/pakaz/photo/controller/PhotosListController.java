@@ -15,7 +15,6 @@ import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
-import ru.pakaz.photo.service.PhotoFileService;
 
 @Controller
 public class PhotosListController {

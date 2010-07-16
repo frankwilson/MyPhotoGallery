@@ -2,6 +2,7 @@ package ru.pakaz.photo.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.hibernate.FlushMode;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ public class PhotoDao extends HibernateDaoSupport {
     public Photo getPhotoById( int photoId ) {
         List<Photo> photosList;
 
-        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ?", photoId );
+        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ? and deleted = false", photoId );
 
         if( photosList != null ) {
             return photosList.get(0);
@@ -28,9 +29,14 @@ public class PhotoDao extends HibernateDaoSupport {
     public List<Photo> getPhotosByAlbumId( int albumId ) {
         List<Photo> photosList;
 
-        photosList = getHibernateTemplate().find( "FROM Photo WHERE albumId = ?", albumId );
+        photosList = getHibernateTemplate().find( "FROM Photo WHERE albumId = ? and deleted = false", albumId );
 
         if( photosList != null ) {
+        	
+        	for (Photo photo : photosList) {
+				logger.debug("We got photo with ID "+ photo.getPhotoId());
+			}
+        	
             return photosList;
         }
         else {
@@ -42,7 +48,7 @@ public class PhotoDao extends HibernateDaoSupport {
     public List<Photo> getUnallocatedPhotos( User user ) {
         List<Photo> photosList;
 
-        photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and album is null", user );
+        photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and album is null and deleted = false", user );
 
         if( photosList != null ) {
             return photosList;
@@ -71,6 +77,7 @@ public class PhotoDao extends HibernateDaoSupport {
     public void createPhoto( Photo file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
         getHibernateTemplate().save( file );
+        getHibernateTemplate().flush();
         
     }
 
@@ -78,6 +85,7 @@ public class PhotoDao extends HibernateDaoSupport {
     public void deletePhoto( Photo file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
         getHibernateTemplate().delete( file );
+        getHibernateTemplate().flush();
         
     }
 
@@ -85,5 +93,6 @@ public class PhotoDao extends HibernateDaoSupport {
     public void updatePhoto( Photo file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
         getHibernateTemplate().update( file );
+        getHibernateTemplate().flush();
     }
 }

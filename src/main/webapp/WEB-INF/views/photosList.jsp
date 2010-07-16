@@ -9,21 +9,27 @@
     <%-- здесь будет список страниц для постраничного вывода --%>
 <c:forEach items="${photos}" var="photo">
     <div style="float:left;">
+      <div class="photo_icons">
+        [<a href="<%=application.getContextPath() %>/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
+        [<a href="<%=application.getContextPath() %>/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
+      </div>
       <table class="album_minitables">
         <tr>
-          <td style="height:210px; width:210px; background-color:#cfcfcf;">
+          <td style="height:170px; background-color:#cfcfcf;">
             <a href="" title="<c:out value="${photo.title}"></c:out>">
-              <img src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_150/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
+              <img style="padding-top:10px;" src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_150/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
             </a>
           </td>
         </tr>
         <tr>
-          <td style="height:20px;vertical-align:top;">
-            <a href=""><c:out value="${photo.title}"></c:out></a>
+          <td style="height:20px; vertical-align:top;">
+            <div style="overflow:hidden; width:187px;">
+              <a href="" style=""><c:out value="${photo.title}"></c:out></a>
+            </div>
           </td>
         </tr>
         <tr>
-          <td class="photo_caption" style="text-align:left; padding-left:5px;">
+          <td class="photo_caption" style="text-align:left;">
               Добавлено: <fmt:formatDate value="${photo.addDate}" pattern="yyyy-MM-dd hh:mm" />
           </td>
         </tr>

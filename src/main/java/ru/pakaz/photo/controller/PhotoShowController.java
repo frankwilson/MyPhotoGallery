@@ -44,9 +44,9 @@ public class PhotoShowController {
         byte[] data = new byte[0];
         
         for( PhotoFile photoFile : filesList ) {
-            logger.debug( "photoFile ID: "+ photoFile.getFileId() );
-            logger.debug( "photoFile Width: "+ photoFile.getPhotoWidth() );
-            logger.debug( "photoFile Height: "+ photoFile.getPhotoHeight() );
+//            logger.debug( "photoFile ID: "+ photoFile.getFileId() );
+//            logger.debug( "photoFile Width: "+ photoFile.getPhotoWidth() );
+//            logger.debug( "photoFile Height: "+ photoFile.getPhotoHeight() );
             
             if( photoFile.getPhotoWidth() == size || photoFile.getPhotoHeight() == size ) {
             	data = this.photoFileService.readFile( photoFile );

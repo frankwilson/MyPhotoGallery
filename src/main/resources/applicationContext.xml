@@ -10,7 +10,7 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.168.1:3306/gallery?characterEncoding=utf8&amp;useUnicode=true" />
+        <property name="url" value="jdbc:mysql://127.0.0.1/gallery?characterEncoding=utf8&amp;useUnicode=true" />
         <property name="username" value="wilson"/>
         <property name="password" value="wilson"/>
     </bean>

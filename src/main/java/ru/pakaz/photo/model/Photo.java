@@ -41,7 +41,7 @@ public class Photo {
     private String description;
     
     @Column
-    private boolean deleted = true;
+    private boolean deleted = false;
     
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="parentPhoto")
     private List<PhotoFile> files = new ArrayList<PhotoFile>(); 

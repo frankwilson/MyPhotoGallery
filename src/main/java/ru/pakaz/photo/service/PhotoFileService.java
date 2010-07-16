@@ -17,9 +17,9 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-//import com.sun.image.codec.jpeg.JPEGCodec;
-//import com.sun.image.codec.jpeg.JPEGEncodeParam;
-//import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import ru.pakaz.photo.dao.PhotoFileDao;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
@@ -31,29 +31,36 @@ public class PhotoFileService {
     private PhotoFileDao photoFilesManager;
 
     private String destinationPath;
+    
+    private Photo resultPhoto;
 
 
     public void savePhoto( byte[] data, Photo resultPhoto ) {
         PhotoFile scaled = null;
+        this.resultPhoto = resultPhoto;
+        
+        this.logger.debug("And here we got Photo with ID "+ resultPhoto.getPhotoId() +" and bytes of data");
         
         PhotoFile original = saveOriginal( data );
         original.setParentPhoto( resultPhoto );
+        this.logger.debug("So original photo we've saved with photoFileId "+ original.getFileId());
+        this.logger.debug("And it have parentPhotoId "+ original.getParentPhoto().getPhotoId());
         resultPhoto.addPhotoFile( original );
 
         scaled = scalePhoto( data, 640 );
-        scaled.setParentPhoto( resultPhoto );
+//        scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
 
         scaled = scalePhoto( data, 480 );
-        scaled.setParentPhoto( resultPhoto );
+//        scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
 
         scaled = scalePhoto( data, 320 );
-        scaled.setParentPhoto( resultPhoto );
+//        scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
 
         scaled = scalePhoto( data, 150 );
-        scaled.setParentPhoto( resultPhoto );
+//        scaled.setParentPhoto( resultPhoto );
         resultPhoto.addPhotoFile( scaled );
     }
     
@@ -67,6 +74,7 @@ public class PhotoFileService {
         PhotoFile original = new PhotoFile();
         
         this.getImageParams( data, original );
+        original.setParentPhoto( this.resultPhoto );
         photoFilesManager.createFile( original );
 
         logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
@@ -103,6 +111,7 @@ public class PhotoFileService {
         
         byte[] resultImage = resizeImage( srcImageData, bigSide );
         getImageParams( resultImage, dstPhoto );
+        dstPhoto.setParentPhoto( this.resultPhoto );
         photoFilesManager.createFile( dstPhoto );
         logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
         
@@ -148,6 +157,8 @@ public class PhotoFileService {
             BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = changedImage.createGraphics();
             g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             if( g2d.drawImage( image, 0, 0, width, height, null ) == false ) {
                 logger.error( "Error during drawing scaled image on graphics!" );
             }
@@ -157,16 +168,18 @@ public class PhotoFileService {
             
             
             ByteArrayOutputStream out = new ByteArrayOutputStream();
+/*
             if( ImageIO.write( changedImage, "jpg", out ) == false ) {
                 logger.error( "Error during saving graphics as byte array!" );
             }
-/*
+*/
+
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
             JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
             param.setQuality(0.62f, false);
             encoder.setJPEGEncodeParam(param);
             encoder.encode(changedImage); 
-*/
+
             byte[] result = out.toByteArray();
             logger.debug( "The size of resulting image is "+ result.length );
             out.close();

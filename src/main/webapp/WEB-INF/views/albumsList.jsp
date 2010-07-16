@@ -15,9 +15,13 @@
     <c:forEach items="${albums}" var="currentAlbum">
       <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
         <div style="float:left;">
+            <div class="photo_icons">
+              [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
+              [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
+            </div>
             <table class="album_minitables main">
               <tr>
-                <td style="height:120px;">
+                <td style="height:180px;">
                   <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">
                     <c:if test="${currentAlbum.preview eq null}"><img src="images/album_no_preview.png" /></c:if>
                     <c:if test="${currentAlbum.preview != null}"><img src="photo_${currentAlbum.preview.id}/size_150/show.html" /></c:if>
@@ -31,9 +35,8 @@
               </tr>
               <tr style="height:100%;">
                 <td class="photo_caption" style="text-align:left; padding-left:5px;">
-                    Добавлено: <fmt:formatDate value="${currentAlbum.addDate}" pattern="yyyy-MM-dd hh:mm" /><br />
+                    Добавлен: <fmt:formatDate value="${currentAlbum.addDate}" pattern="yyyy-MM-dd hh:mm" />
                     <%-- Тут будет дата загрузки последней фотографии --%>
-                    <%-- Тут будет ссылка на удаление альбома --%>
                 </td>
               </tr>
             </table>

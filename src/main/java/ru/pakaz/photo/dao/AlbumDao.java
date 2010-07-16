@@ -20,7 +20,7 @@ public class AlbumDao extends HibernateDaoSupport {
             return null;
         }
 
-        albums = (ArrayList<Album>) getHibernateTemplate().find( "FROM Album WHERE user = ?", user );
+        albums = (ArrayList<Album>) getHibernateTemplate().find( "FROM Album WHERE user = ? and deleted = false", user );
         
         return albums;
     }
@@ -33,7 +33,7 @@ public class AlbumDao extends HibernateDaoSupport {
             return null;
         }
 
-        albums = (ArrayList<Album>) getHibernateTemplate().find( "FROM Album WHERE albumId = ?", albumId );
+        albums = (ArrayList<Album>) getHibernateTemplate().find( "FROM Album WHERE albumId = ? and deleted = false", albumId );
         Album album = null;
         
         if( albums.size() > 0 ) {

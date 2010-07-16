@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
+//import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,12 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
-import ru.pakaz.common.model.User;
+//import ru.pakaz.common.model.User;
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
-import ru.pakaz.photo.model.PhotoFile;
+//import ru.pakaz.photo.model.PhotoFile;
 import ru.pakaz.photo.service.PhotoFileService;
 
 @Controller
@@ -36,6 +36,9 @@ public class PhotoUploadController {
     private PhotoDao photoManager;
     @Autowired
     private PhotoFileService photoFileService;
+
+    @Autowired
+    private AlbumDao albumManager;
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
@@ -89,12 +92,14 @@ public class PhotoUploadController {
 
             try {
                 Photo newPhoto = new Photo();
-                newPhoto.setUser( this.usersManager.getUserFromSession( request ) );
+                newPhoto.setUser( this.usersManager.getUserFromSession(request) );
                 newPhoto.setFileName( file.getOriginalFilename() );
                 newPhoto.setTitle( file.getOriginalFilename() );
                 
                 this.photoManager.createPhoto( newPhoto );
+                this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
                 this.photoFileService.savePhoto( file.getBytes(), newPhoto );
+//                this.photoManager.updatePhoto( newPhoto );
             }
             catch( IOException e ) {
                 this.logger.debug( "Exception during reading sent file!" );
@@ -125,20 +130,29 @@ public class PhotoUploadController {
      * @param request
      * @return
      */
-    /*
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)  
-    public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request, 
-            HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
-        File galleryPath = new File( request.getSession().getServletContext().getInitParameter( "catalog" ), "tmp" );
+    public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request,
+    		HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
 
         if( !file.isEmpty() ) {
             this.logger.debug( "File is not empty" );
 
             try {
-                this.uploadPhoto( galleryPath, file.getBytes() );
+            	Album album = this.albumManager.getAlbumById(albumId);
+            	
+                Photo newPhoto = new Photo();
+                newPhoto.setUser( this.usersManager.getUserFromSession(request) );
+                newPhoto.setAlbum(album);
+                newPhoto.setTitle( file.getOriginalFilename() );
+                newPhoto.setFileName( file.getOriginalFilename() );
+
+                this.photoManager.createPhoto( newPhoto );
+                this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
+                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
+//                this.photoManager.updatePhoto( newPhoto );
             }
             catch( IOException e ) {
-                this.logger.debug( "Exeption during reading sent file!" );
+                this.logger.debug( "Exception during reading sent file!" );
                 e.printStackTrace();
             }
         }
@@ -157,7 +171,6 @@ public class PhotoUploadController {
             return null;
         }
     }
-*/
 
     public void setAlbumDao( AlbumDao albumDao ) {
         this.albumsManager = albumDao;

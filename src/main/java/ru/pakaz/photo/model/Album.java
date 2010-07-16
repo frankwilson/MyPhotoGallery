@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
+
 import ru.pakaz.common.model.User;
 
 @Entity
@@ -39,7 +41,11 @@ public class Album {
     @Column()
     private Date addDate = new Date();
     
+    @Column
+    private boolean deleted = false;
+    
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = "deleted=0")
     private List<Photo> photos = new ArrayList<Photo>();
 
     public int getAlbumId() {
@@ -97,4 +103,8 @@ public class Album {
     public void setPhotos( List<Photo> photos ) {
         this.photos = photos;
     }
+
+	public void setDeleted(boolean isDeleted) {
+		this.deleted = isDeleted;
+	}
 }
