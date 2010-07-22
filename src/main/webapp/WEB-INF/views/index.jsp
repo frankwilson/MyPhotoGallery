@@ -4,6 +4,7 @@
   <div class="content">
     <div class="page_header">Последние обновленные альбомы:</div>
     <h3>Сегодня:</h3>
+    <h3>Вчера:</h3>
   </div>
   <div>
     <table style="width:220px; height:100%; background-color: #deecaa; margin:0px; padding:0px;vertical-align:top;">
