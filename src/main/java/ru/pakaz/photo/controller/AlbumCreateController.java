@@ -25,7 +25,7 @@ public class AlbumCreateController {
     @Autowired
     private UserDao usersManager;
     @Autowired
-    private AlbumDao albumsManager;
+    private AlbumDao albumManager;
     
     @RequestMapping(value = "/createAlbum.html", method = RequestMethod.GET)
     public ModelAndView get( HttpServletRequest request ) {
@@ -42,7 +42,7 @@ public class AlbumCreateController {
     		HttpServletRequest request, HttpServletResponse response ) {
         if( album.getTitle().length() > 0 ) {
             album.setUser( this.usersManager.getUserFromSession( request ) );
-            this.albumsManager.createAlbum( album );
+            this.albumManager.createAlbum( album );
             
             try {
 				response.sendRedirect(request.getContextPath() +"/album_"+ album.getAlbumId() +".html");
@@ -61,10 +61,10 @@ public class AlbumCreateController {
     }
 
     public AlbumDao getAlbumDao() {
-        return this.albumsManager;
+        return this.albumManager;
     }
     public void setAlbumDao( AlbumDao albumDao ) {
-        this.albumsManager = albumDao;
+        this.albumManager = albumDao;
     }
 
     public UserDao getUserDao() {

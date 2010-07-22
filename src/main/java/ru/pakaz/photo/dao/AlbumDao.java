@@ -1,14 +1,15 @@
 package ru.pakaz.photo.dao;
 
 import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
+
 import ru.pakaz.common.model.User;
 import ru.pakaz.photo.model.Album;
 
+@Repository
 public class AlbumDao extends HibernateDaoSupport {
     static private Logger logger = Logger.getLogger( AlbumDao.class );
     
@@ -49,13 +50,9 @@ public class AlbumDao extends HibernateDaoSupport {
      * @param album
      */
     public void createAlbum( Album album ) {
-        try {
-            getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
-            getHibernateTemplate().save( album );
-        }
-        catch( DataAccessException e ) {
-            e.printStackTrace();
-        }
+        getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
+        getHibernateTemplate().save(album);
+        getHibernateTemplate().flush();
     }
 
     /**
@@ -64,13 +61,9 @@ public class AlbumDao extends HibernateDaoSupport {
      * @param album
      */
     public void updateAlbum( Album album ) {
-        try {
-            getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
-            getHibernateTemplate().update( album );
-        }
-        catch( DataAccessException e ) {
-            e.printStackTrace();
-        }
+        getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
+        getHibernateTemplate().update(album);
+        getHibernateTemplate().flush();
     }
 
     /**

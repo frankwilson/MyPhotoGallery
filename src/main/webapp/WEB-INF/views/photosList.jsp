@@ -4,8 +4,14 @@
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
-    <div class="page_header"><c:out value="${album.title}"></c:out></div>
-    <div><a href="<%=application.getContextPath() %>/album_${album.albumId}/upload.html">&#160;Загрузить фотографии в этот альбом&#160;</a></div>
+    <div>
+      <a href="<%=application.getContextPath() %><c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+<c:if test="${album.albumId > 0}">
+      <a href="<%=application.getContextPath() %>/album_${album.albumId}/info.html">Изменить альбом</a>
+</c:if>
+    </div>
+    <div class="page_header">${album.title}</div>
+    <div class="page_description">${album.description}</div>
     <%-- здесь будет список страниц для постраничного вывода --%>
 <c:forEach items="${photos}" var="photo">
     <div style="float:left;">
@@ -15,16 +21,16 @@
       </div>
       <table class="album_minitables">
         <tr>
-          <td style="height:170px; background-color:#cfcfcf;">
-            <a href="" title="<c:out value="${photo.title}"></c:out>">
-              <img style="padding-top:10px;" src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_150/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
+          <td class="photo" <%--style="height:170px; background-color:#cfcfcf;" --%>>
+            <a href="<%=application.getContextPath() %>/photo_${photo.photoId}.html" title="<c:out value="${photo.title}"></c:out>">
+              <img style="margin-top:10px;" src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_150/show.html" alt="<c:out value="${photo.title}"></c:out>" border="0" />
             </a>
           </td>
         </tr>
         <tr>
           <td style="height:20px; vertical-align:top;">
             <div style="overflow:hidden; width:187px;">
-              <a href="" style=""><c:out value="${photo.title}"></c:out></a>
+              <a href="<%=application.getContextPath() %>/photo_${photo.photoId}.html" style=""><c:out value="${photo.title}"></c:out></a>
             </div>
           </td>
         </tr>

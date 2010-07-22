@@ -27,7 +27,12 @@ table tr td {
 }
 
 .site_header a {
-        
+    margin-top:7px;
+    font-size: 46px;
+    color: #393939;
+    font-family: Garamond, Georgia;
+    font-style: italic;
+    text-shadow: 2px 2px 3px #999999;
 }
 
 .top_level {
@@ -43,14 +48,18 @@ table tr td {
 }
 
 .content {
-    width: 780px;
+    width: 770px;
     float: left;
+    margin: 5px;
 }
 
 .page_header {
     padding: 6px 0px 15px 0px;
     font-size: 16px;
     font-weight: bold;
+}
+.page_description {
+  padding: 6px 0px 10px 0px;
 }
 
 .menu {
@@ -94,6 +103,10 @@ a:visited {
     border: 1px solid #aacc77;
     text-align: center;
 }
+.album_minitables .photo {
+    height:170px;
+    background-color:#cfcfcf;
+}
 
 .photo_caption {
     text-align: center;
@@ -107,4 +120,8 @@ a:visited {
     text-align: left;
     height: 0px;
     font-size: 9px;  
+}
+
+.photo img {
+    border: 1px solid #aaa;
 }

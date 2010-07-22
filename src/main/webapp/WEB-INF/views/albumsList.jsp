@@ -19,12 +19,12 @@
               [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
               [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
             </div>
-            <table class="album_minitables main">
+            <table class="album_minitables">
               <tr>
-                <td style="height:180px;">
+                <td class="photo">
                   <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">
-                    <c:if test="${currentAlbum.preview eq null}"><img src="images/album_no_preview.png" /></c:if>
-                    <c:if test="${currentAlbum.preview != null}"><img src="photo_${currentAlbum.preview.id}/size_150/show.html" /></c:if>
+                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="images/album_no_preview.png" /></c:if>
+                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="photo_${currentAlbum.preview.photoId}/size_150/show.html" /></c:if>
                   </a>
                 </td>
               </tr>

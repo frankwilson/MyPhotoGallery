@@ -5,17 +5,22 @@
 <div class="top_level">
   <div class="content">
     <form:form  enctype="multipart/form-data">
-      <div class="page_header">Загрузка фотографии в альбом</div>
+      <div class="page_header">Загрузка фотографии в альбом:
+<c:if test="${currentAlbum != null}">
+        <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+</c:if></div>
+<c:if test="${currentAlbum == null}">
       <div class="main">
         Альбом для размещения фотографии:
         <br /><br />
         <select name="album">
           <option value=0>Отсутствует</option>
-<c:forEach items="${albums}" var="album">
-          <option value="<c:out value="${album.albumId}"></c:out>"<c:if test="${currentAlbum.albumId eq album.albumId}"> selected="selected"</c:if>><c:out value="${album.title}"></c:out></option>
-</c:forEach>
+  <c:forEach items="${albums}" var="album">
+          <option value="<c:out value="${album.albumId}"></c:out>"><c:out value="${album.title}"></c:out></option>
+  </c:forEach>
         </select>
         <br /><br />
+</c:if>
         Укажите файл, который вы хотите загрузить:
         <br /><br />
         <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />

@@ -47,7 +47,7 @@ public class PhotoShowController {
 //            logger.debug( "photoFile ID: "+ photoFile.getFileId() );
 //            logger.debug( "photoFile Width: "+ photoFile.getPhotoWidth() );
 //            logger.debug( "photoFile Height: "+ photoFile.getPhotoHeight() );
-            
+
             if( photoFile.getPhotoWidth() == size || photoFile.getPhotoHeight() == size ) {
             	data = this.photoFileService.readFile( photoFile );
                 break;
@@ -84,21 +84,44 @@ public class PhotoShowController {
      */
     @RequestMapping(value="/photo_{photoId}.html", method=RequestMethod.GET)
     public ModelAndView viewPhoto( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "showPhoto" );
+        ModelAndView mav = new ModelAndView( "viewPhoto" );
         
+        Photo prev    = null;
         Photo current = this.photoManager.getPhotoById( photoId );
-        String title = new RequestContext(request).getMessage( "page.title.viewPhoto" ) +" "+ current.getTitle();
+        Photo next    = null;
+        
+        int currentPhotoNumber = 0;
+
+        String title  = new RequestContext(request).getMessage( "page.title.viewPhoto" ) +" "+ current.getTitle();
+
         logger.debug( "Adding title string to the view: '"+ title +"'" );
         mav.addObject( "pageName", title );
         mav.addObject( "photo", current );
         
+        List<Photo> albumPhotoList = current.getAlbum().getPhotos();
+        
+        for (int i = 0; i < albumPhotoList.size(); i++) {
+			if( albumPhotoList.get(i).getPhotoId() == current.getPhotoId() ) {
+				prev = i > 0 ? albumPhotoList.get(i - 1) : null;
+				next = albumPhotoList.size() > i + 1 ? albumPhotoList.get(i + 1) : null;
+				
+				currentPhotoNumber = i;
+				break;
+			}
+		}
+
+        mav.addObject( "currentPhotoNumber", currentPhotoNumber );
+        mav.addObject( "prevPhoto", prev );
+        mav.addObject( "nextPhoto", next );
+        
         return mav;
     }
-    
+/*
     public void setUserDao( PhotoFileService photoFileService ) {
         this.photoFileService = photoFileService;
     }
     public void setPhotoDao( PhotoDao photoDao ) {
         this.photoManager = photoDao;
     }
+*/
 }

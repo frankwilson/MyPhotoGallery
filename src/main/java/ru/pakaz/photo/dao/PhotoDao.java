@@ -2,23 +2,34 @@ package ru.pakaz.photo.dao;
 
 import java.util.List;
 import org.apache.log4j.Logger;
-import org.hibernate.FlushMode;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pakaz.common.model.User;
 import ru.pakaz.photo.model.Photo;
 
+@Repository
 public class PhotoDao extends HibernateDaoSupport {
     static private Logger logger = Logger.getLogger( PhotoDao.class );
+    
+    @Autowired
+    private SessionFactory sessionFactory;
 
     public Photo getPhotoById( int photoId ) {
-        List<Photo> photosList;
+        Photo photo;
 
-        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ? and deleted = false", photoId );
+        photo = (Photo)sessionFactory.getCurrentSession()
+	        .createQuery("FROM Photo WHERE id = ? and deleted = false")
+	        .setInteger(0, photoId)
+	        .uniqueResult();
 
-        if( photosList != null ) {
-            return photosList.get(0);
+//        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ? and deleted = false", photoId );
+
+        if( photo != null ) {
+            return photo;
         }
         else {
             logger.debug( "File not found!" );
