@@ -27,14 +27,22 @@ public class PhotosListController {
     @Autowired
     private AlbumDao albumManager;
 
+    /**
+     * Метод подготавливает к выводу список фотографий пользователя,
+     * не определенных ни в один альбом
+     * 
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/unallocatedPhotos.html", method = RequestMethod.GET)
     public ModelAndView showUnallocatedPhotosList( HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "photosList" );
+        ModelAndView mav = new ModelAndView( "album" );
 
         ArrayList<Photo> photos = (ArrayList<Photo>)this.photoManager.getUnallocatedPhotos( this.usersManager.getUserFromSession( request ) );
         logger.debug( "Unallocated photos count is "+ photos.size() );
 
         Album album = new Album();
+        album.setUser( this.usersManager.getUserFromSession(request) );
         album.setTitle( new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
         album.setDescription( new RequestContext(request).getMessage( "page.description.unallocatedPhotos" ) );
         
@@ -45,10 +53,17 @@ public class PhotosListController {
         return mav;
     }
 
+    /**
+     * Метод подготавливает к выводу список фотографий указанного альбома
+     * 
+     * @param albumId
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/album_{albumId}.html", method = RequestMethod.GET)
     public ModelAndView showPhotosListByAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         Album album = this.albumManager.getAlbumById( albumId );
-        ModelAndView mav = new ModelAndView( "photosList" );
+        ModelAndView mav = new ModelAndView( "album" );
         mav.addObject( "album", album );
         mav.addObject( "photos", album.getPhotos() );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );

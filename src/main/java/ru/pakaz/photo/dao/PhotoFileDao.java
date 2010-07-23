@@ -39,11 +39,15 @@ public class PhotoFileDao extends HibernateDaoSupport {
     
     @Transactional
     public void createFile( PhotoFile file ) {
+        getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
+        getHibernateTemplate().save( file );
+        getHibernateTemplate().flush();
+/*
     	Session sess = sessionFactory.getCurrentSession();
     	sess.setFlushMode( FlushMode.ALWAYS );
     	sess.save(file);
     	sess.flush();
-        
+*/
     }
 
     @Transactional
@@ -54,14 +58,8 @@ public class PhotoFileDao extends HibernateDaoSupport {
 
     @Transactional
     public void updateFile( PhotoFile file ) {
-    	Session sess = sessionFactory.getCurrentSession();
-    	sess.setFlushMode( FlushMode.ALWAYS );
-    	sess.update(file);
-    	sess.flush();
-/*
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
         getHibernateTemplate().update(file);
         getHibernateTemplate().flush();
-*/
     }
 }

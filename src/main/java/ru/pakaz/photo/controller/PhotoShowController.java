@@ -49,29 +49,29 @@ public class PhotoShowController {
 //            logger.debug( "photoFile Height: "+ photoFile.getPhotoHeight() );
 
             if( photoFile.getPhotoWidth() == size || photoFile.getPhotoHeight() == size ) {
-            	data = this.photoFileService.readFile( photoFile );
+                data = this.photoFileService.readFile( photoFile );
                 break;
             }
         }
         
         if( data.length > 0 ) {
-        	response.setContentType( "image/jpeg" );
-        	response.setContentLength( data.length );
-        	try {
-        		OutputStream out = response.getOutputStream();
-        		out.write( data );
-        	}
-        	catch( IOException e ) {
-        		// TODO Auto-generated catch block
-        		e.printStackTrace();
-        	}
+            response.setContentType( "image/jpeg" );
+            response.setContentLength( data.length );
+            try {
+                OutputStream out = response.getOutputStream();
+                out.write( data );
+            }
+            catch( IOException e ) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         else {
-        	try {
-				response.sendRedirect(request.getContextPath() +"/images/album_no_preview.png");
-			} catch (IOException e) {
-				logger.error("Error on sending redirect to FileNotFound service image!");
-			}
+            try {
+                response.sendRedirect(request.getContextPath() +"/images/album_no_preview.png");
+            } catch (IOException e) {
+                logger.error("Error on sending redirect to FileNotFound service image!");
+            }
         }
     }
     
@@ -90,7 +90,7 @@ public class PhotoShowController {
         Photo current = this.photoManager.getPhotoById( photoId );
         Photo next    = null;
         
-        int currentPhotoNumber = 0;
+        int currentPhotoNumber = 1;
 
         String title  = new RequestContext(request).getMessage( "page.title.viewPhoto" ) +" "+ current.getTitle();
 
@@ -98,17 +98,19 @@ public class PhotoShowController {
         mav.addObject( "pageName", title );
         mav.addObject( "photo", current );
         
-        List<Photo> albumPhotoList = current.getAlbum().getPhotos();
-        
-        for (int i = 0; i < albumPhotoList.size(); i++) {
-			if( albumPhotoList.get(i).getPhotoId() == current.getPhotoId() ) {
-				prev = i > 0 ? albumPhotoList.get(i - 1) : null;
-				next = albumPhotoList.size() > i + 1 ? albumPhotoList.get(i + 1) : null;
-				
-				currentPhotoNumber = i;
-				break;
-			}
-		}
+        if( current.getAlbum() != null ) {
+            List<Photo> albumPhotoList = current.getAlbum().getPhotos();
+
+            for (int i = 0; i < albumPhotoList.size(); i++) {
+                if( albumPhotoList.get(i).getPhotoId() == current.getPhotoId() ) {
+                    prev = i > 0 ? albumPhotoList.get(i - 1) : null;
+                    next = albumPhotoList.size() > i + 1 ? albumPhotoList.get(i + 1) : null;
+
+                    currentPhotoNumber = i + 1;
+                    break;
+                }
+            }
+        }
 
         mav.addObject( "currentPhotoNumber", currentPhotoNumber );
         mav.addObject( "prevPhoto", prev );

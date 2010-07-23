@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
@@ -52,29 +52,30 @@ public class AlbumsListController {
     }
     
     /**
-     * Метод подготавливает к выводу спсиок альбомов указанного 
-     * в параметре albumId пользователя
+     * Метод подготавливает к выводу список альбомов указанного пользователя
      * 
-     * @param albumId
      * @param request
      * @return
      */
-    @RequestMapping(value = "/album_(*:albumId).html", method = RequestMethod.GET)
-    public ModelAndView showAlbum( @RequestParam("albumId") int albumId, HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "viewAlbum" );
+    @RequestMapping(value = "/user_{userId}/albumsList.html", method = RequestMethod.GET)
+    public ModelAndView showUserAlbumsList( @PathVariable("userId") int userId, HttpServletRequest request ) {
+        ModelAndView mav = new ModelAndView( "albumsList" );
 
-        Album album = this.albumsManager.getAlbumById( albumId );
-//        logger.debug( "We got albums list" );
-        if( album != null ) {
-//            logger.debug( "We have album \""+ album.getTitle() +"\"" );
-            mav.addObject( "currentAlbum", album );
+        User user = this.usersManager.getUserById(userId);
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
+        mav.addObject( "user", user );
+
+        logger.debug( "We got albums list" );
+        if( albums != null ) {
+            logger.debug( "Albums list is not null and have "+ albums.size() +" elements" );
+            mav.addObject( "albums", albums );
+            mav.addObject( "albumsCount", albums.size() );
         }
 
-        String title = new RequestContext(request).getMessage( "page.title.viewAlbum" );
+        String title = new RequestContext(request).getMessage( "page.title.albumsList" );
         logger.debug( "Adding title string to the view: '"+ title +"'" );
 
-        mav.addObject( "pageName", title +" "+ album.getTitle() );
+        mav.addObject( "pageName", title );
 
         return mav;
     }

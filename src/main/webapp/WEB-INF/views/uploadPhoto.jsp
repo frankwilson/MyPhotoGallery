@@ -4,23 +4,24 @@
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
-    <form:form  enctype="multipart/form-data">
+    <form:form enctype="multipart/form-data">
       <div class="page_header">Загрузка фотографии в альбом:
-<c:if test="${currentAlbum != null}">
+  <c:if test="${currentAlbum != null}">
         <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
-</c:if></div>
-<c:if test="${currentAlbum == null}">
+  </c:if>
+      </div>
       <div class="main">
+  <c:if test="${currentAlbum == null}">
         Альбом для размещения фотографии:
         <br /><br />
         <select name="album">
           <option value=0>Отсутствует</option>
-  <c:forEach items="${albums}" var="album">
+    <c:forEach items="${albums}" var="album">
           <option value="<c:out value="${album.albumId}"></c:out>"><c:out value="${album.title}"></c:out></option>
-  </c:forEach>
+    </c:forEach>
         </select>
         <br /><br />
-</c:if>
+  </c:if>
         Укажите файл, который вы хотите загрузить:
         <br /><br />
         <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />

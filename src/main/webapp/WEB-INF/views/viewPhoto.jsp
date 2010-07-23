@@ -5,7 +5,19 @@
 <jsp:include page="header.jsp" /> 
 <div class="top_level">
   <div class="content">
-    <div class="page_header">Фотография из альбома: <a href="<%=application.getContextPath() %>/album_${photo.album.albumId}.html">${photo.album.title}</a></div>
+    <div class="page_header">
+      ${photo.title}<c:if test="${photo.album != null}"> (${currentPhotoNumber} из ${fn:length(photo.album.photos)})</c:if>
+      <br />
+      <span class="additional">
+        из <c:choose>
+          <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
+          <c:otherwise>альбома <a href="<%=application.getContextPath() %>/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
+        </c:choose>
+        <c:if test="${photo.user.userId != sessionScope.User.userId}">
+        пользователя <a href="<%=application.getContextPath() %>/user_${photo.user.userId}.html">${photo.user.login}</a>
+        </c:if>
+      </span>
+    </div>
     <div class="photo" style="text-align:center;">
       <img style="margin:10px;" src="<%=application.getContextPath() %>/photo_<c:out value="${photo.photoId}"></c:out>/size_640/show.html" alt="<c:out value="${photo.title}"></c:out>" />
     </div>
@@ -18,7 +30,7 @@
 </c:if>
         </td>
         <td style="text-align:center;">
-          <span style="font-size:14px;">${photo.title} (${currentPhotoNumber} из ${fn:length(photo.album.photos)})</span>
+
         </td>
         <td style="text-align:right; width:200px; font-size:10px;">
 <c:if test="${nextPhoto != null}">
@@ -37,7 +49,13 @@
   <div>
     <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
       <tr>
-        <td style="vertical-align:top;"></td>
+        <td style="vertical-align:top;">
+          <div class="main">
+            <a href="<%=application.getContextPath() %>/photo_${photo.photoId}/delete.html">Удалить фотографию</a>&#160;
+            <br />
+            <a href="<%=application.getContextPath() %>/photo_${photo.photoId}/info.html">Изменить фотографию</a>
+          </div>
+        </td>
       </tr>
     </table>
   </div>

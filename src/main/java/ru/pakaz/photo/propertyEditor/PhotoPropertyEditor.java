@@ -13,8 +13,8 @@ public class PhotoPropertyEditor extends PropertyEditorSupport {
     private PhotoDao photoManager;
     
     public PhotoPropertyEditor(PhotoDao manager) {
-    	if(manager != null)
-    		this.photoManager = manager;
+        if(manager != null)
+            this.photoManager = manager;
     }
 
     @Override 
@@ -23,12 +23,12 @@ public class PhotoPropertyEditor extends PropertyEditorSupport {
         
         logger.debug( "We got text: "+ text );
         if( this.photoManager == null )
-        	logger.debug("WTF? photoManager is null!");
+            logger.debug("WTF? photoManager is null!");
         else if(text != null && Integer.parseInt(text) != 0)
-        	photo = this.photoManager.getPhotoById( Integer.parseInt(text));
+            photo = this.photoManager.getPhotoById( Integer.parseInt(text));
 
         if( photo != null )
-        	logger.debug( "We got photo with ID: "+ photo.getPhotoId() +" and title: "+ photo.getTitle() );
+            logger.debug( "We got photo with ID: "+ photo.getPhotoId() +" and title: "+ photo.getTitle() );
         
         setValue(photo);
     }

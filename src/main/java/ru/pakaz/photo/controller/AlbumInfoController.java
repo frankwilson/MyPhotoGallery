@@ -35,12 +35,12 @@ public class AlbumInfoController {
     
     @InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-    	binder.registerCustomEditor(Photo.class, new PhotoPropertyEditor(this.photoManager));
+        binder.registerCustomEditor(Photo.class, new PhotoPropertyEditor(this.photoManager));
     }
 
     @RequestMapping(value = "/album_{albumId}/info.html", method = RequestMethod.GET)
     public ModelAndView get( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
-    	Album album = this.albumManager.getAlbumById( albumId );
+        Album album = this.albumManager.getAlbumById( albumId );
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "albumInfo" );
@@ -52,41 +52,41 @@ public class AlbumInfoController {
     
     @RequestMapping(value = "/album_{albumId}/delete.html", method = RequestMethod.GET)
     public void delete( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
-    	Album album = this.albumManager.getAlbumById( albumId );
-    	if( album != null ) {
-    		album.setDeleted(true);
-    		this.albumManager.updateAlbum(album);
-    		logger.debug("Album "+ albumId +" Deleted");
-    	}
-    	else {
-    		logger.debug("Album "+ albumId +" does not exist");
-    	}
+        Album album = this.albumManager.getAlbumById( albumId );
+        if( album != null ) {
+            album.setDeleted(true);
+            this.albumManager.updateAlbum(album);
+            logger.debug("Album "+ albumId +" Deleted");
+        }
+        else {
+            logger.debug("Album "+ albumId +" does not exist");
+        }
     }
 
     @RequestMapping(value = "/album_{albumId}/info.html", method = RequestMethod.POST)  
     public ModelAndView post( @PathVariable("albumId") int albumId, @ModelAttribute("album") Album album, 
-    		BindingResult result, HttpServletRequest request, HttpServletResponse response ) {
-    	
-    	Album dbAlbum = this.albumManager.getAlbumById( albumId );
-    	
+            BindingResult result, HttpServletRequest request, HttpServletResponse response ) {
+        
+        Album dbAlbum = this.albumManager.getAlbumById( albumId );
+        
         if( album.getTitle().length() > 0 ) {
-        	dbAlbum.setTitle(album.getTitle());
-        	dbAlbum.setDescription(album.getDescription());
-        	
-        	if( album.getPreview() == null )
-        		logger.debug( "preview is null" );
-        	else {
-        		dbAlbum.setPreview( album.getPreview() );
-        		logger.debug( "preview ID is "+ album.getPreview().getPhotoId() +" and title is "+ album.getPreview().getTitle() );
-        	}
+            dbAlbum.setTitle(album.getTitle());
+            dbAlbum.setDescription(album.getDescription());
+            
+            if( album.getPreview() == null )
+                logger.debug( "preview is null" );
+            else {
+                dbAlbum.setPreview( album.getPreview() );
+                logger.debug( "preview ID is "+ album.getPreview().getPhotoId() +" and title is "+ album.getPreview().getTitle() );
+            }
 
-            this.albumManager.updateAlbum( dbAlbum );
+            this.albumManager.updateAlbum(dbAlbum);
             
             try {
-				response.sendRedirect(request.getContextPath() +"/album_"+ albumId +".html");
-			} catch (IOException e) {
-				logger.error("Error on sending redirect to the new album page!");
-			}
+                response.sendRedirect(request.getContextPath() +"/album_"+ albumId +".html");
+            } catch (IOException e) {
+                logger.error("Error on sending redirect to the updted album page!");
+            }
         }
         else {
             result.rejectValue( "title", "error.album.titleIsTooShort" );

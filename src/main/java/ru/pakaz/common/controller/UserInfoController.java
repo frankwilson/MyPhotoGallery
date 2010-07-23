@@ -12,16 +12,16 @@ import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
+import ru.pakaz.photo.model.Album;
 
 @Controller
-@RequestMapping("/changeUsersInfo.html")
 public class UserInfoController {
     static private Logger logger = Logger.getLogger( UserInfoController.class );
 
     @Autowired
     private UserDao usersManager;
     
-    @RequestMapping(method = RequestMethod.GET)  
+    @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.GET)  
     public ModelAndView get( HttpServletRequest request ) {
         User user = null;
         ModelAndView mav = null;
@@ -41,7 +41,7 @@ public class UserInfoController {
         return mav;
     }  
 
-    @RequestMapping(method = RequestMethod.POST)  
+    @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request ) {
         new UserInfoValidator().validate( user, result );
 
@@ -62,6 +62,18 @@ public class UserInfoController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "userInfoForm" );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfoForm" ) );
+        return mav;
+    }
+
+    @RequestMapping(value = "/user_{userId}/info.html", method = RequestMethod.GET)  
+    public ModelAndView info( @PathVariable("userId") int userId, HttpServletRequest request ) {
+        User user = this.usersManager.getUserById(userId);
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName( "userInfo" );
+        mav.addObject( "user", user );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfo" ) +" "+ user.getLogin() );
+
         return mav;
     }
 

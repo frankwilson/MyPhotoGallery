@@ -4,11 +4,11 @@
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
-    <c:if test="${userId eq sessionScope.user.userId}">
+    <c:if test="${user.userId eq sessionScope.user.userId}">
       <div class="page_header">Ваши альбомы:</div>
     </c:if>
-    <c:if test="${userId != sessionScope.user.userId}">
-      <div class="page_header">Альбомы пользователя <c:out value="${sessionScope.user.login}"></c:out>:</div>
+    <c:if test="${user != null}">
+      <div class="page_header">Альбомы пользователя <c:out value="${user.login}"></c:out>:</div>
     </c:if>
     <c:if test="${albumsCount gt 0}">
       <div>
@@ -23,8 +23,8 @@
               <tr>
                 <td class="photo">
                   <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">
-                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="images/album_no_preview.png" /></c:if>
-                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="photo_${currentAlbum.preview.photoId}/size_150/show.html" /></c:if>
+                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="<%=application.getContextPath() %>/images/album_no_preview.png" /></c:if>
+                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="<%=application.getContextPath() %>/photo_${currentAlbum.preview.photoId}/size_150/show.html" /></c:if>
                   </a>
                 </td>
               </tr>

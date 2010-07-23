@@ -4,13 +4,11 @@
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
-    <div>
-      <a href="<%=application.getContextPath() %><c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
-<c:if test="${album.albumId > 0}">
-      <a href="<%=application.getContextPath() %>/album_${album.albumId}/info.html">Изменить альбом</a>
-</c:if>
+    <div class="page_header">
+      ${album.title}<c:if test="${album.user.userId != sessionScope.User.userId}">
+      <span class="additional">пользователя <a href="<%=application.getContextPath() %>/user_${album.user.userId}.html">${album.user.login}</a></span>
+      </c:if>
     </div>
-    <div class="page_header">${album.title}</div>
     <div class="page_description">${album.description}</div>
     <%-- здесь будет список страниц для постраничного вывода --%>
 <c:forEach items="${photos}" var="photo">
@@ -46,7 +44,16 @@
   <div>
     <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
       <tr>
-        <td style="vertical-align:top;"></td>
+        <td style="vertical-align:top;">
+          <div class="main">
+            <a href="<%=application.getContextPath() %><c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+      <c:if test="${album.albumId > 0}"><br />
+            <a href="<%=application.getContextPath() %>/album_${album.albumId}/info.html">Изменить альбом</a>
+            <br />
+            <a href="<%=application.getContextPath() %>/album_${album.albumId}/delete.html">Удалить альбом</a>
+      </c:if>
+          </div>
+        </td>
       </tr>
     </table>
   </div>
