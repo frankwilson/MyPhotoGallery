@@ -1,10 +1,21 @@
 package ru.pakaz.common.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Where;
+import org.hibernate.validator.Email;
+
+import ru.pakaz.photo.model.Album;
 
 @Entity
 @Table(name = "Users")
@@ -19,8 +30,9 @@ public class User {
     
     @Column
     private String password;
-    
+
     @Column
+    @Email
     private String email;
     
     @Column
@@ -32,94 +44,71 @@ public class User {
     @Column
     private String nickName;
 
-    /**
-     * @return the login
-     */
+    @Column
+    private boolean temporary = false;
+    
+    @Column
+    private boolean blocked = false;
+    
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Where(clause = "deleted=0")
+    private List<Album> albums = new ArrayList<Album>();
+
     public String getLogin() {
         return this.login;
     }
-
-    /**
-     * @param login the login to set
-     */
     public void setLogin( String login ) {
         this.login = login;
     }
 
-    /**
-     * @return the password
-     */
     public String getPassword() {
         return this.password;
     }
-
-    /**
-     * @param password the password to set
-     */
     public void setPassword( String password ) {
         this.password = password;
     }
 
-    /**
-     * @return the email
-     */
     public String getEmail() {
         return this.email;
     }
-
-    /**
-     * @param email the email to set
-     */
     public void setEmail( String email ) {
         this.email = email;
     }
 
-    /**
-     * @return the firstName
-     */
     public String getFirstName() {
         return this.firstName;
     }
-
-    /**
-     * @param firstName the firstName to set
-     */
     public void setFirstName( String firstName ) {
         this.firstName = firstName;
     }
 
-    /**
-     * @return the lastName
-     */
     public String getLastName() {
         return this.lastName;
     }
-
-    /**
-     * @param lastName the lastName to set
-     */
     public void setLastName( String lastName ) {
         this.lastName = lastName;
     }
 
-    /**
-     * @return the nickName
-     */
     public String getNickName() {
         return this.nickName;
     }
-
-    /**
-     * @param nickName the nickName to set
-     */
     public void setNickName( String nickName ) {
         this.nickName = nickName;
     }
 
-    /**
-     * @return the userId
-     */
     public int getUserId() {
         return this.userId;
     }
+
+	public void setTemporary(boolean temporary) {
+		this.temporary = temporary;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+	
+	public List<Album> getAlbums() {
+		return this.albums;
+	}
 }

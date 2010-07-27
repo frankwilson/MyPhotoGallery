@@ -1,17 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
     <form:form enctype="multipart/form-data">
-      <div class="page_header">Загрузка фотографии в альбом:
+      <div class="page_header">Загрузка фотографии
   <c:if test="${currentAlbum != null}">
-        <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+         в альбом: <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
   </c:if>
       </div>
       <div class="main">
-  <c:if test="${currentAlbum == null}">
+  <c:if test="${currentAlbum == null && fn:length(albums) > 0}">
         Альбом для размещения фотографии:
         <br /><br />
         <select name="album">

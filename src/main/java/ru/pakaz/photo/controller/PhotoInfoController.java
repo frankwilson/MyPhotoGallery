@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 
+import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
+import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
 
 @Controller
@@ -25,6 +27,8 @@ public class PhotoInfoController {
 
     @Autowired
     private PhotoDao photoManager;
+    @Autowired
+    private AlbumDao albumManager;
     
     @RequestMapping(value = "/photo_{photoId}/info.html", method = RequestMethod.GET)
     public ModelAndView get( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
@@ -33,6 +37,8 @@ public class PhotoInfoController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "photoInfo" );
         mav.addObject( "photo", photo );
+        mav.addObject( "album", photo.getAlbum() == null ? new Album() : photo.getAlbum() );
+        mav.addObject( "albums", photo.getUser().getAlbums() );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) +" "+ photo.getTitle() );
 
         return mav;
@@ -74,6 +80,39 @@ public class PhotoInfoController {
             
             try {
                 response.sendRedirect(request.getContextPath() +"/photo_"+ photoId +".html");
+            } catch (IOException e) {
+                logger.error("Error on sending redirect to the updated photo page!");
+            }
+        }
+        else {
+            result.rejectValue( "title", "error.photo.titleIsTooShort" );
+        }
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName( "photoInfo" );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
+        return mav;
+    }
+
+    @RequestMapping(value = "/photo_{photoId}/move.html", method = RequestMethod.POST)  
+    public ModelAndView move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
+    		BindingResult result, HttpServletRequest request, HttpServletResponse response ) {
+        
+    	int albumId = album.getAlbumId(); //Integer.parseInt( request.getParameter("dstAlbumId") );
+    	
+    	Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
+    	Album dstAlbum = null;
+    	if( albumId != 0 )
+    		dstAlbum = this.albumManager.getAlbumById(albumId);
+        
+        if( dstAlbum == null || dbPhoto.getUser() == dstAlbum.getUser() ) {
+        	dbPhoto.setAlbum(dstAlbum);
+
+            this.photoManager.updatePhoto(dbPhoto);
+            
+            try {
+                response.sendRedirect(request.getContextPath() +"/photo_"+ photoId +".html");
+                return null;
             } catch (IOException e) {
                 logger.error("Error on sending redirect to the updated photo page!");
             }

@@ -14,6 +14,11 @@ table tr td {
     border-collapse: collapse;
 }
 
+form {
+  margin:0px;
+  padding:0px;
+}
+
 .main {
     margin-left: 15px;    
 }

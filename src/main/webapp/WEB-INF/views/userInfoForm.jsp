@@ -7,7 +7,7 @@
 <div class="top_level">
   <div class="content">
     <div class="page_header">Редактирование пользовательских данных:</div>
-    <table class="main">
+    <table class="main" style="width:600px;">
       <colgroup>
         <col style="width:90px;">
       </colgroup>
@@ -47,10 +47,18 @@
       </tr>
       <tr><td colspan=3 style="height:10px;"></td></tr>
       <tr>
+        <td colspan=2>Если Вы не хотите менять пароль, оставьте следующие два поля пустыми:</td>
+      </tr>
+      <tr>
+        <td>Старый пароль:</td>
+        <td>
+          <input type="password" name="old_pass">
+        </td>
+      </tr>
+      <tr>
         <td>Новый пароль:</td>
         <td>
-          <form:password path="password" cssStyle="width:200px;"/>&#160;
-          <form:errors path="password" />
+          <input type="password" name="new_pass">
         </td>
       </tr>
       <tr><td colspan=2 style="height:10px;"></td></tr>

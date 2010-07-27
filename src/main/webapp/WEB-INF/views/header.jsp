@@ -3,6 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page import="ru.pakaz.common.model.User"%>
 <%@ page trimDirectiveWhitespaces="true"%>
+<%  User user = (User)session.getAttribute( "User" ); %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
@@ -12,31 +13,30 @@
 </head>
 <body>
 <div class="top_level">
-  <div class="site_header">
+  <div class="site_header" style="float:left;">
     <a href="<%=application.getContextPath() %>/index.html">&nbsp;<%=application.getInitParameter( "serviceName" ) %>&nbsp;</a>
+  </div>
+  <div style="text-align:right; padding-right:10px; padding-top:5px;">
+<% if( user == null ) {
+    user = new User(); %>
+    <form method="post" action="<%=application.getContextPath() %>/login.html">
+      Логин:&#160;<input style="height:20px; width:80px;" type="text" name="login" value="" id="login"><br />
+      Пароль:&#160;<input style="height:20px; width:80px;" type="password" name="password" value="" id="pass"><br />
+      <a href="<%=application.getContextPath() %>/registration.html" title="Регистрация">Регистрация</a> | <input style="width:80px;" type="submit" name="Войти" id="enter" value="Войти">
+    </form>
+<% } %>
   </div>
   <table class="menu">
     <tr>
       <td>
-        <form method="post" action="<%=application.getContextPath() %>/login.html">
-<% 
-User user = (User)session.getAttribute( "User" );
-if( user != null ) { %>
+<% if( user.getUserId() != 0 ) { %>
 	      <a href="<%=application.getContextPath() %>/changeUsersInfo.html" title="Личная информация"><%=user.getLogin() %></a> |
 	      <a href="<%=application.getContextPath() %>/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
 	      [<a href="<%=application.getContextPath() %>/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
 	      <a href="<%=application.getContextPath() %>/upload.html" title="Загрузить фотографию">Загрузить</a> |
 	      <a href="<%=application.getContextPath() %>/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (0)</a> |
 	      <a href="<%=application.getContextPath() %>/logout.html" title="Выход">Выйти</a>
-<% } else {
-    user = new User();
-%>
-	      <a href="<%=application.getContextPath() %>/registration.html" title="Регистрация">Регистрация</a> |
-	      Логин:&#160;<input style="height:20px; width:80px;" type="text" name="login" value="" id="login">
-	      Пароль:&#160;<input style="height:20px; width:80px;" type="password" name="password" value="" id="pass">
-	      <input style="width:80px;" type="submit" name="Войти" id="enter" value="enter">
-<% } %>
-        </form>
+<%}%>
       </td>
     </tr>
   </table>

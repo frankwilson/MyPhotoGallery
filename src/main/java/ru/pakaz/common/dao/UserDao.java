@@ -67,6 +67,7 @@ public class UserDao extends HibernateDaoSupport {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().save( user );
+            getHibernateTemplate().flush();
         }
         catch( DataAccessException e ) {
             e.printStackTrace();
@@ -83,6 +84,7 @@ public class UserDao extends HibernateDaoSupport {
         try {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().update( user );
+            getHibernateTemplate().flush();
             this.setUserToSession( request, user );
         }
         catch( DataAccessException e ) {
