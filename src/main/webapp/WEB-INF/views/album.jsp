@@ -26,7 +26,7 @@
           </td>
         </tr>
         <tr>
-          <td style="height:20px; vertical-align:top;">
+          <td style="height:32px; vertical-align:top;">
             <div style="overflow:hidden; width:187px;">
               <a href="<%=application.getContextPath() %>/photo_${photo.photoId}.html" style=""><c:out value="${photo.title}"></c:out></a>
             </div>
@@ -42,7 +42,7 @@
 </c:forEach>
   </div>
   <div>
-    <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
+    <table class="left_panel">
       <tr>
         <td style="vertical-align:top;">
           <div class="main">

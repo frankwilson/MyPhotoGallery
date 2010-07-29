@@ -37,9 +37,6 @@ public class PhotoUploadController {
     @Autowired
     private PhotoFileService photoFileService;
 
-    @Autowired
-    private AlbumDao albumManager;
-
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
      * 
@@ -96,10 +93,26 @@ public class PhotoUploadController {
                 newPhoto.setFileName( file.getOriginalFilename() );
                 newPhoto.setTitle( file.getOriginalFilename() );
                 
+                if( request.getParameter("album") != null ) {
+                	try {
+                		Album album = this.albumsManager.getAlbumById( Integer.parseInt( request.getParameter("album") ) );
+                    	if( album != null ) {
+                    		newPhoto.setAlbum(album);
+                    	}
+                	}
+                	catch (NumberFormatException nfe) {
+                		this.logger.error("Error while converting albumId to int");
+					}
+                }
+                
                 this.photoManager.createPhoto( newPhoto );
                 this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
                 this.photoFileService.savePhoto( file.getBytes(), newPhoto );
-//                this.photoManager.updatePhoto( newPhoto );
+                
+                int oldUnallocPhotosCount = Integer.parseInt(
+                        request.getSession().getAttribute("unallocatedPhotosCount").toString()
+                    );
+                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
             }
             catch( IOException e ) {
                 this.logger.debug( "Exception during reading sent file!" );
@@ -132,14 +145,14 @@ public class PhotoUploadController {
      */
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)  
     public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request,
-    		HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
+            HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
 
         if( !file.isEmpty() ) {
             this.logger.debug( "File is not empty" );
 
             try {
-            	Album album = this.albumManager.getAlbumById(albumId);
-            	
+                Album album = this.albumsManager.getAlbumById(albumId);
+                
                 Photo newPhoto = new Photo();
                 newPhoto.setUser( this.usersManager.getUserFromSession(request) );
                 newPhoto.setAlbum(album);

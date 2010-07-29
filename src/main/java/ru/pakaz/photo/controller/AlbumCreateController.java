@@ -40,23 +40,20 @@ public class AlbumCreateController {
     @RequestMapping(value = "/createAlbum.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("album") Album album, BindingResult result,
     		HttpServletRequest request, HttpServletResponse response ) {
+
+        ModelAndView mav = new ModelAndView();
+
         if( album.getTitle().length() > 0 ) {
             album.setUser( this.usersManager.getUserFromSession( request ) );
             this.albumManager.createAlbum( album );
-            
-            try {
-				response.sendRedirect(request.getContextPath() +"/album_"+ album.getAlbumId() +".html");
-			} catch (IOException e) {
-				logger.error("Error on sending redirect to the new album page!");
-			}
+
+            mav.setViewName( "redirect:album_"+ album.getAlbumId() +".html" );
         }
         else {
             result.rejectValue( "title", "error.album.titleIsTooShort" );
+            mav.setViewName( "createAlbum" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
         }
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "createAlbum" );
-        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
         return mav;
     }
 

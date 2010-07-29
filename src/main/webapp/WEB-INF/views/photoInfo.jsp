@@ -8,6 +8,16 @@
   <div class="content">
     <div class="page_header">Редактирование фотографии:
       <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html">${photo.title}</a>
+      <br />
+      <span class="additional">
+        из <c:choose>
+          <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
+          <c:otherwise>альбома <a href="<%=application.getContextPath() %>/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
+        </c:choose>
+        <c:if test="${photo.user.userId != sessionScope.User.userId}">
+        пользователя <a href="<%=application.getContextPath() %>/user_${photo.user.userId}.html">${photo.user.login}</a>
+        </c:if>
+      </span>
     </div>
 <form:form commandName="photo">
     <table class="main">
@@ -41,18 +51,25 @@
       </tr>
     </table>
 </form:form>
+    <br />
 <form:form commandName="album" action="${pageContext.request.contextPath}/photo_${photo.photoId}/move.html">
     <div>
-      <input type="submit" value="Переместить в:" />
+      <input type="submit" value="Переместить в альбом" />
       <form:select path="albumId">
         <form:option value="0">Отсутствует</form:option>
         <form:options items="${albums}" itemLabel="title" itemValue="albumId" />
       </form:select>
     </div>
+    <c:if test="${photo.album.preview == photo}">
+    <div>
+      Внимание! данное изображение установлено в качестве изображения для предварительного просмотра в альбоме.
+      При перемещении изображение для предварительного просмотра у данного альбома будет сброшено!
+    </div>
+    </c:if>
 </form:form>
   </div>
   <div>
-    <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
+    <table class="left_panel">
       <tr>
         <td style="vertical-align:top;"></td>
       </tr>

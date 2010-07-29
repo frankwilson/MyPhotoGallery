@@ -1,6 +1,7 @@
 package ru.pakaz.photo.service;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -155,15 +156,15 @@ public class PhotoFileService {
             logger.debug( "Result image size will be "+ width +"x"+ height );
 
             BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
             Graphics2D g2d = changedImage.createGraphics();
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            if( g2d.drawImage( image, 0, 0, width, height, null ) == false ) {
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            if( g2d.drawImage( scaledImage, 0, 0, width, height, null ) == false ) {
                 logger.error( "Error during drawing scaled image on graphics!" );
             }
             g2d.dispose();
-            
+
             logger.debug( "Result image size is "+ changedImage.getWidth() +"x"+ changedImage.getHeight() );
             
             

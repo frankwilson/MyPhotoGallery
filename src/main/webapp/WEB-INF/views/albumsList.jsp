@@ -29,7 +29,7 @@
                 </td>
               </tr>
               <tr>
-                <td style="height:20px;vertical-align:top;">
+                <td style="height:32px;vertical-align:top;">
                   <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
                 </td>
               </tr>
@@ -50,7 +50,7 @@
     </c:if>
   </div>
   <div>
-    <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
+    <table class="left_panel">
       <tr>
         <td style="vertical-align:top;"></td>
       </tr>

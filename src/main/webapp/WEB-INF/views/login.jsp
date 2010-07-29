@@ -35,7 +35,7 @@
     </table>
   </div>
   <div>
-    <table style="width:220px; height:100%; background-color:#deecaa; margin:0px; padding:0px;vertical-align:top;">
+    <table class="left_panel">
       <tr>
         <td style="vertical-align:top;"></td>
       </tr>

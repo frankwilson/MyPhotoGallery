@@ -1,5 +1,7 @@
 package ru.pakaz.common.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
+import ru.pakaz.photo.dao.PhotoDao;
+import ru.pakaz.photo.model.Photo;
 
 @Controller
 public class LoginController {
     @Autowired
     private UserDao usersManager;
+    @Autowired
+    private PhotoDao photoManager;
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public ModelAndView get() {
@@ -40,6 +46,8 @@ public class LoginController {
         }
         else {
             this.usersManager.setUserToSession( request, this.usersManager.getUserByLogin( user.getLogin() ) );
+            List<Photo> photos = this.photoManager.getUnallocatedPhotos( this.usersManager.getUserFromSession( request ) );
+            request.getSession().setAttribute("unallocatedPhotosCount", photos.size());
             mav.setViewName( "redirect:index.html" );
             return mav;
         }

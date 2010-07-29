@@ -1,9 +1,6 @@
 package ru.pakaz.photo.controller;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +27,13 @@ public class PhotoInfoController {
     @Autowired
     private AlbumDao albumManager;
     
+    /**
+     * Информация о фотографии
+     * 
+     * @param photoId  - ID фотографии
+     * @param request  - HttpServletRequest объект (объект запроса) 
+     * @return
+     */
     @RequestMapping(value = "/photo_{photoId}/info.html", method = RequestMethod.GET)
     public ModelAndView get( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
     	Photo photo = this.photoManager.getPhotoById(photoId);
@@ -44,31 +48,66 @@ public class PhotoInfoController {
         return mav;
     }
     
+    /**
+     * Удаление фотографии
+     * 
+     * @param photoId  - ID фотографии
+     * @param request  - HttpServletRequest объект (объект запроса)
+     * @return
+     */
     @RequestMapping(value = "/photo_{photoId}/delete.html", method = RequestMethod.GET)
-    public void delete( @PathVariable("photoId") int photoId, HttpServletRequest request, HttpServletResponse response ) {
+    public ModelAndView delete( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
+
+    	ModelAndView mav = new ModelAndView();
+
     	Photo photo = this.photoManager.getPhotoById(photoId);
+
     	if( photo != null ) {
     		photo.setDeleted(true);
     		this.photoManager.updatePhoto(photo);
     		logger.debug("Photo "+ photoId +" Deleted");
-            
-            try {
-            	if( photo.getAlbum() != null )
-            		response.sendRedirect(request.getContextPath() +"/album_"+ photo.getAlbum().getAlbumId() +".html");
-            	else
-            		response.sendRedirect(request.getContextPath() +"/unallocatedPhotos.html");
-			} catch (IOException e) {
-				logger.error("Error on sending redirect to the new album page!");
-			}
+
+        	if( photo.getAlbum() != null && photo.getAlbum().getPreview() == photo ) {
+        		// Если удаляемая фотография является превьюшкой 
+        		// для альбома, в котором она находилась, обнуляем превью
+        		photo.getAlbum().setPreview(null);
+        		this.albumManager.updateAlbum( photo.getAlbum() );
+        	}
+
+        	if( photo.getAlbum() != null )
+        		mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
+        	else {
+        		mav.setViewName( "redirect:/unallocatedPhotos.html" );
+                
+        		// Уменьшаем счетчик нераспределенных фотографий
+                int oldUnallocPhotosCount = Integer.parseInt(
+                        request.getSession().getAttribute("unallocatedPhotosCount").toString()
+                    );
+                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
+        	}
     	}
     	else {
     		logger.debug("Photo "+ photoId +" does not exist");
+    		mav.setViewName( "redirect:albumsList.html" );
     	}
+    	
+    	return mav;
     }
 
+    /**
+     * Изменение информации о фотографии
+     * 
+     * @param photoId  - ID фотографии
+     * @param photo    - модель фотографии с обновленными полями
+     * @param result   - результат биндинга полей формы на поля объекта 
+     * @param request  - HttpServletRequest объект (объект запроса)
+     * @return
+     */
     @RequestMapping(value = "/photo_{photoId}/info.html", method = RequestMethod.POST)  
     public ModelAndView post( @PathVariable("photoId") int photoId, @ModelAttribute("photo") Photo photo, 
-            BindingResult result, HttpServletRequest request, HttpServletResponse response ) {
+            BindingResult result, HttpServletRequest request ) {
+
+        ModelAndView mav = new ModelAndView();
         
     	Photo dbPhoto = this.photoManager.getPhotoById(photoId);
         
@@ -78,52 +117,69 @@ public class PhotoInfoController {
 
             this.photoManager.updatePhoto(dbPhoto);
             
-            try {
-                response.sendRedirect(request.getContextPath() +"/photo_"+ photoId +".html");
-            } catch (IOException e) {
-                logger.error("Error on sending redirect to the updated photo page!");
-            }
+            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
         }
         else {
             result.rejectValue( "title", "error.photo.titleIsTooShort" );
+            mav.setViewName( "photoInfo" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         }
-
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "photoInfo" );
-        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         return mav;
     }
 
+    /**
+     * Перемещение фотографии из одного альбома в другой
+     * 
+     * @param photoId  - ID фотографии
+     * @param album    - Альбом, в который мы перемещаем фотографию
+     * @param result   - результат биндинга полей формы на поля объекта
+     * @param request  - HttpServletRequest объект (объект запроса)
+     * @return 
+     */
     @RequestMapping(value = "/photo_{photoId}/move.html", method = RequestMethod.POST)  
     public ModelAndView move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
-    		BindingResult result, HttpServletRequest request, HttpServletResponse response ) {
-        
-    	int albumId = album.getAlbumId(); //Integer.parseInt( request.getParameter("dstAlbumId") );
-    	
+    		BindingResult result, HttpServletRequest request ) {
+
+        ModelAndView mav = new ModelAndView();
+
+        int oldUnallocPhotosCount = Integer.parseInt(
+                request.getSession().getAttribute("unallocatedPhotosCount").toString()
+            );
+
+    	int albumId    = album.getAlbumId();
     	Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
     	Album dstAlbum = null;
-    	if( albumId != 0 )
+
+    	if( albumId != 0 ) {
     		dstAlbum = this.albumManager.getAlbumById(albumId);
+    		
+    		if(dbPhoto.getAlbum() == null)
+        		// После перемещения фотографии из Нераспределенного альбома уменьшаем значение его размера в сессии
+    			request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
+    	}
+    	else
+    		// После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии 
+            request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
         
         if( dstAlbum == null || dbPhoto.getUser() == dstAlbum.getUser() ) {
+        	if( dbPhoto.getAlbum() != null && dbPhoto.getAlbum().getPreview() == dbPhoto ) {
+        		// Если перемещаемая фотография является превьюшкой 
+        		// для альбома, в котором она находилась, обнуляем превью
+        		dbPhoto.getAlbum().setPreview(null);
+        		this.albumManager.updateAlbum( dbPhoto.getAlbum() );
+        	}
+        	
         	dbPhoto.setAlbum(dstAlbum);
-
             this.photoManager.updatePhoto(dbPhoto);
             
-            try {
-                response.sendRedirect(request.getContextPath() +"/photo_"+ photoId +".html");
-                return null;
-            } catch (IOException e) {
-                logger.error("Error on sending redirect to the updated photo page!");
-            }
+            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
         }
         else {
             result.rejectValue( "title", "error.photo.titleIsTooShort" );
+            mav.setViewName( "photoInfo" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         }
 
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName( "photoInfo" );
-        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         return mav;
     }
 }

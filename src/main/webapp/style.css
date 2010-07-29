@@ -48,12 +48,15 @@ form {
 }
 
 .left_panel {
-    width: 220px;
+    width: 210px;
+    margin: 0px;
+    padding: 0px;
     vertical-align: top;
+    background-color: #deecaa;
 }
 
 .content {
-    width: 770px;
+    width: 780px;
     float: left;
     margin: 5px;
 }
@@ -106,7 +109,7 @@ a:visited {
 }
 
 .album_minitables {
-    width: 193px;
+    width: 192px;
     margin-left: 1px;
     margin-right: 1px;
     margin-top: 5px;
