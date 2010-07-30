@@ -25,8 +25,10 @@
   </c:if>
         Укажите файл, который вы хотите загрузить:
         <br /><br />
-        <input type="hidden" name="MAX_FILE_SIZE" value="6291456" />
-        <input size="80" type="file" name="file" id="file" />
+        <input size="80" type="file" name="file1" id="file" /><br />
+        <input size="80" type="file" name="file2" id="file" /><br />
+        <input size="80" type="file" name="file3" id="file" /><br />
+        <input size="80" type="file" name="file4" id="file" /><br />
         <br /><br />
         <input style="width:120px;" type="submit" name="get" id="get" value="Загрузить" />
       </div>

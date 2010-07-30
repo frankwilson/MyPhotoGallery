@@ -1,13 +1,22 @@
 package ru.pakaz.photo.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-//import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,12 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
-//import ru.pakaz.common.model.User;
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
-//import ru.pakaz.photo.model.PhotoFile;
 import ru.pakaz.photo.service.PhotoFileService;
 
 @Controller
@@ -80,6 +87,7 @@ public class PhotoUploadController {
      * @param request
      * @return
      */
+/*
     @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
     public ModelAndView upload( HttpServletRequest request, HttpServletResponse response, 
             @RequestParam("file") MultipartFile file  ) {
@@ -134,7 +142,7 @@ public class PhotoUploadController {
             return null;
         }
     }
-
+*/
     /**
      * 
      * 
@@ -197,4 +205,136 @@ public class PhotoUploadController {
     public void setPhotoFileService( PhotoFileService photoFileService ) {
         this.photoFileService = photoFileService;
     }
+    
+    
+    
+    
+
+	private Random random = new Random();
+	
+	@RequestMapping(value = "/upload.html", method = RequestMethod.POST)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+		//проверяем является ли полученный запрос multipart/form-data
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (!isMultipart) {
+			try {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		logger.info("We have multipart content!");
+		
+		// Создаём класс фабрику 
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+
+		// Максимальный буфера данных в байтах,
+		// при его привышении данные начнут записываться на диск во временную директорию
+		// устанавливаем один мегабайт
+		factory.setSizeThreshold(1024*1024);
+		
+		// устанавливаем временную директорию
+		File tempDir = (File)request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
+		factory.setRepository(tempDir);
+		logger.info("Temporary directory is "+ factory.getRepository().getAbsolutePath());
+
+		//Создаём сам загрузчик
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		
+		//максимальный размер данных который разрешено загружать в байтах
+		//по умолчанию -1, без ограничений. Устанавливаем 10 мегабайт. 
+		upload.setSizeMax(1024 * 1024 * 200);
+
+		try {
+			ProgressListener listener = new ProgressListener() {
+				// Current item number
+				private int currentItem = 0;
+				// items uploaded progress, percent
+				private int progress = -1;
+
+				public void update(long pBytesRead, long pContentLength, int pItems) {
+					if( pContentLength != -1 ) {
+						int percent = Math.round((pBytesRead * 100) / pContentLength);
+						if( progress == percent ) {
+							return;
+						}
+						progress = percent;
+					}
+
+					if( currentItem != pItems ) {
+						currentItem = pItems;
+						progress = 0;
+						logger.debug("We are currently reading item " + pItems);
+					}
+
+					if( pContentLength == -1 ) {
+						logger.debug("So far, "+ (pBytesRead / 1000) +" kB percent have been read.");
+					}
+					else {
+						logger.debug("So far, " + progress +"% of "+ (pContentLength / 1000) +" kB have been read.");
+					}
+				}
+			};
+			upload.setProgressListener(listener);
+			List items = upload.parseRequest(request);
+			Iterator iter = items.iterator();
+			
+			while (iter.hasNext()) {
+			    FileItem item = (FileItem) iter.next();
+			    logger.info("Another form item:"+ item.getFieldName());
+
+			    if (item.isFormField()) {
+			    	//если принимаемая часть данных является полем формы			    	
+			        processFormField(item);
+			    } else {
+			    	//в противном случае рассматриваем как файл
+			        processUploadedFile(item);
+			    }
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return;
+		}		
+	}
+	
+	/**
+	 * Сохраняет файл на сервере, в папке upload.
+	 * Сама папка должна быть уже создана. 
+	 * 
+	 * @param item
+	 * @throws Exception
+	 */
+	private void processUploadedFile(FileItem item) throws Exception {
+		logger.info("It's file and we save it");
+		File uploadetFile = null;
+		//выбираем файлу имя пока не найдём свободное
+		do {
+			String path = ("/home/wilson/gallery/"+ random.nextInt() + item.getName());					
+			uploadetFile = new File(path);		
+		}
+		while( uploadetFile.exists() );
+		logger.info("We save it to "+ uploadetFile.getAbsolutePath());
+		//создаём файл
+		uploadetFile.createNewFile();
+		//записываем в него данные
+		item.write(uploadetFile);
+	}
+
+	/**
+	 * Выводит на консоль имя параметра и значение
+	 * @param item
+	 */
+	private void processFormField(FileItem item) {
+		logger.info("It's field: "+ item.getFieldName() +"="+ item.getString());
+//		System.out.println(item.getFieldName()+"="+item.getString());		
+	}
 }
