@@ -8,10 +8,6 @@
   <display-name>Pakaz.ru</display-name>
 
     <context-param>
-        <param-name>catalog</param-name>
-        <param-value>/home/wilson/gallery</param-value>
-    </context-param>
-    <context-param>
         <param-name>serviceName</param-name>
         <param-value>Фотогалерея</param-value>
     </context-param>

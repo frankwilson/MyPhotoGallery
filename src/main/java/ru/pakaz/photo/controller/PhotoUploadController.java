@@ -9,6 +9,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.ProgressListener;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
@@ -213,7 +216,7 @@ public class PhotoUploadController {
 	private Random random = new Random();
 	
 	@RequestMapping(value = "/upload.html", method = RequestMethod.POST)
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+	protected void doPost(final HttpServletRequest request, HttpServletResponse response) {
 		//проверяем является ли полученный запрос multipart/form-data
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (!isMultipart) {
@@ -253,9 +256,15 @@ public class PhotoUploadController {
 				// Current item number
 				private int currentItem = 0;
 				// items uploaded progress, percent
-				private int progress = -1;
+				private long uploaded = -1;
+				private long total = 0;
+				
+				private HttpSession session = request.getSession();
 
 				public void update(long pBytesRead, long pContentLength, int pItems) {
+				    this.uploaded = pBytesRead;
+				    this.total    = pContentLength;
+/*
 					if( pContentLength != -1 ) {
 						int percent = Math.round((pBytesRead * 100) / pContentLength);
 						if( progress == percent ) {
@@ -263,21 +272,26 @@ public class PhotoUploadController {
 						}
 						progress = percent;
 					}
-
+*/
 					if( currentItem != pItems ) {
 						currentItem = pItems;
-						progress = 0;
-						logger.debug("We are currently reading item " + pItems);
+//						logger.debug("We are currently reading item " + pItems);
 					}
-
+/*
 					if( pContentLength == -1 ) {
-						logger.debug("So far, "+ (pBytesRead / 1000) +" kB percent have been read.");
+						logger.debug("So far, "+ (pBytesRead / 1024) +" kB percent have been read.");
 					}
 					else {
-						logger.debug("So far, " + progress +"% of "+ (pContentLength / 1000) +" kB have been read.");
+						logger.debug("So far, " + progress +"% of "+ (pContentLength / 1024) +" kB have been read.");
 					}
+*/
+					session.setAttribute( "uploadingCurrent", this.uploaded );
+					session.setAttribute( "uploadingTotal",   this.total );
 				}
 			};
+
+			request.getSession().setAttribute( "uploadingProgressListener", listener );
+			
 			upload.setProgressListener(listener);
 			List items = upload.parseRequest(request);
 			Iterator iter = items.iterator();
@@ -314,19 +328,25 @@ public class PhotoUploadController {
 	 * @throws Exception
 	 */
 	private void processUploadedFile(FileItem item) throws Exception {
-		logger.info("It's file and we save it");
 		File uploadetFile = null;
 		//выбираем файлу имя пока не найдём свободное
-		do {
-			String path = ("/home/wilson/gallery/"+ random.nextInt() + item.getName());					
-			uploadetFile = new File(path);		
+		if( item.getName() != "" ) {
+	        logger.info("It's file and we save it");
+
+		    do {
+		        String path = ("/home/wilson/gallery/"+ random.nextInt() + item.getName());					
+		        uploadetFile = new File(path);		
+		    }
+		    while( uploadetFile.exists() );
+		    logger.info("We save it to "+ uploadetFile.getAbsolutePath());
+		    //создаём файл
+		    uploadetFile.createNewFile();
+		    //записываем в него данные
+		    item.write(uploadetFile);
 		}
-		while( uploadetFile.exists() );
-		logger.info("We save it to "+ uploadetFile.getAbsolutePath());
-		//создаём файл
-		uploadetFile.createNewFile();
-		//записываем в него данные
-		item.write(uploadetFile);
+		else {
+	        logger.info("It's file but it's empty");
+		}
 	}
 
 	/**
@@ -334,7 +354,28 @@ public class PhotoUploadController {
 	 * @param item
 	 */
 	private void processFormField(FileItem item) {
-		logger.info("It's field: "+ item.getFieldName() +"="+ item.getString());
-//		System.out.println(item.getFieldName()+"="+item.getString());		
+		logger.info("It's field: "+ item.getFieldName() +"="+ item.getString());		
+	}
+
+	@RequestMapping(value = "/uploadingProgress.html", method = RequestMethod.GET)
+	public View getUploadingProgress( HttpServletRequest request, HttpServletResponse response ) {
+	    Object cur = request.getSession().getAttribute( "uploadingCurrent" );
+        Object tot = request.getSession().getAttribute( "uploadingTotal" );
+
+	    long current = -1;
+        long total = -1;
+
+	    if( cur != null ) {
+	        current = (Long)cur;
+	    }
+        if( tot != null ) {
+            total = (Long)tot;
+        }
+
+        MappingJacksonJsonView view = new MappingJacksonJsonView();
+        view.addStaticAttribute( "current", current );
+        view.addStaticAttribute( "total", total );
+	    
+	    return view;
 	}
 }
