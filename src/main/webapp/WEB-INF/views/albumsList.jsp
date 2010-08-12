@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <jsp:include page="header.jsp" />
 <div class="top_level">
   <div class="content">
@@ -16,21 +17,21 @@
       <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
         <div style="float:left;">
             <div class="photo_icons">
-              [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
-              [<a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
+              [<a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
+              [<a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
             </div>
             <table class="album_minitables">
               <tr>
                 <td class="photo">
-                  <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">
-                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="<%=application.getContextPath() %>/images/album_no_preview.png" /></c:if>
-                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="<%=application.getContextPath() %>/photo_${currentAlbum.preview.photoId}/size_150/show.html" /></c:if>
+                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">
+                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/images/album_no_preview.png" /></c:if>
+                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="/images/${currentAlbum.preview.photoFilesList[4].filename}" /></c:if>
                   </a>
                 </td>
               </tr>
               <tr>
                 <td style="height:32px;vertical-align:top;">
-                  <a href="<%=application.getContextPath() %>/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
                 </td>
               </tr>
               <tr style="height:100%;">

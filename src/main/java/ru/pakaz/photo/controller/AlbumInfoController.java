@@ -22,7 +22,7 @@ import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
-import ru.pakaz.photo.propertyEditor.PhotoPropertyEditor;
+import ru.pakaz.photo.other.PhotoPropertyEditor;
 
 @Controller
 public class AlbumInfoController {

@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "PhotoFiles")
-public class PhotoFile {
+public class PhotoFile implements Comparable<PhotoFile> {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -40,6 +40,9 @@ public class PhotoFile {
     
     @Column
     private boolean deleted = false;
+    
+    @Column
+    private String filename = "";
 
     private static String rootPhotoCatalog;
 
@@ -84,54 +87,24 @@ public class PhotoFile {
     public void setDeleted( boolean isDeleted ) {
         this.deleted = isDeleted;
     }
-    
-/*
-    public boolean copyFile( String srcPath ) {
-        String sp = File.separator;
-        String currentDate = new SimpleDateFormat( sp +"yyyy"+ sp +"MM-dd").format( this.fileAddDate );
-        File todayPhotosCatalog = new File( PhotoFile.rootPhotoCatalog.concat( currentDate ) );
-
-        if( !todayPhotosCatalog.exists() && !todayPhotosCatalog.mkdirs() ) {
-            PhotoFile.logger.error( "Can't create destination directory '"+ todayPhotosCatalog.getAbsolutePath() +"'" );
-            return false;
-        }
-        File dstFile = new File( todayPhotosCatalog.getPath() + sp + String.format( "%010d", this.fileId ) +".jpg" );
-
-        FileInputStream fileReader;
-        FileOutputStream fileWriter;
-        byte[] buffer = new byte[524288];
-
-        if( !dstFile.exists() ) {
-            try {
-                fileReader = new FileInputStream( srcPath );
-                fileWriter = new FileOutputStream( dstFile );
-            }
-            catch( FileNotFoundException e ) {
-                e.printStackTrace();
-                PhotoFile.logger.warn( "Can't open stream: "+ e.getMessage() );
-                return false;
-            }
-
-            try {
-//                long begin = System.currentTimeMillis();
-                while( fileReader.read( buffer ) != -1 ) {
-                    fileWriter.write( buffer );
-                }
-//                long end = System.currentTimeMillis();
-//                System.out.println( "Время копирования: "+ ( ( end-begin )*0.001f ) +" c" );
-//                System.out.println( "Скорость копирования: "+ ( dstFile.length()*0.0009765625f / ((end-begin)*0.001f) ) +" кб/с" );
-            }
-            catch( IOException e ) {
-                e.printStackTrace();
-                PhotoFile.logger.warn( "Can't copy file: "+ e.getMessage() );
-                return false;
-            }
-        }
-        else {
-            PhotoFile.logger.warn( "File already exists: '"+ dstFile.getAbsolutePath() +"'" );
-        }
-        
-        return true;
+    public boolean getDeleted() {
+        return this.deleted;
     }
-*/
+    
+    public void setFilename( String filename ) {
+        this.filename = filename;
+    }
+    public String getFilename() {
+        return this.filename;
+    }
+
+	@Override
+	public int compareTo(PhotoFile o) {
+		if( this.photoWidth > o.getPhotoWidth() && this.photoHeight > o.getPhotoHeight() )
+			return -1;
+		else if( this.photoWidth < o.getPhotoWidth() && this.photoHeight < o.getPhotoHeight() )
+			return 1;
+		else
+			return 0;
+	}
 }

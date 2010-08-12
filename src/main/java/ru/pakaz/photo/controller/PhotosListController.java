@@ -36,7 +36,7 @@ public class PhotosListController {
      */
     @RequestMapping(value = "/unallocatedPhotos.html", method = RequestMethod.GET)
     public ModelAndView showUnallocatedPhotosList( HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "album" );
+        ModelAndView mav = new ModelAndView( "albumSimple" );
 
         ArrayList<Photo> photos = (ArrayList<Photo>)this.photoManager.getUnallocatedPhotos( this.usersManager.getUserFromSession( request ) );
         logger.debug( "Unallocated photos count is "+ photos.size() );

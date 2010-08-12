@@ -35,6 +35,6 @@
     </bean>
 
     <bean id="photoFileService" class="ru.pakaz.photo.service.PhotoFileService">
-        <property name="destinationPath" value="/home/wilson/gallery" />
+        <property name="destinationPath" value="/var/www/images" />
     </bean>
 </beans>

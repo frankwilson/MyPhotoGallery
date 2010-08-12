@@ -11,28 +11,7 @@
       <tr>
         <td style="width:100px;"><span style="color:#a44">*</span>Логин:</td>
         <td><form:input path="login" maxlength="32" cssStyle="height:20px; width:175px;" /></td>
-      </tr><%--
-      <tr>
-        <td>Псевдоним:</td>
-        <td>
-          <form:input path="nickName" maxlength="32" cssStyle="width:250px;" />
-          <form:errors path="nickName"/>
-        </td>
       </tr>
-      <tr>
-        <td>Имя:</td>
-        <td>
-          <form:input path="firstName" cssStyle="width:250px;" />
-          <form:errors path="firstName"/>
-        </td>
-      </tr>
-      <tr>
-        <td>Фамилия:</td>
-        <td>
-          <form:input path="lastName" cssStyle="width:250px;" />
-          <form:errors path="lastName"/>
-        </td>
-      </tr> --%>
       <tr>
         <td><span style="color:#a44">*</span>e-mail:</td>
         <td>

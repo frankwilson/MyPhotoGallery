@@ -13,29 +13,13 @@
     <%-- здесь будет список страниц для постраничного вывода --%>
 <c:forEach items="${photos}" var="photo">
     <div style="float:left;">
-      <div class="photo_icons">
-        [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
-        [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
-      </div>
-      <table class="album_minitables">
+      <table class="album_microtables">
         <tr>
           <td class="photo" <%--style="height:170px; background-color:#cfcfcf;" --%>>
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
               <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/images/album_no_preview.png" /></c:if>
               <c:if test="${photo.photoFilesList[4].filename != ''}"><img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
             </a>
-          </td>
-        </tr>
-        <tr>
-          <td style="height:32px; vertical-align:top;">
-            <div style="overflow:hidden; width:187px;">
-              <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" style=""><c:out value="${photo.title}"></c:out></a>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="photo_caption" style="text-align:left;">
-              Добавлено: <fmt:formatDate value="${photo.addDate}" pattern="yyyy-MM-dd hh:mm" />
           </td>
         </tr>
       </table>

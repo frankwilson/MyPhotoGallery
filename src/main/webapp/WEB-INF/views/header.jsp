@@ -8,14 +8,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-  <title><%=application.getInitParameter( "serviceName" ) %> :: <c:out value="${pageName}"></c:out> </title>
+  <title><%=application.getInitParameter("serviceName") %> :: <c:out value="${pageName}"></c:out> </title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/style.css">
 </head>
 <body>
 <div class="top_level">
   <div class="site_header" style="float:left;">
-    <a href="${pageContext.request.contextPath}/index.html">&nbsp;<%=application.getInitParameter( "serviceName" ) %>&nbsp;</a>
+    <a href="${pageContext.request.contextPath}/index.html">&nbsp;<%=application.getInitParameter("serviceName") %>&nbsp;</a>
   </div>
   <div style="text-align:right; padding-right:10px; padding-top:5px;">
 <% if( user == null ) {

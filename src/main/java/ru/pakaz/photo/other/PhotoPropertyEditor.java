@@ -1,4 +1,4 @@
-package ru.pakaz.photo.propertyEditor;
+package ru.pakaz.photo.other;
 
 import java.beans.PropertyEditorSupport;
 

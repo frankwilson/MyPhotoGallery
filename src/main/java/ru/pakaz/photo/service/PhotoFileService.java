@@ -12,10 +12,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
+
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -36,33 +39,57 @@ public class PhotoFileService {
     private Photo resultPhoto;
 
 
-    public void savePhoto( byte[] data, Photo resultPhoto ) {
-        PhotoFile scaled = null;
+    public void savePhoto( byte[] data, Photo resultPhoto ) throws Exception {
         this.resultPhoto = resultPhoto;
         
         this.logger.debug("And here we got Photo with ID "+ resultPhoto.getPhotoId() +" and bytes of data");
+
+        long time = System.nanoTime();
         
         PhotoFile original = saveOriginal( data );
+        if( original == null )
+        	throw new Exception("Broken image file!");
+
         original.setParentPhoto( resultPhoto );
+
         this.logger.debug("So original photo we've saved with photoFileId "+ original.getFileId());
         this.logger.debug("And it have parentPhotoId "+ original.getParentPhoto().getPhotoId());
+        this.logger.debug("We have saved file for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         resultPhoto.addPhotoFile( original );
 
+        PhotoFile scaled = null;
+        
+        time = System.nanoTime();
+
         scaled = scalePhoto( data, 640 );
-//        scaled.setParentPhoto( resultPhoto );
-        resultPhoto.addPhotoFile( scaled );
+        if( scaled != null )
+        	resultPhoto.addPhotoFile( scaled );
 
-        scaled = scalePhoto( data, 480 );
-//        scaled.setParentPhoto( resultPhoto );
-        resultPhoto.addPhotoFile( scaled );
+        data = null;
+        byte[] scaledBig = readFile(scaled);
+        
+        this.logger.debug("scaled from original to big size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
+        time = System.nanoTime();
 
-        scaled = scalePhoto( data, 320 );
-//        scaled.setParentPhoto( resultPhoto );
-        resultPhoto.addPhotoFile( scaled );
+        scaled = scalePhoto( scaledBig, 480 );
+        if( scaled != null )
+        	resultPhoto.addPhotoFile( scaled );
+        
+        this.logger.debug("scaled from big to middle size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
+        time = System.nanoTime();
 
-        scaled = scalePhoto( data, 150 );
-//        scaled.setParentPhoto( resultPhoto );
-        resultPhoto.addPhotoFile( scaled );
+        scaled = scalePhoto( scaledBig, 320 );
+        if( scaled != null )
+        	resultPhoto.addPhotoFile( scaled );
+        
+        this.logger.debug("scaled from big to small size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
+        time = System.nanoTime();
+
+        scaled = scalePhoto( scaledBig, 150 );
+        if( scaled != null )
+        	resultPhoto.addPhotoFile( scaled );
+        
+        this.logger.debug("scaled from big to preview size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
     }
     
     /**
@@ -74,32 +101,45 @@ public class PhotoFileService {
     public PhotoFile saveOriginal( byte[] data ) {
         PhotoFile original = new PhotoFile();
         
-        this.getImageParams( data, original );
+        try {
+        	this.getImageParams( data, original );
+        }
+        catch( IOException iox ) {
+        	logger.error("Error while reading image parameters: ");
+        	logger.error(iox.getStackTrace());
+        	
+        	return null;
+        }
+
         original.setParentPhoto( this.resultPhoto );
-        photoFilesManager.createFile( original );
 
-        logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
+        MagicMatch mime;
+        String extension = null;
+		try {
+			mime = Magic.getMagicMatch(data);
+			extension = mime.getExtension();
+		}
+		catch (Exception e) {
+			logger.warn("Can't get MIME-type!");
+		}
 
-        this.saveFile( data, this.getFilePath( original ) );
+		if( extension != null ) {
+			this.saveFile( data, getFilePath(original) +"."+ extension );
+			original.setFilename( original.getFilename() +"."+ extension );
 
-        return original;
+			photoFilesManager.createFile( original );
+			logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
+
+			return original;
+		}
+		else {
+			logger.error( "File not saved because of file extension missing" );
+		}
+
+        return null;
     }
     
-    /**
-     * Масштабирует изображение
-     * 
-     * @param srcPhoto
-     * @return
-     */
-    public PhotoFile scalePhoto( PhotoFile srcPhoto, int bigSide ) {
-        PhotoFile dstPhoto = null;
-        
-        byte[] buf = readFile( srcPhoto );
-        dstPhoto = scalePhoto( buf, bigSide );
 
-        return dstPhoto;
-    }
-    
     /**
      * Масштабирует изображение
      * 
@@ -108,17 +148,13 @@ public class PhotoFileService {
      * @return
      */
     public PhotoFile scalePhoto( byte[] srcImageData, int bigSide ) {
-        PhotoFile dstPhoto = new PhotoFile();
-        
-        byte[] resultImage = resizeImage( srcImageData, bigSide );
-        getImageParams( resultImage, dstPhoto );
-        dstPhoto.setParentPhoto( this.resultPhoto );
-        photoFilesManager.createFile( dstPhoto );
-        logger.debug( "Saved PhotoFile ID: "+ dstPhoto.getFileId() );
-        
-        this.saveFile( resultImage, this.getFilePath( dstPhoto ) );
-        
-        return dstPhoto;
+    	byte[] resultImage = new byte[0];
+        resultImage = resizeImage( srcImageData, bigSide );
+
+        if( resultImage.length > 0 )
+        	return saveOriginal(resultImage);
+        else 
+        	return null;
     }
     
     /**
@@ -130,8 +166,12 @@ public class PhotoFileService {
      */
     public byte[] resizeImage( byte[] srcImageData, int bigSide ) {
         InputStream in = new ByteArrayInputStream( srcImageData );
+
         try {
-            BufferedImage image = javax.imageio.ImageIO.read(in);
+        	MagicMatch mime = Magic.getMagicMatch(srcImageData);
+
+        	BufferedImage image = javax.imageio.ImageIO.read(in);
+        	
             int width = image.getWidth();
             int height = image.getHeight();
 
@@ -159,27 +199,38 @@ public class PhotoFileService {
             Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 
             Graphics2D g2d = changedImage.createGraphics();
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             if( g2d.drawImage( scaledImage, 0, 0, width, height, null ) == false ) {
                 logger.error( "Error during drawing scaled image on graphics!" );
             }
             g2d.dispose();
 
             logger.debug( "Result image size is "+ changedImage.getWidth() +"x"+ changedImage.getHeight() );
-            
-            
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            if( mime.getMimeType().equalsIgnoreCase("image/jpeg") ) {
 /*
-            if( ImageIO.write( changedImage, "jpg", out ) == false ) {
-                logger.error( "Error during saving graphics as byte array!" );
-            }
+                if( ImageIO.write( changedImage, "jpg", out ) == false ) {
+                    logger.error( "Error during saving JPG as byte array!" );
+                }
 */
 
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
-            param.setQuality(0.62f, false);
-            encoder.setJPEGEncodeParam(param);
-            encoder.encode(changedImage); 
+	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+	            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
+	            param.setQuality(0.62f, false);
+	            encoder.setJPEGEncodeParam(param);
+	            encoder.encode(changedImage);
+
+            }
+            else if( mime.getMimeType().equalsIgnoreCase("image/png") ) {
+            	if( ImageIO.write(changedImage, "png", out) == false ) {
+                    logger.error( "Error during saving PNG as byte array!" );
+            	}
+            }
+            else {
+            	logger.error("We have no encoder for MIME-type "+ mime.getMimeType());
+            }
 
             byte[] result = out.toByteArray();
             logger.debug( "The size of resulting image is "+ result.length );
@@ -189,8 +240,12 @@ public class PhotoFileService {
         }
         catch( IOException e ) {
             e.printStackTrace();
-            return null;
-        }
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        return null;
     }
     
     /**
@@ -199,16 +254,14 @@ public class PhotoFileService {
      * @param data
      * @param file
      */
-    public void getImageParams( byte[] data, PhotoFile file ) {
+    public BufferedImage getImageParams( byte[] data, PhotoFile file ) throws IOException {
         InputStream in = new ByteArrayInputStream( data );
-        try {
-            BufferedImage image = javax.imageio.ImageIO.read(in);
-            file.setPhotoHeight( image.getHeight() );
-            file.setPhotoWidth( image.getWidth() );
-        }
-        catch( IOException e ) {
-            e.printStackTrace();
-        }
+
+        BufferedImage image = javax.imageio.ImageIO.read(in);        
+        file.setPhotoHeight( image.getHeight() );
+        file.setPhotoWidth( image.getWidth() );
+        
+        return image;
     }
     
     /**
@@ -282,24 +335,29 @@ public class PhotoFileService {
      * @return
      */
     public String getFilePath( PhotoFile file ) {
-        String sp = File.separator;
-        
-        if( file.getFileAddDate() == null ) {
-            this.logger.error( "Date for file is not set!" );
-            return null;
-        }
-        if( file.getFileId() == 0 ) {
-            this.logger.error( "FileID is not set!" );
-            return null;
-        }
         if( this.destinationPath == null ) {
             this.logger.error( "Destination path for saving files is not set!" );
             return null;
         }
 
-        String date = new SimpleDateFormat( sp +"yyyy"+ sp +"MM-dd").format( file.getFileAddDate() );
-        File todayPhotosCatalog = new File( this.destinationPath, date );
-        File dstFile = new File( todayPhotosCatalog, String.format( "%010d", file.getFileId() ) +".jpg" );
+        File dstFile = null;
+        String dstPath = "";
+        
+        if( file.getFilename() == null || file.getFilename().equals("") ) {
+	        do {
+	        	dstPath = RandomStringUtils.randomAlphabetic(4) +"/"+ RandomStringUtils.randomAlphanumeric(12);
+	        	dstFile = new File( this.destinationPath, dstPath );
+	        }
+	        while( dstFile.exists() );
+	        
+	        logger.debug("generated filename: "+ dstPath);
+	        
+	        file.setFilename( dstPath );
+        }
+        else {
+        	logger.debug("We have file with name: "+ file.getFilename());
+        	dstFile = new File( this.destinationPath, file.getFilename() );
+        }
         
         return dstFile.getAbsolutePath();
     }

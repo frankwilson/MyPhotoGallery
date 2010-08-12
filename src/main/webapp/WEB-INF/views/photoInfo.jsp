@@ -12,10 +12,10 @@
       <span class="additional">
         из <c:choose>
           <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
-          <c:otherwise>альбома <a href="<%=application.getContextPath() %>/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
+          <c:otherwise>альбома <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
         </c:choose>
         <c:if test="${photo.user.userId != sessionScope.User.userId}">
-        пользователя <a href="<%=application.getContextPath() %>/user_${photo.user.userId}.html">${photo.user.login}</a>
+        пользователя <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>
         </c:if>
       </span>
     </div>
@@ -27,7 +27,10 @@
       <tr>
         <td>Превьюшка:</td>
         <td class="photo">
-          <img src="${pageContext.request.contextPath}/photo_${photo.photoId}/size_150/show.html" alt="${photo.title}" border="0" />
+          <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
+            <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/images/album_no_preview.png" /></c:if>
+            <c:if test="${photo.photoFilesList[4].filename != ''}"><img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
+          </a>
         </td>
       </tr>
       <tr>

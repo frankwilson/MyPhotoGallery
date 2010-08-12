@@ -121,6 +121,10 @@ a:visited {
     background-color:#cfcfcf;
 }
 
+.album_microtables .photo {
+    height:150px;
+}
+
 .photo_caption {
     text-align: center;
     font-size: 9px;
@@ -133,6 +137,7 @@ a:visited {
     text-align: left;
     height: 0px;
     font-size: 9px;  
+    text-shadow: 0px 0px 3px #eee;
 }
 
 .photo img {

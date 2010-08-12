@@ -1,7 +1,9 @@
 package ru.pakaz.photo.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import ru.pakaz.common.model.User;
 
 @Entity
@@ -46,6 +50,9 @@ public class Photo {
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="parentPhoto")
     private List<PhotoFile> files = new ArrayList<PhotoFile>(); 
 
+    @Transient
+    private boolean isFilesSorted = false;
+    
     public int getPhotoId() {
         return this.photoId;
     }
@@ -99,6 +106,12 @@ public class Photo {
         this.files.add( file );
     }
     public List<PhotoFile> getPhotoFilesList() {
+    	if( !this.isFilesSorted ) {
+    		Collections.sort(this.files);
+    		
+    		this.isFilesSorted = true;
+    	}
+
         return this.files;
     }
     

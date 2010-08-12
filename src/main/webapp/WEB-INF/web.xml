@@ -54,6 +54,9 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+      <listener-class>ru.pakaz.photo.other.SessionListener</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>main</servlet-name>

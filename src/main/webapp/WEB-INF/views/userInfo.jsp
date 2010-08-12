@@ -32,7 +32,7 @@
       <tr>
         <td style="vertical-align:top;">
           <div class="main">
-            <a href="<%=application.getContextPath() %>/user_${user.userId}/albumsList.html">Альбомы пользователя</a>
+            <a href="${pageContext.request.contextPath}/user_${user.userId}/albumsList.html">Альбомы пользователя</a>
           </div>
         </td>
       </tr>
