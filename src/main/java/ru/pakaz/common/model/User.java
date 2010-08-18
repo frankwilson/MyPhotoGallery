@@ -50,6 +50,9 @@ public class User {
     @Column
     private boolean blocked = false;
     
+    @Column
+    private String activationCode;
+    
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Where(clause = "deleted=0")
     private List<Album> albums = new ArrayList<Album>();
@@ -104,11 +107,27 @@ public class User {
 		this.temporary = temporary;
 	}
 
+	public boolean getTemporary() {
+		return this.temporary;
+	}
+
 	public void setBlocked(boolean blocked) {
 		this.blocked = blocked;
+	}
+
+	public boolean getBlocked() {
+		return this.blocked;
 	}
 	
 	public List<Album> getAlbums() {
 		return this.albums;
+	}
+
+	public void setActivationCode(String code) {
+		this.activationCode = code;
+	}
+
+	public String getActivationCode() {
+		return this.activationCode;
 	}
 }

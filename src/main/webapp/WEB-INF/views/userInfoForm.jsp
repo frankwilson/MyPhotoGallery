@@ -47,18 +47,21 @@
       </tr>
       <tr><td colspan=3 style="height:10px;"></td></tr>
       <tr>
-        <td colspan=2>Если Вы не хотите менять пароль, оставьте следующие два поля пустыми:</td>
+        <td colspan=2>
+          Если Вы не хотите менять пароль, оставьте следующие два поля пустыми:
+          <input type="hidden" name="password" value="******">
+        </td>
       </tr>
       <tr>
         <td>Старый пароль:</td>
         <td>
-          <input type="password" name="old_pass">
+          <input type="password" autocomplete="off" name="old_pass">
         </td>
       </tr>
       <tr>
         <td>Новый пароль:</td>
         <td>
-          <input type="password" name="new_pass">
+          <input type="password" autocomplete="off" name="new_pass">
         </td>
       </tr>
       <tr><td colspan=2 style="height:10px;"></td></tr>

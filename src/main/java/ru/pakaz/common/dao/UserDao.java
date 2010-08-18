@@ -3,6 +3,8 @@ package ru.pakaz.common.dao;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -16,6 +18,9 @@ import ru.pakaz.common.model.User;
  */
 public class UserDao extends HibernateDaoSupport {
     static private Logger logger = Logger.getLogger( UserDao.class );
+    
+    @Autowired
+    private SessionFactory sessionFactory;
 
     public User getUserById( int userId ) {
         List<User> users;
@@ -26,7 +31,7 @@ public class UserDao extends HibernateDaoSupport {
             return users.get(0);
         }
         else {
-            logger.debug( "UserDao.getUserByLogin: user not found!" );
+            logger.debug( "UserDao.getUserByLogin: user with id "+ userId +" not found!" );
             return null;
         }
     }
@@ -44,9 +49,22 @@ public class UserDao extends HibernateDaoSupport {
             return users.get(0);
         }
         else {
-            logger.debug( "UserDao.getUserByLogin: user not found!" );
+            logger.debug( "UserDao.getUserByLogin: user with login '"+ login +"' not found!" );
             return null;
         }
+    }
+    
+    public User getUserByActivationCode( String code ) {
+    	User user;
+        user = (User)sessionFactory.getCurrentSession()
+	        .createQuery("FROM User WHERE activationCode = ?")
+	        .setString(0, code)
+	        .uniqueResult();
+
+        if( user == null )
+            logger.debug( "User with activation code '"+ code +"' not found!" );
+
+        return user;
     }
 
     public User getUserFromSession( HttpServletRequest request ) {

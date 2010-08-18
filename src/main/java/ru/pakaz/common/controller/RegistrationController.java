@@ -1,14 +1,22 @@
 package ru.pakaz.common.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,46 +48,99 @@ public class RegistrationController {
     		HttpServletRequest request, HttpServletResponse response ) {
 
     	new UserInfoValidator().validate( user, result );
-/*
-        if (errors.hasErrors()) {
-            return;
-        }
-
-        User formUser = user;
-
-        if( usersManager.getUserByLogin( formUser.getLogin() ) != null ) {
-            errors.reject( "error.user.login.exists" );
-        }
-        else {
-            usersManager.setUserToSession( request, formUser );
-        }
-*/
-
-    	if( !result.hasErrors() ) {
-    		this.usersManager.createUser(request, user);
-    		this.usersManager.setUserToSession(request, user);
+    	
+    	User dbUser = usersManager.getUserByLogin( user.getLogin() );
+    	if( dbUser != null ) {
+    		result.rejectValue( "login", "error.user.login.exists" );
+    	}
+    	
+    	result.recordSuppressedField("password");
+    	
+    	ModelAndView mav = new ModelAndView();
+    	if( !result.hasFieldErrors("login") && !result.hasFieldErrors("email") ) {
+    		user.setNickName( user.getLogin() );
+    		user.setTemporary(true);
+    		user.setBlocked(true);
     		
-	        try {
-				response.sendRedirect(request.getContextPath() +"/index.html");
-			} catch (IOException e) {
-				logger.error("Error on sending redirect to the main page!");
-			}
-			
-			return null;
+    		if( result.getFieldError("password") != null || user.getPassword() == null || user.getPassword().length() == 0 ) {
+    			String newPass = RandomStringUtils.randomAlphanumeric(8);
+    			user.setPassword( newPass );
+
+    			this.sendEmailMessage(user);
+    		}
+    		
+    		this.usersManager.createUser(request, user);
+
+    		mav.setViewName("registrationComplete");
     	}
     	else {
-            ModelAndView mav = new ModelAndView( "registration" );
+    		mav.setViewName("registration");
             mav.addObject( "user", user );
-            return mav;
     	}
+
+    	return mav;
     }
 
-/*
-    public UserDao getUserDao() {
-        return this.usersManager;
+    public boolean sendEmailMessage( User recipient ) {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setDefaultEncoding("UTF-8");
+        MimeMessage emess = sender.createMimeMessage();
+
+    	ClassPathResource ctx = new ClassPathResource("registrationMessage.html");
+        StringBuilder message = new StringBuilder();
+
+        if( ctx.exists() ) {
+        	try {
+                MimeMessageHelper helper = new MimeMessageHelper(emess, true);
+                helper.setTo( recipient.getEmail() );
+                helper.setFrom( "pv.kazantsev@gmail.com" );
+                helper.setSubject( "Registering on photo.pakaz.ru" );
+
+        		BufferedReader in = new BufferedReader( new InputStreamReader( ctx.getInputStream() ) );
+        		String temp = null;
+        		
+        		String activationCode = "";
+        		
+        		do {
+        			// Циклическая генерация активационного кода
+        			activationCode = RandomStringUtils.randomAlphanumeric(16);
+        		}
+        		while( usersManager.getUserByActivationCode(activationCode) != null );
+
+        		recipient.setActivationCode(activationCode);
+
+        		while( (temp = in.readLine()) != null ) {
+        			if( temp.contains("{USER_LOGIN}") )
+        				temp = temp.replace( "{USER_LOGIN}", recipient.getLogin() );
+        			if( temp.contains("{USER_PASSWORD}") )
+        				temp = temp.replace( "{USER_PASSWORD}", recipient.getPassword() );
+        			if( temp.contains("{ACTIVATION_CODE}") )
+        				temp = temp.replace( "{ACTIVATION_CODE}", activationCode );
+
+        			message.append( temp + "\n" );
+        		}
+
+                helper.setText(message.toString(), true);
+
+                sender.send(emess);
+
+            	return true;
+			}
+            catch(MailException ex) {
+            	logger.error( ex.getMessage() );
+            }
+        	catch (IOException e) {
+				// TODO Auto-generated catch block
+        		logger.error( e.getMessage() );
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				logger.error( e.getMessage() );
+			}
+        }
+        else {
+        	logger.error("there is no template file!");
+        }
+        
+        return false;
     }
-    public void setUserDao( UserDao userDao ) {
-        this.usersManager = userDao;
-    }
-*/
 }

@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page import="ru.pakaz.common.model.User"%>
-<%@ page trimDirectiveWhitespaces="true"%>
 <%  User user = (User)session.getAttribute( "User" ); 
     pageContext.setAttribute("User", user); %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">

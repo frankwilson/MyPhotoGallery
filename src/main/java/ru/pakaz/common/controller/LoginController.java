@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
@@ -23,9 +24,34 @@ public class LoginController {
     private PhotoDao photoManager;
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
-    public ModelAndView get() {
-        ModelAndView mav = new ModelAndView( "login" );
+    public ModelAndView get( HttpServletRequest request, @RequestParam(value="activation", required=false) String activation ) {
+    	ModelAndView mav = new ModelAndView();
         mav.addObject( "user", new User() );
+
+    	if( activation != null && activation.length() > 0 ) {
+    		System.out.println( "Activation is not null and is: "+ activation );
+    		
+    		User user = usersManager.getUserByActivationCode(activation);
+    		if( user == null ) {
+    			// Активационный код недействителен
+    			mav.addObject( "activationResult", false );
+    		}
+    		else {
+    			// Активационный код найден
+    			user.setActivationCode(null);
+    			user.setTemporary(false);
+    			user.setBlocked(false);
+
+    			this.usersManager.updateUser(request, user);
+    			mav.addObject( "activationResult", true );
+    		}
+    	}
+    	else {
+    		System.out.println( "Activation is null" );
+    	}
+    	
+    	mav.setViewName("login");
+
         mav.addObject( "pageName", "Логин" );
         return mav;
     }
