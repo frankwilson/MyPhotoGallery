@@ -4,9 +4,9 @@
   <groupId>ru.pakaz</groupId>
   <artifactId>pakaz</artifactId>
   <packaging>war</packaging>
-  <version>0.0.2</version>
-  <name>pakaz Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <version>0.1</version>
+  <name>pakaz photogallery</name>
+  <url>http://photo.pakaz.ru</url>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -18,32 +18,6 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>3.3.2.GA</version>
-    </dependency>
-    <dependency>
-        <groupId>hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>3.4.0.GA</version>
-        <type>pom</type>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>1.5.10</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.5.10</version>
-    </dependency>
-    <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>1.2.1</version>
-    </dependency>
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.11</version>
     </dependency>
     <dependency>
         <groupId>javax.servlet</groupId>
@@ -76,54 +50,69 @@
         <version>3.0.3.RELEASE</version>
     </dependency>
     <dependency>
-        <groupId>commons-dbcp</groupId>
-        <artifactId>commons-dbcp</artifactId>
-        <version>1.4</version>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.5</version>
     </dependency>
     <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-commons-annotations</artifactId>
-        <version>3.3.0.ga</version>
+        <groupId>jmimemagic</groupId>
+        <artifactId>jmimemagic</artifactId>
+        <version>0.1.2</version>
     </dependency>
     <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.14</version>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>1.4.1</version>
     </dependency>
     <dependency>
     	<groupId>org.hibernate</groupId>
     	<artifactId>hibernate-validator</artifactId>
-    	<version>3.1.0.GA</version>
+    	<version>4.0.2.GA</version>
     </dependency>
     <dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-core-lgpl</artifactId>
-    	<version>1.5.4</version>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-lgpl</artifactId>
+        <version>1.5.5</version>
     </dependency>
     <dependency>
     	<groupId>org.codehaus.jackson</groupId>
     	<artifactId>jackson-mapper-lgpl</artifactId>
-    	<version>1.5.4</version>
+    	<version>1.5.5</version>
     </dependency>
     <dependency>
-    	<groupId>commons-lang</groupId>
-    	<artifactId>commons-lang</artifactId>
-    	<version>2.5</version>
+    	<groupId>commons-fileupload</groupId>
+    	<artifactId>commons-fileupload</artifactId>
+    	<version>1.2.2</version>
     </dependency>
     <dependency>
-    	<groupId>jmimemagic</groupId>
-    	<artifactId>jmimemagic</artifactId>
-    	<version>0.1.2</version>
+    	<groupId>mysql</groupId>
+    	<artifactId>mysql-connector-java</artifactId>
+    	<version>5.1.13</version>
     </dependency>
     <dependency>
-    	<groupId>javax.activation</groupId>
-    	<artifactId>activation</artifactId>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate-entitymanager</artifactId>
+    	<version>3.4.0.GA</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-logging</groupId>
+    	<artifactId>commons-logging</artifactId>
     	<version>1.1.1</version>
     </dependency>
     <dependency>
-    	<groupId>javax.mail</groupId>
-    	<artifactId>mail</artifactId>
-    	<version>1.4.1</version>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-api</artifactId>
+    	<version>1.6.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-log4j12</artifactId>
+    	<version>1.6.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>log4j</groupId>
+    	<artifactId>log4j</artifactId>
+    	<version>1.2.14</version>
     </dependency>
   </dependencies>
   <build>

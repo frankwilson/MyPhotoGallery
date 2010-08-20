@@ -4,10 +4,10 @@
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="header.jsp" />
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mootools.js"></script> 
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mSwiff.Uploader.js"></script> 
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mFx.ProgressBar.js"></script> 
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mLang.js"></script> 
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mFancyUpload2.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Swiff.Uploader.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Fx.ProgressBar.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Lang.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/FancyUpload2.js"></script> 
 <script type="text/javascript"> 
 /* <![CDATA[ */
 /**
@@ -30,7 +30,7 @@ window.addEvent('domready', function() { // wait for the content
        url: $('upload_form').action,
 
        // path to the SWF file
-       path: '${pageContext.request.contextPath}/Swiff.Uploader.swf',
+       path: '${pageContext.request.contextPath}/scripts/Swiff.Uploader.swf',
 
        // remove that line to select all files, or edit it, add more items
        typeFilter: {

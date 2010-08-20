@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.Email;
+import org.hibernate.validator.constraints.Email;
 
 import ru.pakaz.photo.model.Album;
 
