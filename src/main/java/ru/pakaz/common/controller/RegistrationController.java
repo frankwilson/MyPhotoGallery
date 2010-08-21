@@ -52,7 +52,10 @@ public class RegistrationController {
     	User dbUser = usersManager.getUserByLogin( user.getLogin() );
     	if( dbUser != null ) {
     		result.rejectValue( "login", "error.user.login.exists" );
+    		logger.debug("User with login "+ user.getLogin() +" exists!");
     	}
+    	
+    	logger.debug("User with login "+ user.getLogin() +" does not exists");
     	
     	result.recordSuppressedField("password");
     	
@@ -65,11 +68,13 @@ public class RegistrationController {
     		if( result.getFieldError("password") != null || user.getPassword() == null || user.getPassword().length() == 0 ) {
     			String newPass = RandomStringUtils.randomAlphanumeric(8);
     			user.setPassword( newPass );
-
-    			this.sendEmailMessage(user);
     		}
+
+			logger.debug("Try to send e-mail message…");
+			this.sendEmailMessage(user);
     		
     		this.usersManager.createUser(request, user);
+    		logger.debug("User created");
 
     		mav.setViewName("registrationComplete");
     	}
@@ -90,6 +95,7 @@ public class RegistrationController {
         StringBuilder message = new StringBuilder();
 
         if( ctx.exists() ) {
+        	logger.debug("Reading mail message template…");
         	try {
                 MimeMessageHelper helper = new MimeMessageHelper(emess, true);
                 helper.setTo( recipient.getEmail() );
@@ -104,9 +110,11 @@ public class RegistrationController {
         		do {
         			// Циклическая генерация активационного кода
         			activationCode = RandomStringUtils.randomAlphanumeric(16);
+        			logger.debug("Try to generate activation code: "+ activationCode );
         		}
         		while( usersManager.getUserByActivationCode(activationCode) != null );
 
+        		logger.debug("Activation code for user "+ recipient.getLogin() +" is "+ activationCode );
         		recipient.setActivationCode(activationCode);
 
         		while( (temp = in.readLine()) != null ) {
@@ -127,6 +135,7 @@ public class RegistrationController {
             	return true;
 			}
             catch(MailException ex) {
+            	logger.debug("Email was not sent:");
             	logger.error( ex.getMessage() );
             }
         	catch (IOException e) {
