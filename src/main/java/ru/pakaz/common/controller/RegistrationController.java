@@ -128,6 +128,8 @@ public class RegistrationController {
         			message.append( temp + "\n" );
         		}
 
+        		logger.debug( "Mail message: \n"+ message.toString() );
+        		
                 helper.setText(message.toString(), true);
 
                 sender.send(emess);
