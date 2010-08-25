@@ -168,7 +168,7 @@ a:hover, a.hover {
 }
  
 #demo-status .progress {
-    background: url(${pageContext.request.contextPath}/images/progress-bar/progress.gif) no-repeat;
+    background: url(${pageContext.request.contextPath}/img/progress-bar/progress.gif) no-repeat;
     background-position: +50% 0;
     margin-right: 0.5em;
     vertical-align: middle;
@@ -193,23 +193,23 @@ a:hover, a.hover {
     color: #8a1f11;
     cursor: pointer;
     border-bottom: 1px solid #fbc2c4;
-    background: #fbe3e4 url(${pageContext.request.contextPath}/images/failed.png) no-repeat 4px 4px;
+    background: #fbe3e4 url(${pageContext.request.contextPath}/img/failed.png) no-repeat 4px 4px;
 }
  
 #demo-list li.file {
     border-bottom: 1px solid #eee;
-    background: url(${pageContext.request.contextPath}/images/file.png) no-repeat 4px 4px;
+    background: url(${pageContext.request.contextPath}/img/file.png) no-repeat 4px 4px;
     overflow: auto;
 }
 #demo-list li.file.file-uploading {
-    background-image: url(${pageContext.request.contextPath}/images/uploading.png);
+    background-image: url(${pageContext.request.contextPath}/img/uploading.png);
     background-color: #D9DDE9;
 }
 #demo-list li.file.file-success {
-    background-image: url(${pageContext.request.contextPath}/images/success.png);
+    background-image: url(${pageContext.request.contextPath}/img/success.png);
 }
 #demo-list li.file.file-failed {
-    background-image: url(${pageContext.request.contextPath}/images/failed.png);
+    background-image: url(${pageContext.request.contextPath}/img/failed.png);
 }
  
 #demo-list li.file .file-name {
@@ -296,11 +296,11 @@ a:hover, a.hover {
         </p>
         <div>
             <strong class="overall-title"></strong><br />
-            <img src="${pageContext.request.contextPath}/images/progress-bar/bar.gif" class="progress overall-progress" />
+            <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress overall-progress" />
         </div>
         <div>
             <strong class="current-title"></strong><br />
-            <img src="${pageContext.request.contextPath}/images/progress-bar/bar.gif" class="progress current-progress" />
+            <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress current-progress" />
         </div>
         <div class="current-text"></div>
     </div>

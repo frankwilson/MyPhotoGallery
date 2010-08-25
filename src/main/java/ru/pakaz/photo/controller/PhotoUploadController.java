@@ -222,7 +222,7 @@ public class PhotoUploadController {
         logger.info("We have multipart content!");
 
         try {
-        	FileItem file = this.getFileFromRequest(request);
+            FileItem file = this.getFileFromRequest(request);
 
             Photo newPhoto = new Photo();
             newPhoto.setUser( this.usersManager.getUserFromSession(request) );
@@ -231,9 +231,9 @@ public class PhotoUploadController {
 
             User curUsr = this.usersManager.getUserFromSession(request);
             if( curUsr != null )
-            	logger.debug( "Uploading user is "+  curUsr.getLogin() );
+                logger.debug( "Uploading user is "+  curUsr.getLogin() );
             else
-            	logger.error( "Uploading user is absent!" );
+                logger.error( "Uploading user is absent!" );
             
             this.photoManager.createPhoto( newPhoto );
             this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
@@ -248,30 +248,30 @@ public class PhotoUploadController {
             int maxHeight = 0;
             
             for (PhotoFile photoFile : list) {
-				if( photoFile.getPhotoHeight() > maxHeight )
-					maxHeight = photoFile.getPhotoHeight();
+                if( photoFile.getPhotoHeight() > maxHeight )
+                    maxHeight = photoFile.getPhotoHeight();
 
-				if( photoFile.getPhotoWidth() > maxWidth )
-					maxWidth = photoFile.getPhotoWidth();
-			}
+                if( photoFile.getPhotoWidth() > maxWidth )
+                    maxWidth = photoFile.getPhotoWidth();
+            }
             
             view.addStaticAttribute("width", maxWidth);
             view.addStaticAttribute("height", maxHeight);
             
             MagicMatch mime = null;
-    		try {
-    			mime = Magic.getMagicMatch(file.get());
-    		}
-    		catch (Exception e) {
-    			logger.warn("Can't get MIME-type!");
-    		}
+            try {
+                mime = Magic.getMagicMatch(file.get());
+            }
+            catch (Exception e) {
+                logger.warn("Can't get MIME-type!");
+            }
             
-    		if( mime != null )
-    			view.addStaticAttribute("mime", mime.getMimeType());
-    		else
-    			view.addStaticAttribute("mime", file.getContentType());
-    		
-    		int oldUnallocPhotosCount = Integer.parseInt(
+            if( mime != null )
+                view.addStaticAttribute("mime", mime.getMimeType());
+            else
+                view.addStaticAttribute("mime", file.getContentType());
+            
+            int oldUnallocPhotosCount = Integer.parseInt(
                     request.getSession().getAttribute("unallocatedPhotosCount").toString()
                 );
             request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
@@ -339,7 +339,7 @@ public class PhotoUploadController {
                 logger.info("form item: "+ item.getFieldName());
 
                 if (!item.isFormField() && item.getName() != "") {
-                	return item;
+                    return item;
                 }
             }
             

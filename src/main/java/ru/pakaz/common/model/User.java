@@ -103,31 +103,31 @@ public class User {
         return this.userId;
     }
 
-	public void setTemporary(boolean temporary) {
-		this.temporary = temporary;
-	}
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
+    }
 
-	public boolean getTemporary() {
-		return this.temporary;
-	}
+    public boolean getTemporary() {
+        return this.temporary;
+    }
 
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
-	}
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
 
-	public boolean getBlocked() {
-		return this.blocked;
-	}
-	
-	public List<Album> getAlbums() {
-		return this.albums;
-	}
+    public boolean getBlocked() {
+        return this.blocked;
+    }
+    
+    public List<Album> getAlbums() {
+        return this.albums;
+    }
 
-	public void setActivationCode(String code) {
-		this.activationCode = code;
-	}
+    public void setActivationCode(String code) {
+        this.activationCode = code;
+    }
 
-	public String getActivationCode() {
-		return this.activationCode;
-	}
+    public String getActivationCode() {
+        return this.activationCode;
+    }
 }

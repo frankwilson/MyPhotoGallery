@@ -98,13 +98,13 @@ public class PhotoFile implements Comparable<PhotoFile> {
         return this.filename;
     }
 
-	@Override
-	public int compareTo(PhotoFile o) {
-		if( this.photoWidth > o.getPhotoWidth() && this.photoHeight > o.getPhotoHeight() )
-			return -1;
-		else if( this.photoWidth < o.getPhotoWidth() && this.photoHeight < o.getPhotoHeight() )
-			return 1;
-		else
-			return 0;
-	}
+    @Override
+    public int compareTo(PhotoFile o) {
+        if( this.photoWidth > o.getPhotoWidth() && this.photoHeight > o.getPhotoHeight() )
+            return -1;
+        else if( this.photoWidth < o.getPhotoWidth() && this.photoHeight < o.getPhotoHeight() )
+            return 1;
+        else
+            return 0;
+    }
 }

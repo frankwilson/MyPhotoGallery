@@ -55,11 +55,11 @@ public class UserDao extends HibernateDaoSupport {
     }
     
     public User getUserByActivationCode( String code ) {
-    	User user;
+        User user;
         user = (User)sessionFactory.getCurrentSession()
-	        .createQuery("FROM User WHERE activationCode = ?")
-	        .setString(0, code)
-	        .uniqueResult();
+            .createQuery("FROM User WHERE activationCode = ?")
+            .setString(0, code)
+            .uniqueResult();
 
         if( user == null )
             logger.debug( "User with activation code '"+ code +"' not found!" );

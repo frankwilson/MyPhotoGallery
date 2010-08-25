@@ -48,7 +48,7 @@ public class PhotoFileService {
         
         PhotoFile original = saveOriginal( data );
         if( original == null )
-        	throw new Exception("Broken image file!");
+            throw new Exception("Broken image file!");
 
         original.setParentPhoto( resultPhoto );
 
@@ -63,7 +63,7 @@ public class PhotoFileService {
 
         scaled = scalePhoto( data, 640 );
         if( scaled != null )
-        	resultPhoto.addPhotoFile( scaled );
+            resultPhoto.addPhotoFile( scaled );
 
         data = null;
         byte[] scaledBig = readFile(scaled);
@@ -73,21 +73,21 @@ public class PhotoFileService {
 
         scaled = scalePhoto( scaledBig, 480 );
         if( scaled != null )
-        	resultPhoto.addPhotoFile( scaled );
+            resultPhoto.addPhotoFile( scaled );
         
         this.logger.debug("scaled from big to middle size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         time = System.nanoTime();
 
         scaled = scalePhoto( scaledBig, 320 );
         if( scaled != null )
-        	resultPhoto.addPhotoFile( scaled );
+            resultPhoto.addPhotoFile( scaled );
         
         this.logger.debug("scaled from big to small size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         time = System.nanoTime();
 
         scaled = scalePhoto( scaledBig, 150 );
         if( scaled != null )
-        	resultPhoto.addPhotoFile( scaled );
+            resultPhoto.addPhotoFile( scaled );
         
         this.logger.debug("scaled from big to preview size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
     }
@@ -102,39 +102,39 @@ public class PhotoFileService {
         PhotoFile original = new PhotoFile();
         
         try {
-        	this.getImageParams( data, original );
+            this.getImageParams( data, original );
         }
         catch( IOException iox ) {
-        	logger.error("Error while reading image parameters: ");
-        	logger.error(iox.getStackTrace());
-        	
-        	return null;
+            logger.error("Error while reading image parameters: ");
+            logger.error(iox.getStackTrace());
+            
+            return null;
         }
 
         original.setParentPhoto( this.resultPhoto );
 
         MagicMatch mime;
         String extension = null;
-		try {
-			mime = Magic.getMagicMatch(data);
-			extension = mime.getExtension();
-		}
-		catch (Exception e) {
-			logger.warn("Can't get MIME-type!");
-		}
+        try {
+            mime = Magic.getMagicMatch(data);
+            extension = mime.getExtension();
+        }
+        catch (Exception e) {
+            logger.warn("Can't get MIME-type!");
+        }
 
-		if( extension != null ) {
-			this.saveFile( data, getFilePath(original) +"."+ extension );
-			original.setFilename( original.getFilename() +"."+ extension );
+        if( extension != null ) {
+            this.saveFile( data, getFilePath(original) +"."+ extension );
+            original.setFilename( original.getFilename() +"."+ extension );
 
-			photoFilesManager.createFile( original );
-			logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
+            photoFilesManager.createFile( original );
+            logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
 
-			return original;
-		}
-		else {
-			logger.error( "File not saved because of file extension missing" );
-		}
+            return original;
+        }
+        else {
+            logger.error( "File not saved because of file extension missing" );
+        }
 
         return null;
     }
@@ -148,13 +148,13 @@ public class PhotoFileService {
      * @return
      */
     public PhotoFile scalePhoto( byte[] srcImageData, int bigSide ) {
-    	byte[] resultImage = new byte[0];
+        byte[] resultImage = new byte[0];
         resultImage = resizeImage( srcImageData, bigSide );
 
         if( resultImage.length > 0 )
-        	return saveOriginal(resultImage);
+            return saveOriginal(resultImage);
         else 
-        	return null;
+            return null;
     }
     
     /**
@@ -168,10 +168,10 @@ public class PhotoFileService {
         InputStream in = new ByteArrayInputStream( srcImageData );
 
         try {
-        	MagicMatch mime = Magic.getMagicMatch(srcImageData);
+            MagicMatch mime = Magic.getMagicMatch(srcImageData);
 
-        	BufferedImage image = javax.imageio.ImageIO.read(in);
-        	
+            BufferedImage image = javax.imageio.ImageIO.read(in);
+            
             int width = image.getWidth();
             int height = image.getHeight();
 
@@ -216,20 +216,20 @@ public class PhotoFileService {
                 }
 */
 
-	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-	            JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
-	            param.setQuality(0.62f, false);
-	            encoder.setJPEGEncodeParam(param);
-	            encoder.encode(changedImage);
+                JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+                JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(changedImage);
+                param.setQuality(0.62f, false);
+                encoder.setJPEGEncodeParam(param);
+                encoder.encode(changedImage);
 
             }
             else if( mime.getMimeType().equalsIgnoreCase("image/png") ) {
-            	if( ImageIO.write(changedImage, "png", out) == false ) {
+                if( ImageIO.write(changedImage, "png", out) == false ) {
                     logger.error( "Error during saving PNG as byte array!" );
-            	}
+                }
             }
             else {
-            	logger.error("We have no encoder for MIME-type "+ mime.getMimeType());
+                logger.error("We have no encoder for MIME-type "+ mime.getMimeType());
             }
 
             byte[] result = out.toByteArray();
@@ -241,9 +241,9 @@ public class PhotoFileService {
         catch( IOException e ) {
             e.printStackTrace();
         } catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return null;
     }
@@ -318,7 +318,7 @@ public class PhotoFileService {
         }
         catch( FileNotFoundException e ) {
             // TODO nothing
-        	logger.debug("File with ID "+ file.getFileId() + " was not found.");
+            logger.debug("File with ID "+ file.getFileId() + " was not found.");
         }
         catch( IOException e ) {
             // TODO Auto-generated catch block
@@ -344,19 +344,19 @@ public class PhotoFileService {
         String dstPath = "";
         
         if( file.getFilename() == null || file.getFilename().equals("") ) {
-	        do {
-	        	dstPath = RandomStringUtils.randomAlphabetic(4) +"/"+ RandomStringUtils.randomAlphanumeric(12);
-	        	dstFile = new File( this.destinationPath, dstPath );
-	        }
-	        while( dstFile.exists() );
-	        
-	        logger.debug("generated filename: "+ dstPath);
-	        
-	        file.setFilename( dstPath );
+            do {
+                dstPath = RandomStringUtils.randomAlphabetic(4) +"/"+ RandomStringUtils.randomAlphanumeric(12);
+                dstFile = new File( this.destinationPath, dstPath );
+            }
+            while( dstFile.exists() );
+            
+            logger.debug("generated filename: "+ dstPath);
+            
+            file.setFilename( dstPath );
         }
         else {
-        	logger.debug("We have file with name: "+ file.getFilename());
-        	dstFile = new File( this.destinationPath, file.getFilename() );
+            logger.debug("We have file with name: "+ file.getFilename());
+            dstFile = new File( this.destinationPath, file.getFilename() );
         }
         
         return dstFile.getAbsolutePath();

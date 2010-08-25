@@ -39,7 +39,7 @@ public class AlbumCreateController {
 
     @RequestMapping(value = "/createAlbum.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("album") Album album, BindingResult result,
-    		HttpServletRequest request, HttpServletResponse response ) {
+            HttpServletRequest request, HttpServletResponse response ) {
 
         ModelAndView mav = new ModelAndView();
 

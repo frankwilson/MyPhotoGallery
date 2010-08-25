@@ -13,7 +13,7 @@
     <br /></c:if>
     Для входа введите аутентификационную информацию в следующие поля:
     <br><br>
-	<table class="main">
+    <table class="main">
       <colgroup>
         <col style="width:90px;">
       </colgroup>

@@ -22,9 +22,9 @@ public class PhotoDao extends HibernateDaoSupport {
         Photo photo;
 
         photo = (Photo)sessionFactory.getCurrentSession()
-	        .createQuery("FROM Photo WHERE id = ? and deleted = false")
-	        .setInteger(0, photoId)
-	        .uniqueResult();
+            .createQuery("FROM Photo WHERE id = ? and deleted = false")
+            .setInteger(0, photoId)
+            .uniqueResult();
 
 //        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ? and deleted = false", photoId );
 
@@ -43,11 +43,11 @@ public class PhotoDao extends HibernateDaoSupport {
         photosList = getHibernateTemplate().find( "FROM Photo WHERE albumId = ? and deleted = false", albumId );
 
         if( photosList != null ) {
-        	
-        	for (Photo photo : photosList) {
-				logger.debug("We got photo with ID "+ photo.getPhotoId());
-			}
-        	
+            
+            for (Photo photo : photosList) {
+                logger.debug("We got photo with ID "+ photo.getPhotoId());
+            }
+            
             return photosList;
         }
         else {

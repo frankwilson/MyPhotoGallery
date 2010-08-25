@@ -104,7 +104,7 @@ public class Album {
         this.photos = photos;
     }
 
-	public void setDeleted(boolean isDeleted) {
-		this.deleted = isDeleted;
-	}
+    public void setDeleted(boolean isDeleted) {
+        this.deleted = isDeleted;
+    }
 }

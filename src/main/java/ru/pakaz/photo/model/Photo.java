@@ -106,11 +106,11 @@ public class Photo {
         this.files.add( file );
     }
     public List<PhotoFile> getPhotoFilesList() {
-    	if( !this.isFilesSorted ) {
-    		Collections.sort(this.files);
-    		
-    		this.isFilesSorted = true;
-    	}
+        if( !this.isFilesSorted ) {
+            Collections.sort(this.files);
+            
+            this.isFilesSorted = true;
+        }
 
         return this.files;
     }

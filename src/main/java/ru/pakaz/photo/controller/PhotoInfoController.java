@@ -36,7 +36,7 @@ public class PhotoInfoController {
      */
     @RequestMapping(value = "/photo_{photoId}/info.html", method = RequestMethod.GET)
     public ModelAndView get( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
-    	Photo photo = this.photoManager.getPhotoById(photoId);
+        Photo photo = this.photoManager.getPhotoById(photoId);
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "photoInfo" );
@@ -58,40 +58,40 @@ public class PhotoInfoController {
     @RequestMapping(value = "/photo_{photoId}/delete.html", method = RequestMethod.GET)
     public ModelAndView delete( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
 
-    	ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView();
 
-    	Photo photo = this.photoManager.getPhotoById(photoId);
+        Photo photo = this.photoManager.getPhotoById(photoId);
 
-    	if( photo != null ) {
-    		photo.setDeleted(true);
-    		this.photoManager.updatePhoto(photo);
-    		logger.debug("Photo "+ photoId +" Deleted");
+        if( photo != null ) {
+            photo.setDeleted(true);
+            this.photoManager.updatePhoto(photo);
+            logger.debug("Photo "+ photoId +" Deleted");
 
-        	if( photo.getAlbum() != null && photo.getAlbum().getPreview() == photo ) {
-        		// Если удаляемая фотография является превьюшкой 
-        		// для альбома, в котором она находилась, обнуляем превью
-        		photo.getAlbum().setPreview(null);
-        		this.albumManager.updateAlbum( photo.getAlbum() );
-        	}
+            if( photo.getAlbum() != null && photo.getAlbum().getPreview() == photo ) {
+                // Если удаляемая фотография является превьюшкой 
+                // для альбома, в котором она находилась, обнуляем превью
+                photo.getAlbum().setPreview(null);
+                this.albumManager.updateAlbum( photo.getAlbum() );
+            }
 
-        	if( photo.getAlbum() != null )
-        		mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
-        	else {
-        		mav.setViewName( "redirect:/unallocatedPhotos.html" );
+            if( photo.getAlbum() != null )
+                mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
+            else {
+                mav.setViewName( "redirect:/unallocatedPhotos.html" );
                 
-        		// Уменьшаем счетчик нераспределенных фотографий
+                // Уменьшаем счетчик нераспределенных фотографий
                 int oldUnallocPhotosCount = Integer.parseInt(
                         request.getSession().getAttribute("unallocatedPhotosCount").toString()
                     );
                 request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
-        	}
-    	}
-    	else {
-    		logger.debug("Photo "+ photoId +" does not exist");
-    		mav.setViewName( "redirect:albumsList.html" );
-    	}
-    	
-    	return mav;
+            }
+        }
+        else {
+            logger.debug("Photo "+ photoId +" does not exist");
+            mav.setViewName( "redirect:albumsList.html" );
+        }
+        
+        return mav;
     }
 
     /**
@@ -109,11 +109,11 @@ public class PhotoInfoController {
 
         ModelAndView mav = new ModelAndView();
         
-    	Photo dbPhoto = this.photoManager.getPhotoById(photoId);
+        Photo dbPhoto = this.photoManager.getPhotoById(photoId);
         
         if( photo.getTitle().length() > 0 ) {
-        	dbPhoto.setTitle(photo.getTitle());
-        	dbPhoto.setDescription(photo.getDescription());
+            dbPhoto.setTitle(photo.getTitle());
+            dbPhoto.setDescription(photo.getDescription());
 
             this.photoManager.updatePhoto(dbPhoto);
             
@@ -138,7 +138,7 @@ public class PhotoInfoController {
      */
     @RequestMapping(value = "/photo_{photoId}/move.html", method = RequestMethod.POST)  
     public ModelAndView move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
-    		BindingResult result, HttpServletRequest request ) {
+            BindingResult result, HttpServletRequest request ) {
 
         ModelAndView mav = new ModelAndView();
 
@@ -146,30 +146,30 @@ public class PhotoInfoController {
                 request.getSession().getAttribute("unallocatedPhotosCount").toString()
             );
 
-    	int albumId    = album.getAlbumId();
-    	Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
-    	Album dstAlbum = null;
+        int albumId    = album.getAlbumId();
+        Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
+        Album dstAlbum = null;
 
-    	if( albumId != 0 ) {
-    		dstAlbum = this.albumManager.getAlbumById(albumId);
-    		
-    		if(dbPhoto.getAlbum() == null)
-        		// После перемещения фотографии из Нераспределенного альбома уменьшаем значение его размера в сессии
-    			request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
-    	}
-    	else
-    		// После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии 
+        if( albumId != 0 ) {
+            dstAlbum = this.albumManager.getAlbumById(albumId);
+            
+            if(dbPhoto.getAlbum() == null)
+                // После перемещения фотографии из Нераспределенного альбома уменьшаем значение его размера в сессии
+                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
+        }
+        else
+            // После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии 
             request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
         
         if( dstAlbum == null || dbPhoto.getUser() == dstAlbum.getUser() ) {
-        	if( dbPhoto.getAlbum() != null && dbPhoto.getAlbum().getPreview() == dbPhoto ) {
-        		// Если перемещаемая фотография является превьюшкой 
-        		// для альбома, в котором она находилась, обнуляем превью
-        		dbPhoto.getAlbum().setPreview(null);
-        		this.albumManager.updateAlbum( dbPhoto.getAlbum() );
-        	}
-        	
-        	dbPhoto.setAlbum(dstAlbum);
+            if( dbPhoto.getAlbum() != null && dbPhoto.getAlbum().getPreview() == dbPhoto ) {
+                // Если перемещаемая фотография является превьюшкой 
+                // для альбома, в котором она находилась, обнуляем превью
+                dbPhoto.getAlbum().setPreview(null);
+                this.albumManager.updateAlbum( dbPhoto.getAlbum() );
+            }
+            
+            dbPhoto.setAlbum(dstAlbum);
             this.photoManager.updatePhoto(dbPhoto);
             
             mav.setViewName( "redirect:/photo_"+ photoId +".html" );

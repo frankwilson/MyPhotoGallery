@@ -83,21 +83,21 @@ public class PhotoFileServiceTest extends TestCase {
         String extension = "jpg";
 
         try {
-			mime = Magic.getMagicMatch(buf);
-			
-			assertTrue( mime.getMimeType().equals("image/jpeg") );
-			
-			extension = mime.getExtension();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            mime = Magic.getMagicMatch(buf);
+            
+            assertTrue( mime.getMimeType().equals("image/jpeg") );
+            
+            extension = mime.getExtension();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         assertTrue( this.service.saveFile( buf, filePath +"."+ extension ) );
     }
 
     public void testResizeImage() {
-    	File srcFile = new File( "/home/wilson/Картинки/5014051.png" );
-    	assertTrue( srcFile.exists() );
+        File srcFile = new File( "/home/wilson/Картинки/5014051.png" );
+        assertTrue( srcFile.exists() );
 
         FileInputStream in;
         byte[] buf = null;
@@ -122,20 +122,20 @@ public class PhotoFileServiceTest extends TestCase {
 
         MagicMatch mime;
         try {
-			mime = Magic.getMagicMatch(resizeResult);
+            mime = Magic.getMagicMatch(resizeResult);
 
-			logger.info(mime.getMimeType());
-			
-			logger.info(mime.getExtension());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            logger.info(mime.getMimeType());
+            
+            logger.info(mime.getExtension());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 /*
     public void testUploadPicture() {
-    	File srcFile = new File( "/home/wilson/Картинки/5014051.png" );
-    	assertTrue( srcFile.exists() );
-    	
+        File srcFile = new File( "/home/wilson/Картинки/5014051.png" );
+        assertTrue( srcFile.exists() );
+        
         Photo newPhoto = new Photo();
         newPhoto.setUser( this.usersManager.getUserById(1) );
         newPhoto.setTitle( "Картинка" );
@@ -161,10 +161,10 @@ public class PhotoFileServiceTest extends TestCase {
         this.photoManager.createPhoto( newPhoto );
         this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
         try {
-			this.service.savePhoto( buf, newPhoto );
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            this.service.savePhoto( buf, newPhoto );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 */
 }

@@ -25,32 +25,32 @@ public class LoginController {
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public ModelAndView get( HttpServletRequest request, @RequestParam(value="activation", required=false) String activation ) {
-    	ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView();
         mav.addObject( "user", new User() );
 
-    	if( activation != null && activation.length() > 0 ) {
-    		System.out.println( "Activation is not null and is: "+ activation );
-    		
-    		User user = usersManager.getUserByActivationCode(activation);
-    		if( user == null ) {
-    			// Активационный код недействителен
-    			mav.addObject( "activationResult", false );
-    		}
-    		else {
-    			// Активационный код найден
-    			user.setActivationCode(null);
-    			user.setTemporary(false);
-    			user.setBlocked(false);
+        if( activation != null && activation.length() > 0 ) {
+            System.out.println( "Activation is not null and is: "+ activation );
+            
+            User user = usersManager.getUserByActivationCode(activation);
+            if( user == null ) {
+                // Активационный код недействителен
+                mav.addObject( "activationResult", false );
+            }
+            else {
+                // Активационный код найден
+                user.setActivationCode(null);
+                user.setTemporary(false);
+                user.setBlocked(false);
 
-    			this.usersManager.updateUser(request, user);
-    			mav.addObject( "activationResult", true );
-    		}
-    	}
-    	else {
-    		System.out.println( "Activation is null" );
-    	}
-    	
-    	mav.setViewName("login");
+                this.usersManager.updateUser(request, user);
+                mav.addObject( "activationResult", true );
+            }
+        }
+        else {
+            System.out.println( "Activation is null" );
+        }
+        
+        mav.setViewName("login");
 
         mav.addObject( "pageName", "Логин" );
         return mav;

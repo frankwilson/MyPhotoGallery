@@ -30,12 +30,12 @@
     <tr>
       <td>
 <% if( user.getUserId() != 0 ) { %>
-	      <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="Личная информация">${User.login}</a> |
-	      <a href="${pageContext.request.contextPath}/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
-	      [<a href="${pageContext.request.contextPath}/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
-	      <a href="${pageContext.request.contextPath}/upload.html" title="Загрузить фотографию">Загрузить</a> |
-	      <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (${sessionScope.unallocatedPhotosCount})</a> |
-	      <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a>
+          <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="Личная информация">${User.login}</a> |
+          <a href="${pageContext.request.contextPath}/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
+          [<a href="${pageContext.request.contextPath}/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
+          <a href="${pageContext.request.contextPath}/upload.html" title="Загрузить фотографию">Загрузить</a> |
+          <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (${sessionScope.unallocatedPhotosCount})</a> |
+          <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a>
 <%}%>
       </td>
     </tr>

@@ -42,7 +42,7 @@ public class UserInfoController {
     @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request ) {
         User dbUser = this.usersManager.getUserFromSession( request );
-    	user.setLogin(dbUser.getLogin());
+        user.setLogin(dbUser.getLogin());
         new UserInfoValidator().validate( user, result );
 
         if( !result.hasErrors() ) {

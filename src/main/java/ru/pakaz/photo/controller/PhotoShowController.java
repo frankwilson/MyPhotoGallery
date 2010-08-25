@@ -91,36 +91,36 @@ public class PhotoShowController {
         Photo next    = null;
         
         if( current != null ) {
-        	
-        	int currentPhotoNumber = 1;
+            
+            int currentPhotoNumber = 1;
 
-        	String title  = new RequestContext(request).getMessage( "page.title.viewPhoto" ) +" "+ current.getTitle();
+            String title  = new RequestContext(request).getMessage( "page.title.viewPhoto" ) +" "+ current.getTitle();
 
-        	logger.debug( "Adding title string to the view: '"+ title +"'" );
-        	mav.addObject( "pageName", title );
-        	mav.addObject( "photo", current );
+            logger.debug( "Adding title string to the view: '"+ title +"'" );
+            mav.addObject( "pageName", title );
+            mav.addObject( "photo", current );
 
-        	if( current.getAlbum() != null ) {
-        		List<Photo> albumPhotoList = current.getAlbum().getPhotos();
+            if( current.getAlbum() != null ) {
+                List<Photo> albumPhotoList = current.getAlbum().getPhotos();
 
-        		for (int i = 0; i < albumPhotoList.size(); i++) {
-        			if( albumPhotoList.get(i).getPhotoId() == current.getPhotoId() ) {
-        				prev = i > 0 ? albumPhotoList.get(i - 1) : null;
-        				next = albumPhotoList.size() > i + 1 ? albumPhotoList.get(i + 1) : null;
+                for (int i = 0; i < albumPhotoList.size(); i++) {
+                    if( albumPhotoList.get(i).getPhotoId() == current.getPhotoId() ) {
+                        prev = i > 0 ? albumPhotoList.get(i - 1) : null;
+                        next = albumPhotoList.size() > i + 1 ? albumPhotoList.get(i + 1) : null;
 
-        				currentPhotoNumber = i + 1;
-        				break;
-        			}
-        		}
-        	}
+                        currentPhotoNumber = i + 1;
+                        break;
+                    }
+                }
+            }
 
-        	mav.addObject( "currentPhotoNumber", currentPhotoNumber );
-        	mav.addObject( "prevPhoto", prev );
-        	mav.addObject( "nextPhoto", next );
+            mav.addObject( "currentPhotoNumber", currentPhotoNumber );
+            mav.addObject( "prevPhoto", prev );
+            mav.addObject( "nextPhoto", next );
         }
         else {
-        	// Если фотография не существует или удалена
-        	mav.setViewName( "photoNotFound" );
+            // Если фотография не существует или удалена
+            mav.setViewName( "photoNotFound" );
         }
         
         return mav;

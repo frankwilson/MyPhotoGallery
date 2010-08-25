@@ -12,13 +12,13 @@ import ru.pakaz.common.model.User;
 public class UserInfoValidator implements org.springframework.validation.Validator {
     private Logger logger = Logger.getLogger( UserInfoValidator.class );
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return clazz.equals( User.class );
-	}
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return clazz.equals( User.class );
+    }
     
     private final String EMAIL_PATTERN = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\\.)"+
-    	"(aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z]|рф)$";
+        "(aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z]|рф)$";
     
     private final String LOGIN_PATTERN = "^[a-zA-Zа-яА-Я0-9-_ .]{0,16}$";
 
@@ -43,12 +43,12 @@ public class UserInfoValidator implements org.springframework.validation.Validat
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "login", "error.login.miss");
         if( !errors.hasFieldErrors("login") && (login == null || login.length() < 3)) {
-        	logger.error( "Ошибка валидации логина! он пустой или слишком коротки (до 3-х символов)!" );
-        	errors.rejectValue(login, "error.user.login.tooShort");
+            logger.error( "Ошибка валидации логина! он пустой или слишком коротки (до 3-х символов)!" );
+            errors.rejectValue(login, "error.user.login.tooShort");
         }
         else if( !login.matches(LOGIN_PATTERN) ) {
-        	logger.error( "Ошибка валидации логина! Присутствуют недопустимые символы!" );
-        	errors.rejectValue(login, "error.user.login.incorrect");
+            logger.error( "Ошибка валидации логина! Присутствуют недопустимые символы!" );
+            errors.rejectValue(login, "error.user.login.incorrect");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.login.emptyPasswd");
@@ -59,23 +59,23 @@ public class UserInfoValidator implements org.springframework.validation.Validat
         
         String firstName = user.getFirstName();
         if( firstName != null && firstName.length() > 0 ) {
-        	// TODO validate
+            // TODO validate
         }
         
         String lastName = user.getLastName();
         if( lastName != null && lastName.length() > 0 ) {
-        	// TODO validate
+            // TODO validate
         }
         
         String nickName = user.getNickName();
         if( nickName != null && nickName.length() > 0 ) {
-        	// TODO validate
+            // TODO validate
         }
     }
     
     public boolean isEmailValid( String email ) {
-    	Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-    	Matcher matcher = pattern.matcher(email);
-		return matcher.matches();
+        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
