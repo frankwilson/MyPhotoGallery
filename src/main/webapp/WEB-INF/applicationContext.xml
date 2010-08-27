@@ -26,7 +26,7 @@
             </props>
         </property>
     </bean>
-    
+
     <!-- Resource Bundle -->
     <!-- <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"> -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">

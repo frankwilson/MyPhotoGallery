@@ -3,7 +3,7 @@
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" /> 
-<form:form commandName="user">
+<form>
 <div class="top_level">
   <div class="content">
     <div class="page_header">Вход</div><c:if test="${activationResult != null}">
@@ -19,19 +19,11 @@
       </colgroup>
       <tr>
         <td>Логин:&#160;</td>
-        <td><form:input path="login"/></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><form:errors path="login" cssStyle="color:#f22"></form:errors></td>
+        <td><input type="text" name="j_username" id="username"></td>
       </tr>
       <tr>
         <td>Пароль:&#160;</td>
-        <td><form:password path="password"/></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><form:errors path="password" cssStyle="color:#f22"></form:errors></td>
+        <td><input type="password" name="j_password" id="password"></td>
       </tr>
       <tr>
         <td></td>
@@ -47,5 +39,5 @@
     </table>
   </div>
 </div>
-</form:form>
+</form>
 <jsp:include page="footer.jsp" />

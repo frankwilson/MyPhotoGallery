@@ -35,7 +35,8 @@
           [<a href="${pageContext.request.contextPath}/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
           <a href="${pageContext.request.contextPath}/upload.html" title="Загрузить фотографию">Загрузить</a> |
           <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (${sessionScope.unallocatedPhotosCount})</a> |
-          <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a>
+          <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a> |
+          <a href="<c:url value="/j_spring_security_logout"/>">Logout</a>
 <%}%>
       </td>
     </tr>
