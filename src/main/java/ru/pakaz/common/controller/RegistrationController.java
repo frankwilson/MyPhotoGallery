@@ -3,8 +3,12 @@ package ru.pakaz.common.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,18 +60,19 @@ public class RegistrationController {
         }
         
         logger.debug("User with login "+ user.getLogin() +" does not exists");
-        
-        result.recordSuppressedField("password");
-        
+
         ModelAndView mav = new ModelAndView();
         if( !result.hasFieldErrors("login") && !result.hasFieldErrors("email") ) {
             user.setNickName( user.getLogin() );
             user.setTemporary(true);
             user.setBlocked(true);
             
-            if( result.getFieldError("password") != null || user.getPassword() == null || user.getPassword().length() == 0 ) {
+            if( result.hasFieldErrors("password") && result.getFieldError("password").getCode().equals("error.login.emptyPasswd") ) {
                 String newPass = RandomStringUtils.randomAlphanumeric(8);
                 user.setPassword( newPass );
+                logger.debug("Password: "+ newPass);
+                
+                result.recordSuppressedField("password");
             }
 
             logger.debug("Try to send e-mail message…");
@@ -92,7 +97,29 @@ public class RegistrationController {
 
     public boolean sendEmailMessage( User recipient ) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
+
         sender.setDefaultEncoding("UTF-8");
+/*
+        Properties props = new Properties();
+
+		props.put("mail.smtp.host", "smtp.googlemail.com");
+		props.put("mail.smtp.auth", "true");
+		
+		props.put("mail.smtp.starttls.enable", "true");
+		
+		props.put("mail.debug", "true");
+		props.put("mail.smtp.user", "pv.kazantsev@gmail.com");
+		props.put("mail.smtp.password", "frankwilson");
+		props.put("mail.smtp.port", "465" );
+		
+		props.put.put("mail.smtp.localhost", "pakaz.ru" );
+
+		Authenticator auth = new SMTPAuthenticator();
+		
+		Session session = Session.getDefaultInstance(props, auth);
+		session.setDebug(true);
+        sender.setSession(session);
+*/
         MimeMessage emess = sender.createMimeMessage();
 
         ClassPathResource ctx = new ClassPathResource("registrationMessage.html");
@@ -133,10 +160,11 @@ public class RegistrationController {
                 }
 
                 logger.debug( "Mail message: \n"+ message.toString() );
-                helper.setText( javax.mail.internet.MimeUtility.encodeText(message.toString(), "UTF-8", null), true);
+//                helper.setText( javax.mail.internet.MimeUtility.encodeText(message.toString(), "UTF-8", null), true);
+                helper.setText( message.toString(), true);
                 
                 logger.debug( helper.getEncoding() );
-
+                
                 sender.send(emess);
                 return true;
             }
@@ -158,4 +186,15 @@ public class RegistrationController {
         
         return false;
     }
+/*
+	private class SMTPAuthenticator extends javax.mail.Authenticator
+	{
+		public PasswordAuthentication getPasswordAuthentication()
+		{
+			String username = "pv.kazantsev@gmail.com";
+			String password = "frankwilson";
+
+			return new PasswordAuthentication(username, password);
+		}
+	}*/
 }

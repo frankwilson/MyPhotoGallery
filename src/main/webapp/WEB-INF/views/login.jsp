@@ -3,7 +3,7 @@
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" /> 
-<form>
+<form method="post" action="${pageContext.request.contextPath}/loginCheck.html">
 <div class="top_level">
   <div class="content">
     <div class="page_header">Вход</div><c:if test="${activationResult != null}">
