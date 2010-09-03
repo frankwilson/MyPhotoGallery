@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import ru.pakaz.common.model.User;
 
 /**
@@ -31,7 +34,7 @@ public class UserDao extends HibernateDaoSupport {
             return users.get(0);
         }
         else {
-            logger.debug( "UserDao.getUserByLogin: user with id "+ userId +" not found!" );
+            logger.debug( "user with id "+ userId +" not found!" );
             return null;
         }
     }
@@ -49,7 +52,7 @@ public class UserDao extends HibernateDaoSupport {
             return users.get(0);
         }
         else {
-            logger.debug( "UserDao.getUserByLogin: user with login '"+ login +"' not found!" );
+            logger.debug( "user with login '"+ login +"' not found!" );
             return null;
         }
     }
@@ -66,13 +69,16 @@ public class UserDao extends HibernateDaoSupport {
 
         return user;
     }
+    
+    public User getUserFromSecurityContext() {
+        User user = null;
 
-    public User getUserFromSession( HttpServletRequest request ) {
-        return (User)request.getSession(true).getAttribute( "User" );
-    }
-
-    public void setUserToSession(HttpServletRequest request, Object user) {
-        request.getSession(true).setAttribute( "User", user );
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if( principal instanceof UserDetails && principal instanceof User ) {
+            user = (User)principal;
+        }
+        
+        return user;
     }
 
     /**
@@ -103,7 +109,6 @@ public class UserDao extends HibernateDaoSupport {
             getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
             getHibernateTemplate().update( user );
             getHibernateTemplate().flush();
-            this.setUserToSession( request, user );
         }
         catch( DataAccessException e ) {
             e.printStackTrace();

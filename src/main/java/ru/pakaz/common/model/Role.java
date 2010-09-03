@@ -32,24 +32,24 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 65494535748578762L;
 	
 	@Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "id")
-    private long id;
+    private int roleId;
 	
-	@Column(name="name", nullable=false, length=20, unique=false)
+	@Column(nullable=false, length=20, unique=false)
     private String name;
 	
-	@Column(name="description", nullable=true, length=100, unique=false)
+	@Column(nullable=true, length=100, unique=false)
     private String description;
     
-    @Column(name="enabled")
+    @Column
 	private boolean enabled;
 	
-	@Column(name="created")
+	@Column
 	@Temporal(value=TemporalType.TIMESTAMP)
 	private Date created;
 	
-	@Column(name="updated")
+	@Column
 	@Temporal(value=TemporalType.TIMESTAMP)
 	private Date updated;
 	
@@ -61,12 +61,12 @@ public class Role implements Serializable {
 	)
 	private Set<User> users;
 	
-	public long getId() {
-        return id;
+	public int getRoleId() {
+        return roleId;
     }
 
-    public void setId( long id ) {
-        this.id = id;
+    public void setRoleId( int id ) {
+        this.roleId = id;
     }
 	
 	public String getName() {

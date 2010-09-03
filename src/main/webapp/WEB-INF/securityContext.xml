@@ -11,9 +11,11 @@
         <intercept-url pattern="/style.css*" filters="none"/>
         <intercept-url pattern="/scripts/**" filters="none"/>
         <intercept-url pattern="/img/**"     filters="none"/>
+        <intercept-url pattern="/index.jsp"  filters="none"/>
 
-        <intercept-url pattern="/login.html"    access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/"              access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/index.html"    access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <!--<intercept-url pattern="/login.html"    access="IS_AUTHENTICATED_ANONYMOUSLY"/>-->
         <intercept-url pattern="/registration.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/**"            access="ROLE_USER" />
 

@@ -89,7 +89,7 @@ public class RegistrationControllerTest extends TestCase {
 	
 	public void getMd5Password() {
 		Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-        String password = encoder.encodePassword( "125448", "vasya" );
+        String password = encoder.encodePassword( "wilson", "wilson" );
         System.out.println(password);
 	}
 

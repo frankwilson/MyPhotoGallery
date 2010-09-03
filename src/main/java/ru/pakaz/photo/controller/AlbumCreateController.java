@@ -44,7 +44,7 @@ public class AlbumCreateController {
         ModelAndView mav = new ModelAndView();
 
         if( album.getTitle().length() > 0 ) {
-            album.setUser( this.usersManager.getUserFromSession( request ) );
+            album.setUser( this.usersManager.getUserFromSecurityContext() );
             this.albumManager.createAlbum( album );
 
             mav.setViewName( "redirect:album_"+ album.getAlbumId() +".html" );
@@ -55,19 +55,5 @@ public class AlbumCreateController {
             mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
         }
         return mav;
-    }
-
-    public AlbumDao getAlbumDao() {
-        return this.albumManager;
-    }
-    public void setAlbumDao( AlbumDao albumDao ) {
-        this.albumManager = albumDao;
-    }
-
-    public UserDao getUserDao() {
-        return this.usersManager;
-    }
-    public void setUserDao( UserDao userDao ) {
-        this.usersManager = userDao;
     }
 }

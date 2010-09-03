@@ -3,11 +3,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
+
 <form:form commandName="album">
 <div class="top_level">
   <div class="content">
     <div class="page_header">Редактирование альбома:
-      <a href="<%=application.getContextPath() %>/album_${album.albumId}.html">${album.title}</a>
+      <a href="${pageContext.request.contextPath}/album_${album.albumId}.html">${album.title}</a>
     </div>
     <table class="main">
       <colgroup>

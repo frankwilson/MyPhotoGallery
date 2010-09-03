@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -14,7 +15,7 @@
           <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
           <c:otherwise>альбома <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
         </c:choose>
-        <c:if test="${photo.user.userId != sessionScope.User.userId}">
+        <c:if test="${isThisUser eq false}">
         пользователя <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>
         </c:if>
       </span>
@@ -28,7 +29,7 @@
         <td>Превьюшка:</td>
         <td class="photo">
           <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
-            <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/images/album_no_preview.png" /></c:if>
+            <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
             <c:if test="${photo.photoFilesList[4].filename != ''}"><img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
           </a>
         </td>

@@ -1,5 +1,7 @@
 package ru.pakaz.photo.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 
+import ru.pakaz.common.dao.UserDao;
+import ru.pakaz.common.model.User;
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
@@ -22,6 +26,8 @@ import ru.pakaz.photo.model.Photo;
 public class PhotoInfoController {
     static private Logger logger = Logger.getLogger( PhotoInfoController.class );
 
+    @Autowired
+    private UserDao usersManager;
     @Autowired
     private PhotoDao photoManager;
     @Autowired
@@ -37,12 +43,14 @@ public class PhotoInfoController {
     @RequestMapping(value = "/photo_{photoId}/info.html", method = RequestMethod.GET)
     public ModelAndView get( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
         Photo photo = this.photoManager.getPhotoById(photoId);
-
+        User currentUser = this.usersManager.getUserFromSecurityContext();
+        List<Album> albumsList = this.albumManager.getAlbumsByUser(currentUser);
+        
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "photoInfo" );
         mav.addObject( "photo", photo );
-        mav.addObject( "album", photo.getAlbum() == null ? new Album() : photo.getAlbum() );
-        mav.addObject( "albums", photo.getUser().getAlbums() );
+        mav.addObject( "isThisUser", photo.getUser().getUserId() == currentUser.getUserId() );
+        mav.addObject( "albums", albumsList );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) +" "+ photo.getTitle() );
 
         return mav;
@@ -88,7 +96,7 @@ public class PhotoInfoController {
         }
         else {
             logger.debug("Photo "+ photoId +" does not exist");
-            mav.setViewName( "redirect:albumsList.html" );
+            mav.setViewName( "redirect:/albumsList.html" );
         }
         
         return mav;

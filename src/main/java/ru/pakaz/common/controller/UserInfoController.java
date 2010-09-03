@@ -23,9 +23,11 @@ public class UserInfoController {
     public ModelAndView get( HttpServletRequest request ) {
         User user = null;
         ModelAndView mav = null;
+
         if( request != null ) {
-            user = this.usersManager.getUserFromSession( request );
+            user = this.usersManager.getUserFromSecurityContext();
         }
+
         if( user == null ) {
             mav = new ModelAndView( new RedirectView( "login.html" ) );
         }
@@ -41,7 +43,7 @@ public class UserInfoController {
 
     @RequestMapping(value = "/changeUsersInfo.html", method = RequestMethod.POST)  
     public ModelAndView post( @ModelAttribute("user") User user, BindingResult result, HttpServletRequest request ) {
-        User dbUser = this.usersManager.getUserFromSession( request );
+        User dbUser = this.usersManager.getUserFromSecurityContext();
         user.setLogin(dbUser.getLogin());
         new UserInfoValidator().validate( user, result );
 
@@ -80,12 +82,4 @@ public class UserInfoController {
 
         return mav;
     }
-/*
-    public UserDao getUserDao() {
-        return this.usersManager;
-    }
-    public void setUserDao( UserDao userDao ) {
-        this.usersManager = userDao;
-    }
-*/
 }

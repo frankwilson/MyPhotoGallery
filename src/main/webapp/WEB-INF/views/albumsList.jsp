@@ -1,17 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="header.jsp" />
+
 <div class="top_level">
   <div class="content">
-    <c:if test="${user.userId eq sessionScope.user.userId}">
+    <c:if test="${user eq null}">
       <div class="page_header">Ваши альбомы:</div>
     </c:if>
-    <c:if test="${user != null}">
+    <c:if test="${user ne null}">
       <div class="page_header">Альбомы пользователя <c:out value="${user.login}"></c:out>:</div>
     </c:if>
-    <c:if test="${albumsCount gt 0}">
+    <c:if test="${fn:length(albums) gt 0}">
       <div>
     <c:forEach items="${albums}" var="currentAlbum">
       <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
@@ -24,7 +26,7 @@
               <tr>
                 <td class="photo">
                   <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">
-                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/images/album_no_preview.png" /></c:if>
+                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
                     <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="/images/${currentAlbum.preview.photoFilesList[4].filename}" /></c:if>
                   </a>
                 </td>
@@ -36,7 +38,7 @@
               </tr>
               <tr style="height:100%;">
                 <td class="photo_caption" style="text-align:left; padding-left:5px;">
-                    Добавлен: <fmt:formatDate value="${currentAlbum.addDate}" pattern="yyyy-MM-dd hh:mm" />
+                    <fmt:formatDate value="${currentAlbum.addDate}" pattern="yyyy-MM-dd hh:mm" />
                     <%-- Тут будет дата загрузки последней фотографии --%>
                 </td>
               </tr>
@@ -45,7 +47,7 @@
     </c:forEach>
       </div>
     </c:if>
-    <c:if test="${albumsCount eq 0}">
+    <c:if test="${fn:length(albums) eq 0}">
       У Вас не создано ни одного альбома!<br /><br />
       <a href="createAlbum.html">Создать альбом</a>
     </c:if>

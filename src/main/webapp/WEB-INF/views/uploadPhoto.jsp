@@ -1,8 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="header.jsp" />
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mootools.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Swiff.Uploader.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Fx.ProgressBar.js"></script> 
@@ -38,7 +40,7 @@ window.addEvent('domready', function() { // wait for the content
        },
 
        // this is our browse button, *target* is overlayed with the Flash movie
-       target: 'demo-browse',
+       target: 'addFiles',
 
        appendCookieData: true,
 
@@ -243,7 +245,6 @@ a:hover, a.hover {
 }
 </style>
 
-
 <div class="top_level">
   <div class="content">
     <form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/upload.html;jsessionid=${pageContext.session.id}">
@@ -290,25 +291,22 @@ a:hover, a.hover {
  
     <div id="demo-status" class="hide">
         <p>
-            <a href="#" id="demo-browse">Browse Files</a> |
+            <a href="#" id="addFiles">Browse Files</a> |
             <a href="#" id="demo-clear">Clear List</a> |
             <a href="#" id="demo-upload">Start Upload</a>
         </p>
         <div>
-            <strong class="overall-title"></strong><br />
+            <b class="overall-title"></b><br />
             <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress overall-progress" />
         </div>
         <div>
-            <strong class="current-title"></strong><br />
+            <b class="current-title"></b><br />
             <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress current-progress" />
         </div>
         <div class="current-text"></div>
     </div>
  
     <ul id="demo-list"></ul>
-
-
-
 
     </form:form>
   </div>

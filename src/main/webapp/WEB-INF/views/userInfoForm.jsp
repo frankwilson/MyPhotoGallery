@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="header.jsp" />
+
 <form:form commandName="user">
 <div class="top_level">
   <div class="content">
@@ -13,9 +13,7 @@
       </colgroup>
       <tr>
         <td style="width:150px; height:22px;">Логин:</td>
-        <td>
-          <c:out value="${user.login}" />
-        </td>
+        <td>${user.login}</td>
       </tr>
       <tr>
         <td>Псевдоним:</td>

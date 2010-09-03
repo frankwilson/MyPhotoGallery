@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
+<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ page import="ru.pakaz.common.model.User"%>
@@ -15,7 +16,7 @@
 <head>
   <title><%=application.getInitParameter("serviceName") %> :: <c:out value="${pageName}"></c:out> </title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" type="text/css" href="<%=application.getContextPath() %>/style.css">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style.css">
 </head>
 <body>
 <div class="top_level">
@@ -34,7 +35,7 @@
   <table class="menu">
     <tr>
       <td>
-<c:if test="${user != null && user.userId > 0}">
+<c:if test="${user ne null && user.userId gt 0}">
           <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="Личная информация">${user.login}</a> |
           <a href="${pageContext.request.contextPath}/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
           [<a href="${pageContext.request.contextPath}/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |

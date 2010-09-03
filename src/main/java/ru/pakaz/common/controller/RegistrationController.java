@@ -3,7 +3,9 @@ package ru.pakaz.common.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -26,7 +28,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import ru.pakaz.common.dao.RoleDao;
 import ru.pakaz.common.dao.UserDao;
+import ru.pakaz.common.model.Role;
 import ru.pakaz.common.model.User;
 
 @Controller
@@ -35,6 +40,8 @@ public class RegistrationController {
 
     @Autowired
     private UserDao usersManager;
+    @Autowired
+    private RoleDao roleManager;
 
     protected Object formBackingObject(HttpServletRequest request) {
         return new User();
@@ -66,6 +73,12 @@ public class RegistrationController {
             user.setNickName( user.getLogin() );
             user.setTemporary(true);
             user.setBlocked(true);
+            
+            Role userRole = roleManager.getRoleByName("ROLE_USER");
+            Set<Role> rolesList = new HashSet<Role>();
+            rolesList.add(userRole);
+
+            user.setRoles( rolesList );
             
             if( result.hasFieldErrors("password") && result.getFieldError("password").getCode().equals("error.login.emptyPasswd") ) {
                 String newPass = RandomStringUtils.randomAlphanumeric(8);

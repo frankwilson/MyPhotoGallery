@@ -65,7 +65,7 @@ public class PhotoUploadController {
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSession( request ) );
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
         Album album = this.albumsManager.getAlbumById( albumId );
         mav.addObject( "albums", albums );
         mav.addObject( "currentAlbum", album );
@@ -84,7 +84,7 @@ public class PhotoUploadController {
     @RequestMapping(value = "/upload.html", method = RequestMethod.GET)
     public ModelAndView get( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSession( request ) );
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
         mav.addObject( "albums", albums );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
@@ -92,69 +92,7 @@ public class PhotoUploadController {
     }
 
     /**
-     * Загрузка фотографии во временный альбом
-     * 
-     * @param request
-     * @return
-     */
-/*
-    @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
-    public ModelAndView upload( HttpServletRequest request, HttpServletResponse response, 
-            @RequestParam("file") MultipartFile file  ) {
-
-        if( !file.isEmpty() ) {
-            this.logger.debug( "File is not empty" );
-
-            try {
-                Photo newPhoto = new Photo();
-                newPhoto.setUser( this.usersManager.getUserFromSession(request) );
-                newPhoto.setFileName( file.getOriginalFilename() );
-                newPhoto.setTitle( file.getOriginalFilename() );
-                
-                if( request.getParameter("album") != null ) {
-                    try {
-                        Album album = this.albumsManager.getAlbumById( Integer.parseInt( request.getParameter("album") ) );
-                        if( album != null ) {
-                            newPhoto.setAlbum(album);
-                        }
-                    }
-                    catch (NumberFormatException nfe) {
-                        this.logger.error("Error while converting albumId to int");
-                    }
-                }
-                
-                this.photoManager.createPhoto( newPhoto );
-                this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
-                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
-                
-                int oldUnallocPhotosCount = Integer.parseInt(
-                        request.getSession().getAttribute("unallocatedPhotosCount").toString()
-                    );
-                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
-            }
-            catch( IOException e ) {
-                this.logger.debug( "Exception during reading sent file!" );
-                e.printStackTrace();
-            }
-        }
-        else {
-            this.logger.debug( "File is empty" );
-        }
-
-        try {
-            ModelAndView mav;
-            mav = new ModelAndView( "uploadPhoto" );
-            return mav;
-        }
-        catch( Exception e ) {
-            this.logger.debug( "JUST ERROR!" );
-            e.printStackTrace();
-            return null;
-        }
-    }
-*/
-    /**
-     * 
+     * Загрузка фотографии в альбом
      * 
      * @param albumId
      * @param result
@@ -172,7 +110,7 @@ public class PhotoUploadController {
                 Album album = this.albumsManager.getAlbumById(albumId);
                 
                 Photo newPhoto = new Photo();
-                newPhoto.setUser( this.usersManager.getUserFromSession(request) );
+                newPhoto.setUser( this.usersManager.getUserFromSecurityContext() );
                 newPhoto.setAlbum(album);
                 newPhoto.setTitle( file.getOriginalFilename() );
                 newPhoto.setFileName( file.getOriginalFilename() );
@@ -206,6 +144,13 @@ public class PhotoUploadController {
         }
     }
 
+    /**
+     * Загрузка фотографии во временный альбом
+     * 
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
     protected View doPost(final HttpServletRequest request, HttpServletResponse response) {
         MappingJacksonJsonView view = new MappingJacksonJsonView();
@@ -225,11 +170,11 @@ public class PhotoUploadController {
             FileItem file = this.getFileFromRequest(request);
 
             Photo newPhoto = new Photo();
-            newPhoto.setUser( this.usersManager.getUserFromSession(request) );
+            newPhoto.setUser( this.usersManager.getUserFromSecurityContext() );
             newPhoto.setTitle( file.getName() );
             newPhoto.setFileName( file.getName() );
 
-            User curUsr = this.usersManager.getUserFromSession(request);
+            User curUsr = this.usersManager.getUserFromSecurityContext();
             if( curUsr != null )
                 logger.debug( "Uploading user is "+  curUsr.getLogin() );
             else

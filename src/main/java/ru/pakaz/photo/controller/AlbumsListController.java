@@ -34,13 +34,13 @@ public class AlbumsListController {
     public ModelAndView showList( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "albumsList" );
 
-        User user = this.usersManager.getUserFromSession( request );
+        User user = this.usersManager.getUserFromSecurityContext();
         ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
         logger.debug( "We got albums list" );
+
         if( albums != null ) {
             logger.debug( "Albums list is not null and have "+ albums.size() +" elements" );
             mav.addObject( "albums", albums );
-            mav.addObject( "albumsCount", albums.size() );
         }
 
         String title = new RequestContext(request).getMessage( "page.title.albumsList" );
@@ -60,16 +60,23 @@ public class AlbumsListController {
     @RequestMapping(value = "/user_{userId}/albumsList.html", method = RequestMethod.GET)
     public ModelAndView showUserAlbumsList( @PathVariable("userId") int userId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "albumsList" );
+        
+        User user;
+        user = this.usersManager.getUserFromSecurityContext();
+        if( user.getUserId() == userId ) {
+        	mav.setViewName("redirect:/albumsList.html");
+        	return mav;
+        }
 
-        User user = this.usersManager.getUserById(userId);
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
+        user = this.usersManager.getUserById(userId);
         mav.addObject( "user", user );
+
+        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
 
         logger.debug( "We got albums list" );
         if( albums != null ) {
             logger.debug( "Albums list is not null and have "+ albums.size() +" elements" );
             mav.addObject( "albums", albums );
-            mav.addObject( "albumsCount", albums.size() );
         }
 
         String title = new RequestContext(request).getMessage( "page.title.albumsList" );
@@ -78,19 +85,5 @@ public class AlbumsListController {
         mav.addObject( "pageName", title );
 
         return mav;
-    }
-
-    public AlbumDao getAlbumDao() {
-        return this.albumsManager;
-    }
-    public void setAlbumDao( AlbumDao albumDao ) {
-        this.albumsManager = albumDao;
-    }
-
-    public UserDao getUserDao() {
-        return this.usersManager;
-    }
-    public void setUserDao( UserDao userDao ) {
-        this.usersManager = userDao;
     }
 }

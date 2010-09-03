@@ -31,6 +31,23 @@ public class RoleDao extends HibernateDaoSupport {
     public void delete(int roleId) {
         sessionFactory.getCurrentSession().delete( this.getRoleById(roleId) );
     }
+    
+    public Role getRoleByName( String roleName ) {
+        Role role;
+
+        role = (Role)sessionFactory.getCurrentSession()
+            .createQuery("FROM Role WHERE name = ?")
+            .setString(0, roleName)
+            .uniqueResult();
+
+        if( role == null ) {
+            logger.debug( "Role with name "+ roleName +" not found!" );
+            return null;
+        }
+
+        return role;
+    	
+    }
 
     public Role getRoleById(int roleId) {
         Role role;
@@ -41,7 +58,7 @@ public class RoleDao extends HibernateDaoSupport {
             .uniqueResult();
 
         if( role == null ) {
-            logger.debug( "RoleDao.getRoleById: Role with id "+ roleId +" not found!" );
+            logger.debug( "Role with id "+ roleId +" not found!" );
             return null;
         }
 

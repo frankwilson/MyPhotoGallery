@@ -26,8 +26,6 @@ public class PhotoDao extends HibernateDaoSupport {
             .setInteger(0, photoId)
             .uniqueResult();
 
-//        photosList = getHibernateTemplate().find( "FROM Photo WHERE id = ? and deleted = false", photoId );
-
         if( photo != null ) {
             return photo;
         }

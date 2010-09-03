@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContext;
 import ru.pakaz.common.dao.UserDao;
+import ru.pakaz.common.model.User;
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
@@ -38,16 +39,19 @@ public class PhotosListController {
     public ModelAndView showUnallocatedPhotosList( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "albumSimple" );
 
-        ArrayList<Photo> photos = (ArrayList<Photo>)this.photoManager.getUnallocatedPhotos( this.usersManager.getUserFromSession( request ) );
+        User currentUser = this.usersManager.getUserFromSecurityContext();
+        
+        ArrayList<Photo> photos = (ArrayList<Photo>)this.photoManager.getUnallocatedPhotos( currentUser );
         logger.debug( "Unallocated photos count is "+ photos.size() );
 
         Album album = new Album();
-        album.setUser( this.usersManager.getUserFromSession(request) );
+        album.setUser( this.usersManager.getUserFromSecurityContext() );
         album.setTitle( new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
         album.setDescription( new RequestContext(request).getMessage( "page.description.unallocatedPhotos" ) );
+        album.setPhotos( photos );
         
         mav.addObject( "album", album );
-        mav.addObject( "photos", photos );
+        mav.addObject( "isThisUser", true );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
 
         return mav;
@@ -64,20 +68,13 @@ public class PhotosListController {
     public ModelAndView showPhotosListByAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         Album album = this.albumManager.getAlbumById( albumId );
         ModelAndView mav = new ModelAndView( "album" );
+
+        User currentUser = this.usersManager.getUserFromSecurityContext();
+        
         mav.addObject( "album", album );
-        mav.addObject( "photos", album.getPhotos() );
+        mav.addObject( "isThisUser", album.getUser().getUserId() == currentUser.getUserId() );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );
 
         return mav;
-    }
-
-    public void setUserDao( UserDao userDao ) {
-        this.usersManager = userDao;
-    }
-    public void setPhotoDao( PhotoDao photoDao ) {
-        this.photoManager = photoDao;
-    }
-    public void setAlbumDao( AlbumDao albumDao ) {
-        this.albumManager = albumDao;
     }
 }
