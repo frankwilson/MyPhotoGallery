@@ -4,14 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
-import javax.mail.Authenticator;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,8 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,6 +25,7 @@ import ru.pakaz.common.dao.RoleDao;
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.Role;
 import ru.pakaz.common.model.User;
+import ru.pakaz.common.service.MailService;
 
 @Controller
 public class RegistrationController {
@@ -88,7 +81,7 @@ public class RegistrationController {
                 result.recordSuppressedField("password");
             }
 
-            logger.debug("Try to send e-mail message…");
+            logger.debug("Try to send e-mail message...");
             if( this.sendEmailMessage(user) ) {
                 // Добавляем пользователя
                 this.usersManager.createUser(request, user);
@@ -109,43 +102,13 @@ public class RegistrationController {
     }
 
     public boolean sendEmailMessage( User recipient ) {
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-
-        sender.setDefaultEncoding("UTF-8");
-/*
-        Properties props = new Properties();
-
-		props.put("mail.smtp.host", "smtp.googlemail.com");
-		props.put("mail.smtp.auth", "true");
-		
-		props.put("mail.smtp.starttls.enable", "true");
-		
-		props.put("mail.debug", "true");
-		props.put("mail.smtp.user", "pv.kazantsev@gmail.com");
-		props.put("mail.smtp.password", "frankwilson");
-		props.put("mail.smtp.port", "465" );
-		
-		props.put.put("mail.smtp.localhost", "pakaz.ru" );
-
-		Authenticator auth = new SMTPAuthenticator();
-		
-		Session session = Session.getDefaultInstance(props, auth);
-		session.setDebug(true);
-        sender.setSession(session);
-*/
-        MimeMessage emess = sender.createMimeMessage();
 
         ClassPathResource ctx = new ClassPathResource("registrationMessage.html");
         StringBuilder message = new StringBuilder();
 
         if( ctx.exists() ) {
-            logger.debug("Reading mail message template…");
+            logger.debug("Reading mail message template...");
             try {
-                MimeMessageHelper helper = new MimeMessageHelper(emess, true);
-                helper.setTo( recipient.getEmail() );
-                helper.setFrom( "Photo.Pakaz.Ru <wilson@pakaz.ru>" );
-                helper.setSubject( "Registering on photo.pakaz.ru" );
-
                 BufferedReader in = new BufferedReader( new InputStreamReader( ctx.getInputStream(), "UTF-8" ) );
                 String temp = null;
                 
@@ -172,14 +135,20 @@ public class RegistrationController {
                     message.append( temp + "\n" );
                 }
 
-                logger.debug( "Mail message: \n"+ message.toString() );
-//                helper.setText( javax.mail.internet.MimeUtility.encodeText(message.toString(), "UTF-8", null), true);
-                helper.setText( message.toString(), true);
-                
-                logger.debug( helper.getEncoding() );
-                
-                sender.send(emess);
-                return true;
+                // Обращение к сервису для отправки электронной почты
+                MailService sender = MailService.getInstance();
+                if( sender != null ) {
+                    sender.sendMailMessage( 
+                            message.toString(), 
+                            recipient.getEmail(), 
+                            "Registering on photo.pakaz.ru" 
+                    );
+
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             catch(MailException ex) {
                 logger.debug("Email was not sent:");
@@ -187,9 +156,6 @@ public class RegistrationController {
             }
             catch (IOException e) {
                 logger.debug("Generic IOException:");
-                logger.error( e.getMessage() );
-            } catch (MessagingException e) {
-                logger.debug("Can't attach message to email:");
                 logger.error( e.getMessage() );
             }
         }
@@ -199,15 +165,4 @@ public class RegistrationController {
         
         return false;
     }
-/*
-	private class SMTPAuthenticator extends javax.mail.Authenticator
-	{
-		public PasswordAuthentication getPasswordAuthentication()
-		{
-			String username = "pv.kazantsev@gmail.com";
-			String password = "frankwilson";
-
-			return new PasswordAuthentication(username, password);
-		}
-	}*/
 }
