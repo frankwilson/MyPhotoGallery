@@ -49,7 +49,9 @@ public class PhotoInfoController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName( "photoInfo" );
         mav.addObject( "photo", photo );
-        mav.addObject( "isThisUser", photo.getUser().getUserId() == currentUser.getUserId() );
+        mav.addObject( "album", new Album() );
+        if( currentUser != null )
+            mav.addObject( "isThisUser", photo.getUser().getUserId() == currentUser.getUserId() );
         mav.addObject( "albums", albumsList );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) +" "+ photo.getTitle() );
 

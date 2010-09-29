@@ -70,9 +70,10 @@ public class PhotosListController {
         ModelAndView mav = new ModelAndView( "album" );
 
         User currentUser = this.usersManager.getUserFromSecurityContext();
+        if( currentUser != null )
+            mav.addObject( "isThisUser", album.getUser().getUserId() == currentUser.getUserId() );
         
         mav.addObject( "album", album );
-        mav.addObject( "isThisUser", album.getUser().getUserId() == currentUser.getUserId() );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );
 
         return mav;

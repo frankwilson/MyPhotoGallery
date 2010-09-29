@@ -7,11 +7,11 @@
 
 <div class="top_level">
   <div class="content">
-    <c:if test="${user eq null}">
+    <c:if test="${isThisUser}">
       <div class="page_header">Ваши альбомы:</div>
     </c:if>
-    <c:if test="${user ne null}">
-      <div class="page_header">Альбомы пользователя <c:out value="${user.login}"></c:out>:</div>
+    <c:if test="${!isThisUser}">
+      <div class="page_header">Альбомы пользователя <c:out value="${albums[0].user.login}"></c:out>:</div>
     </c:if>
     <c:if test="${fn:length(albums) gt 0}">
       <div>
@@ -47,10 +47,15 @@
     </c:forEach>
       </div>
     </c:if>
-    <c:if test="${fn:length(albums) eq 0}">
+<c:if test="${fn:length(albums) eq 0}">
+    <c:if test="${isThisUser}">
       У Вас не создано ни одного альбома!<br /><br />
       <a href="createAlbum.html">Создать альбом</a>
     </c:if>
+    <c:if test="${!isThisUser}">
+      У пользователя нет ни одного альбома!<br /><br />
+    </c:if>
+</c:if>
   </div>
   <div>
     <table class="left_panel">

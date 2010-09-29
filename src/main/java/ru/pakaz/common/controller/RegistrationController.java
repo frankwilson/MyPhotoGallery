@@ -58,8 +58,8 @@ public class RegistrationController {
             result.rejectValue( "login", "error.user.login.exists" );
             logger.debug("User with login "+ user.getLogin() +" exists!");
         }
-        
-        logger.debug("User with login "+ user.getLogin() +" does not exists");
+        else
+            logger.debug("User with login "+ user.getLogin() +" does not exists");
 
         ModelAndView mav = new ModelAndView();
         if( !result.hasFieldErrors("login") && !result.hasFieldErrors("email") ) {
@@ -95,7 +95,7 @@ public class RegistrationController {
         }
         else {
             mav.setViewName("registration");
-            mav.addObject( "user", user );
+//            mav.addObject( "user", user );
         }
 
         return mav;

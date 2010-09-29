@@ -8,8 +8,8 @@
 <div class="top_level">
   <div class="content">
     <div class="page_header">
-      ${album.title}<c:if test="${isThisUser}">
-      <span class="additional">пользователя <a href="${pageContext.request.contextPath}/user_${album.user.userId}.html">${album.user.login}</a></span>
+      ${album.title}<c:if test="${!isThisUser}">
+      <span class="additional"> пользователя <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">${album.user.login}</a></span>
       </c:if>
     </div>
     <div class="page_description">${album.description}</div>
@@ -50,12 +50,14 @@
       <tr>
         <td style="vertical-align:top;">
           <div class="main">
+<c:if test="${isThisUser}">
             <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
-      <c:if test="${album.albumId > 0}"><br />
+  <c:if test="${album.albumId > 0}"><br />
             <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
             <br /><br />
             <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
-      </c:if>
+  </c:if>
+</c:if>
           </div>
         </td>
       </tr>

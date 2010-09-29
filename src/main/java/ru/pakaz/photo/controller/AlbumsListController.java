@@ -36,6 +36,7 @@ public class AlbumsListController {
 
         User user = this.usersManager.getUserFromSecurityContext();
         ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
+        mav.addObject( "isThisUser", true );
         logger.debug( "We got albums list" );
 
         if( albums != null ) {
@@ -63,14 +64,14 @@ public class AlbumsListController {
         
         User user;
         user = this.usersManager.getUserFromSecurityContext();
-        if( user.getUserId() == userId ) {
+        if( user != null && user.getUserId() == userId ) {
         	mav.setViewName("redirect:/albumsList.html");
         	return mav;
         }
+        else if( user != null )
+            mav.addObject( "isThisUser", userId == user.getUserId() );
 
         user = this.usersManager.getUserById(userId);
-        mav.addObject( "user", user );
-
         ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
 
         logger.debug( "We got albums list" );

@@ -15,8 +15,8 @@
           <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
           <c:otherwise>альбома <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
         </c:choose>
-        <c:if test="${isThisUser}">
-        пользователя <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>
+        <c:if test="${!isThisUser}">
+        пользователя <a href="${pageContext.request.contextPath}/user_${photo.user.userId}/albumsList.html">${photo.user.login}</a>
         </c:if>
       </span>
     </div>
@@ -53,12 +53,16 @@
       <tr>
         <td style="vertical-align:top;">
           <div class="main">
+<c:if test="${isThisUser}">
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">Изменить фотографию</a>
             <br />
-            <c:if test="${photo.photoFilesList[0].filename != ''}"><a href="/images/${photo.photoFilesList[0].filename}">Полноразмерное изображение (${photo.photoFilesList[0].photoWidth}x${photo.photoFilesList[0].photoHeight})</a></c:if>
+  <c:if test="${photo.photoFilesList[0].filename != ''}">
+            <a href="/images/${photo.photoFilesList[0].filename}">Полноразмерное изображение (${photo.photoFilesList[0].photoWidth}x${photo.photoFilesList[0].photoHeight})</a>
+  </c:if>
             <br /><br />
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">Удалить фотографию</a>&#160;
           </div>
+</c:if>
         </td>
       </tr>
     </table>

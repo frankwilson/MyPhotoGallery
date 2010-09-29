@@ -28,6 +28,9 @@ public class RegistrationControllerTest extends TestCase {
 
         props.put("mail.smtps.starttls.enable", "true");
 
+        props.put("mail.smtps.user",     "photo@pakaz.ru");
+        props.put("mail.smtps.password", "frankw1987");
+
         props.put("mail.debug", "true");
         props.put("mail.smtps.port", "465" );
 
@@ -49,7 +52,7 @@ public class RegistrationControllerTest extends TestCase {
 
         try {
             MimeMessageHelper helper = new MimeMessageHelper(emess, true);
-            helper.setTo( "pv.kazantsev@gmail.com" );
+            helper.setTo( "frankw@mail.ru" );
             helper.setFrom( "Photo.Pakaz.Ru <photo@pakaz.ru>" );
             helper.setSubject( "Registering on photo.pakaz.ru" );
 

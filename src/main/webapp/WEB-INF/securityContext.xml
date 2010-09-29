@@ -8,17 +8,20 @@
          http://www.springframework.org/schema/security/spring-security-3.0.3.xsd">
 
     <http auto-config="true">
-        <intercept-url pattern="/style.css*" filters="none"/>
-        <intercept-url pattern="/scripts/**" filters="none"/>
-        <intercept-url pattern="/img/**"     filters="none"/>
-        <intercept-url pattern="/index.jsp"  filters="none"/>
+        <intercept-url pattern="/style.css*"    filters="none"/>
+        <intercept-url pattern="/scripts/**"    filters="none"/>
+        <intercept-url pattern="/img/**"        filters="none"/>
+        <intercept-url pattern="/index.jsp"     filters="none"/>
 
-        <intercept-url pattern="/"              access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <intercept-url pattern="/index.html"    access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <!--<intercept-url pattern="/login.html"    access="IS_AUTHENTICATED_ANONYMOUSLY"/>-->
-        <intercept-url pattern="/registration.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <intercept-url pattern="/**"            access="ROLE_USER" />
-
+        <intercept-url pattern="/unallocatedPhotos.html"    access="ROLE_USER"/>
+        <intercept-url pattern="/album_*/upload.html"       access="ROLE_USER"/>
+        <intercept-url pattern="/album_*/info.html"         access="ROLE_USER"/>
+        <intercept-url pattern="/photo_*/info.html"         access="ROLE_USER"/>
+        <intercept-url pattern="/createAlbum.html"          access="ROLE_USER"/>
+        <intercept-url pattern="/albumsList.html"           access="ROLE_USER"/>
+        <intercept-url pattern="/upload.html"               access="ROLE_USER"/>
+        <intercept-url pattern="/**"        access="IS_AUTHENTICATED_ANONYMOUSLY" />
+ 
         <!--<custom-filter position="FORM_LOGIN_FILTER" ref="myAuthFilter" />-->
         <session-management session-authentication-strategy-ref="sas"/>
         

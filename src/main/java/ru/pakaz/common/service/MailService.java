@@ -2,6 +2,7 @@ package ru.pakaz.common.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -10,6 +11,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -31,29 +33,43 @@ public class MailService {
     static private String MAIL_SRC_ADDR;
     
     private MailService( String server, String port, String username, String password, String srcAddr ) throws Exception {
-        if( server != null && server.length() > 0 )
+        if( server != null && server.length() > 0 ) {
             MailService.MAIL_SERVER = server;
+        }
         else 
             throw new Exception( "server address is null or empty" );
         
-        if( port != null && port.length() > 0 )
+        if( port != null && port.length() > 0 ) {
             MailService.MAIL_PORT = port;
+        }
+        else 
+            throw new Exception( "server port is null or empty" );
         
-        if( username != null && username.length() > 0 )
+        if( username != null && username.length() > 0 ) {
             MailService.MAIL_USERNAME = username;
+        }
+        else 
+            throw new Exception( "username is null or empty" );
         
-        if( password != null && password.length() > 0 )
+        if( password != null && password.length() > 0 ) {
             MailService.MAIL_PASSWORD = password;
+        }
+        else 
+            throw new Exception( "password is null or empty" );
         
-        if( srcAddr != null && srcAddr.length() > 0 )
+        if( srcAddr != null && srcAddr.length() > 0 ) {
             MailService.MAIL_SRC_ADDR = srcAddr;
+        }
+        else 
+            throw new Exception( "source address is null or empty" );
     }
     
     static public MailService getInstance() {
         if( MailService.instance == null ) {
             Properties properties = new Properties();
+            ClassPathResource ctx = new ClassPathResource("settings.properties");
             try {
-                properties.load( new FileInputStream("settings.properties") );
+                properties.load( new InputStreamReader( ctx.getInputStream(), "UTF-8" ) );
 
                 MailService.instance = new MailService(
                         properties.get( "mail.server" ).toString(),
@@ -128,9 +144,11 @@ public class MailService {
 
         Properties props = new Properties();
 
-        props.put("mail.smtps.host", MAIL_SERVER );
+        props.put("mail.smtps.host",     MAIL_SERVER );
+        props.put("mail.smtps.user",     MAIL_USERNAME);
+        props.put("mail.smtps.password", MAIL_PASSWORD);
+        props.put("mail.smtps.port",     MAIL_PORT );
         props.put("mail.smtps.auth", "true" );
-        props.put("mail.smtps.port", MAIL_PORT );
         props.put("mail.smtps.starttls.enable", "true" );
 
         props.put("mail.debug", "true");

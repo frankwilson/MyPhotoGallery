@@ -64,9 +64,10 @@ public class PhotoShowController {
                 }
             }
 
-            User user = this.usersManager.getUserFromSecurityContext();
-            mav.addObject( "isThisUser", user.getUserId() == current.getUser().getUserId() );
-            
+            User currentUser = this.usersManager.getUserFromSecurityContext();
+            if( currentUser != null )
+                mav.addObject( "isThisUser", currentUser.getUserId() == current.getUser().getUserId() );
+
             mav.addObject( "currentPhotoNumber", currentPhotoNumber );
             mav.addObject( "prevPhoto", prev );
             mav.addObject( "nextPhoto", next );
