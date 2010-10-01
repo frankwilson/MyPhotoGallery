@@ -51,8 +51,6 @@ public class PhotoUploadController {
     private PhotoDao photoManager;
     @Autowired
     private PhotoFileService photoFileService;
-    
-    private Random random = new Random();
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом

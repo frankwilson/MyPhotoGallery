@@ -2,6 +2,8 @@ package ru.pakaz.common.dao;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,19 @@ public class UserDao extends HibernateDaoSupport {
 
         if( user == null )
             logger.debug( "User with activation code '"+ code +"' not found!" );
+
+        return user;
+    }
+
+    public User getUserByEmail( String email ) {
+        User user;
+        user = (User)sessionFactory.getCurrentSession()
+            .createQuery("FROM User WHERE lower(email) = ?")
+            .setString(0, StringUtils.lowerCase(email))
+            .uniqueResult();
+
+        if( user == null )
+            logger.debug( "User with email '"+ email +"' not found!" );
 
         return user;
     }

@@ -45,12 +45,13 @@ public class PhotosListController {
         logger.debug( "Unallocated photos count is "+ photos.size() );
 
         Album album = new Album();
-        album.setUser( this.usersManager.getUserFromSecurityContext() );
+        album.setUser( currentUser );
         album.setTitle( new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
         album.setDescription( new RequestContext(request).getMessage( "page.description.unallocatedPhotos" ) );
         album.setPhotos( photos );
         
         mav.addObject( "album", album );
+        mav.addObject( "albums", albumManager.getAlbumsByUser( currentUser ) );
         mav.addObject( "isThisUser", true );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
 
@@ -74,6 +75,7 @@ public class PhotosListController {
             mav.addObject( "isThisUser", album.getUser().getUserId() == currentUser.getUserId() );
         
         mav.addObject( "album", album );
+        mav.addObject( "albums", albumManager.getAlbumsByUser( currentUser ) );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );
 
         return mav;

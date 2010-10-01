@@ -19,7 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import ru.pakaz.common.dao.RoleDao;
 import ru.pakaz.common.dao.UserDao;
@@ -41,9 +43,31 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/registration.html", method = RequestMethod.GET)
-    public ModelAndView showForm( HttpServletRequest request, HttpServletResponse response ) {
-        ModelAndView mav = new ModelAndView( "registration" );
-        mav.addObject( "user", new User() );
+    public ModelAndView showForm( HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value="loginCheckExist", required=false) String login, 
+            @RequestParam(value="emailCheckExist", required=false) String email ) {
+        
+        ModelAndView mav = new ModelAndView();
+        
+        if( login != null ) {
+            logger.debug( "We have login and it's: "+ login );
+            MappingJacksonJsonView view = new MappingJacksonJsonView();
+            view.addStaticAttribute( "exist", this.usersManager.getUserByLogin( login ) != null );
+
+            mav.setView( view );
+        }
+        else if( email != null ) {
+            logger.debug( "We have email and it's: "+ email );
+            MappingJacksonJsonView view = new MappingJacksonJsonView();
+            view.addStaticAttribute( "exist", this.usersManager.getUserByEmail( email ) != null );
+
+            mav.setView( view );
+        }
+        else {
+            mav.setViewName( "registration" );
+            mav.addObject( "user", new User() );
+        }
+
         return mav;
     }
 
@@ -52,11 +76,14 @@ public class RegistrationController {
             HttpServletRequest request, HttpServletResponse response ) {
 
         new UserInfoValidator().validate( user, result );
-        
-        User dbUser = usersManager.getUserByLogin( user.getLogin() );
-        if( dbUser != null ) {
+
+        if( usersManager.getUserByLogin( user.getLogin() ) != null ) {
             result.rejectValue( "login", "error.user.login.exists" );
             logger.debug("User with login "+ user.getLogin() +" exists!");
+        }
+        else if( !result.hasFieldErrors("email") && usersManager.getUserByEmail( user.getEmail() ) != null ) {
+            result.rejectValue( "email", "error.user.email.exists" );
+            logger.debug("User with email "+ user.getEmail() +" exists!");
         }
         else
             logger.debug("User with login "+ user.getLogin() +" does not exists");

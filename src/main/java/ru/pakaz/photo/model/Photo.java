@@ -47,6 +47,9 @@ public class Photo {
     @Column
     private boolean deleted = false;
     
+    @Column
+    private int positionInAlbum = 0;
+    
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="parentPhoto")
     private List<PhotoFile> files = new ArrayList<PhotoFile>(); 
 
@@ -117,5 +120,11 @@ public class Photo {
     
     public void setDeleted( boolean isDeleted ) {
         this.deleted = isDeleted;
+    }
+    public void setPositionInAlbum( int positionInAlbum ) {
+        this.positionInAlbum = positionInAlbum;
+    }
+    public int getPositionInAlbum() {
+        return positionInAlbum;
     }
 }
