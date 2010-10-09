@@ -273,12 +273,12 @@ a:hover, a.hover {
               <input type="file" name="Filedata" />
           </label>
       </fieldset>
- 
+
     <div id="demo-status" class="hide">
         <p>
-            <a href="#" id="addFiles">Browse Files</a> |
-            <a href="#" id="demo-clear">Clear List</a> |
-            <a href="#" id="demo-upload">Start Upload</a>
+            <a href="#" id="addFiles">Добавить</a> |
+            <a href="#" id="demo-clear">Очистить список</a> |
+            <a href="#" id="demo-upload">Загрузить</a>
         </p>
         <div>
             <b class="overall-title"></b><br />
