@@ -75,6 +75,7 @@ public class PhotosListController {
             mav.addObject( "isThisUser", album.getUser().getUserId() == currentUser.getUserId() );
         
         mav.addObject( "album", album );
+        mav.addObject( "albumUrl", "album_"+ albumId +"/" );
         mav.addObject( "albums", albumManager.getAlbumsByUser( currentUser ) );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.viewAlbum" ) +" "+ album.getTitle() );
 

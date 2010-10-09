@@ -20,39 +20,13 @@
     text-align:center;
 }
 
+.ui-effects-transfer {
+    border: 2px dotted gray;
+}
 </style>
 <script>
 
-function hidePhotoFrame( obj ) {
-    obj.find(".photo_icons").hide();
-    var table = obj.find("table");
-    table.find("td:not(.photo)").each(function() {
-    	$(this).hide();
-    });
-    table.toggleClass('album_minitables', 'fast');
-}
-function showPhotoFrame( obj ) {
-    obj.find(".photo_icons").show();
-    var table = obj.find("table");
-    table.find("td:not(.photo)").each(function() {
-        $(this).show();
-    });
-    table.toggleClass('album_minitables', 'fast');
-}
-
 $(function() {
-    $(".photo_frame").draggable({
-        stack: ".photo_frame",
-        revert: true,
-        start: function() {
-            hidePhotoFrame( $(this) );
-        },
-        stop: function() {
-            showPhotoFrame( $(this) );
-        }
-    });
-    $(".photo_frame").disableSelection();
-    
     $(".left").click(function(){
         var pdiv = $(this).parent('div').parent('div');
         pdiv.insertBefore(pdiv.prev());
@@ -63,21 +37,66 @@ $(function() {
         pdiv.insertAfter(pdiv.next());
         return false
     });
+
+   	$(".photo a img").draggable({
+        stack: ".photo_frame",
+        revert: true
+    });
+    $(".photo_frame").disableSelection();
     
     $("#albumId").change(function(){
         var albumId = $("#albumId option:selected").val();
         if( albumId != 0 && $("#album_"+ albumId).get() == '' ) {
             $(this).after('<div id="album_'+ albumId +'" class="targetAlbum">'+ $("#albumId option:selected").text() +'</div>');
-            }
+        }
 
         $(".targetAlbum").droppable({
-            accept: ".photo_frame",
+            accept: ".photo a img",
             hoverClass: "ui-state-active",
             drop: function( event, ui ) {
-            	$("#album_"+ albumId).html( "Moved!" );
+            	$(ui.draggable).draggable( "option", "revert", false );
                 $(ui.draggable).draggable("disable");
-                //$(ui.draggable).draggable("enable");
-                $(ui.draggable).hide('blind', null, 'slow');
+                var re = /^image_(\d+)$/i;
+                var str = $(ui.draggable).attr("id");
+                if( str != undefined ) {
+                    var photoId = str.match( re )[1];
+
+	                $.ajax({
+	                    type: "POST",
+	                    data: "albumId="+ albumId,
+	                    url: './photo_'+ photoId +'/move.html',
+	                    dataType: "json",
+	                    success: function(data) {
+	                    	if( data.moved == true ) {
+	                    		var options = {};
+	                    		$(ui.draggable).effect('fade', options, 'slow');
+                                
+                                options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
+                                $("#photo_"+ photoId).effect('transfer', options, 'slow');
+                                $("#photo_"+ photoId).effect('fade', options, 'slow');
+	                    	}
+	                        else {
+	                            $(ui.draggable).draggable("enable");
+	                            $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
+	                        	$(ui.draggable).draggable( "option", "revert", true );
+	                        }
+	                    },
+	                    error: function(xhr, status, trown) {
+	                        if( status != 'success' && xhr.status == 200 ) {
+                                $(ui.draggable).draggable("enable");
+                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
+                                $(ui.draggable).draggable( "option", "revert", true );
+	                            alert('Status is not success!');
+	                        }
+	                        else if( xhr.status != 200 ) {
+                                $(ui.draggable).draggable("enable");
+                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
+                                $(ui.draggable).draggable( "option", "revert", true );
+	                            alert('Server return status '+ xhr.status +'!');
+	                        }
+	                    }
+	                });
+                }
             }
         });
     });
@@ -109,7 +128,7 @@ $(function() {
           <td class="photo">
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
               <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
-              <c:if test="${photo.photoFilesList[4].filename != ''}"><img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
+              <c:if test="${photo.photoFilesList[4].filename != ''}"><img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
             </a>
           </td>
         </tr>
@@ -134,15 +153,14 @@ $(function() {
     <table class="left_panel">
       <tr>
         <td style="vertical-align:top;">
-          <div class="main">
 <c:if test="${isThisUser}">
+          <div class="main">
             <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
   <c:if test="${album.albumId > 0}"><br />
             <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
             <br /><br />
             <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
   </c:if>
-</c:if>
           </div>
           <div class="main" id="moveAlbumsList">
 		    <select id="albumId">
@@ -152,6 +170,7 @@ $(function() {
 </c:forEach>
 		    </select>
           </div>
+</c:if>
         </td>
       </tr>
     </table>

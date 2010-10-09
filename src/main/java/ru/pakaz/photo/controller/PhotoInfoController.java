@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
@@ -90,10 +92,9 @@ public class PhotoInfoController {
                 mav.setViewName( "redirect:/unallocatedPhotos.html" );
                 
                 // Уменьшаем счетчик нераспределенных фотографий
-                int oldUnallocPhotosCount = Integer.parseInt(
-                        request.getSession().getAttribute("unallocatedPhotosCount").toString()
-                    );
-                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
+                
+                if( photo.getUser().getUnallocatedPhotosCount() != -1 )
+                    photo.getUser().setUnallocatedPhotosCount( photo.getUser().getUnallocatedPhotosCount() - 1 );
             }
         }
         else {
@@ -147,29 +148,29 @@ public class PhotoInfoController {
      * @return 
      */
     @RequestMapping(value = "/photo_{photoId}/move.html", method = RequestMethod.POST)  
-    public ModelAndView move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
+    public View move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
             BindingResult result, HttpServletRequest request ) {
 
-        ModelAndView mav = new ModelAndView();
-
-        int oldUnallocPhotosCount = Integer.parseInt(
-                request.getSession().getAttribute("unallocatedPhotosCount").toString()
-            );
+//        ModelAndView mav = new ModelAndView();
+        MappingJacksonJsonView view = new MappingJacksonJsonView();
 
         int albumId    = album.getAlbumId();
         Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
         Album dstAlbum = null;
+        User currentUser = usersManager.getUserFromSecurityContext();
 
         if( albumId != 0 ) {
             dstAlbum = this.albumManager.getAlbumById(albumId);
-            
+
+           // После перемещения фотографии из Нераспределенного альбома уменьшаем значение его размера в сессии
             if(dbPhoto.getAlbum() == null)
-                // После перемещения фотографии из Нераспределенного альбома уменьшаем значение его размера в сессии
-                request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount - 1 );
+                if( currentUser.getUnallocatedPhotosCount() != -1 )
+                    currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() - 1 );
         }
         else
-            // После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии 
-            request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
+            // После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии
+            if( currentUser.getUnallocatedPhotosCount() != -1 )
+                currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() + 1 );
         
         if( dstAlbum == null || dbPhoto.getUser() == dstAlbum.getUser() ) {
             if( dbPhoto.getAlbum() != null && dbPhoto.getAlbum().getPreview() == dbPhoto ) {
@@ -182,14 +183,17 @@ public class PhotoInfoController {
             dbPhoto.setAlbum(dstAlbum);
             this.photoManager.updatePhoto(dbPhoto);
             
-            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
+            view.addStaticAttribute( "moved", true );
+            
+//            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
         }
         else {
-            result.rejectValue( "title", "error.photo.titleIsTooShort" );
-            mav.setViewName( "photoInfo" );
-            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
+//            result.rejectValue( "title", "error.photo.titleIsTooShort" );
+            view.addStaticAttribute( "moved", false );
+//            mav.setViewName( "photoInfo" );
+//            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         }
 
-        return mav;
+        return view;
     }
 }

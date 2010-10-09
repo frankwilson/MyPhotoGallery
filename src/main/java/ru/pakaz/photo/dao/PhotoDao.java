@@ -30,7 +30,7 @@ public class PhotoDao extends HibernateDaoSupport {
             return photo;
         }
         else {
-            logger.debug( "File not found!" );
+            logger.debug( "No photo with this id!" );
             return null;
         }
     }
@@ -49,7 +49,7 @@ public class PhotoDao extends HibernateDaoSupport {
             return photosList;
         }
         else {
-            logger.debug( "File not found!" );
+            logger.debug( "No photos for album!" );
             return null;
         }
     }
@@ -60,10 +60,12 @@ public class PhotoDao extends HibernateDaoSupport {
         photosList = getHibernateTemplate().find( "FROM Photo WHERE user = ? and album is null and deleted = false", user );
 
         if( photosList != null ) {
+            user.setUnallocatedPhotosCount( photosList.size() );
             return photosList;
         }
         else {
-            logger.debug( "File not found!" );
+            user.setUnallocatedPhotosCount( 0 );
+            logger.debug( "No unallocated photos!" );
             return null;
         }
     }
@@ -77,7 +79,7 @@ public class PhotoDao extends HibernateDaoSupport {
             return photosList;
         }
         else {
-            logger.debug( "File not found!" );
+            logger.debug( "No photos!" );
             return null;
         }
     }

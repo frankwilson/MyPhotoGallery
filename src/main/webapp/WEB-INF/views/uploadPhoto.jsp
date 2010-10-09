@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="ru.pakaz.photo.model.Album"%>
 <jsp:include page="header.jsp" />
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mootools.js"></script> 
@@ -247,7 +248,7 @@ a:hover, a.hover {
 
 <div class="top_level">
   <div class="content">
-    <form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/upload.html;jsessionid=${pageContext.session.id}">
+    <form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/${albumUrl}upload.html;jsessionid=${pageContext.session.id}">
       <div class="page_header">Загрузка фотографии
   <c:if test="${currentAlbum != null}">
          в альбом: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
@@ -260,34 +261,24 @@ a:hover, a.hover {
         <select name="album">
           <option value=0>Отсутствует</option>
     <c:forEach items="${albums}" var="album">
-          <option value="<c:out value="${album.albumId}"></c:out>"><c:out value="${album.title}"></c:out></option>
+          <option value="${album.albumId}">${album.title}</option>
     </c:forEach>
         </select>
         <br /><br />
   </c:if>
-<!-- 
-        Укажите файл, который вы хотите загрузить:
-        <br /><br />
-        <input size="80" type="file" name="file1" id="file" /><br />
-        <input size="80" type="file" name="file2" id="file" /><br />
-        <input size="80" type="file" name="file3" id="file" /><br />
-        <input size="80" type="file" name="file4" id="file" /><br />
-        <br /><br />
-        <input style="width:120px;" type="submit" name="get" id="get" value="Загрузить" />
--->
       </div>
 
-    <fieldset id="demo-fallback">
-        <legend>File Upload</legend>
-        <p>
-            This form is just an example fallback for the unobtrusive behaviour of FancyUpload.
-            If this part is not changed, something must be wrong with your code.
-        </p>
-        <label for="demo-photoupload">
-            Upload a Photo:
-            <input type="file" name="Filedata" />
-        </label>
-    </fieldset>
+      <fieldset id="demo-fallback">
+          <legend>File Upload</legend>
+          <p>
+              This form is just an example fallback for the unobtrusive behaviour of FancyUpload.
+              If this part is not changed, something must be wrong with your code.
+          </p>
+          <label for="demo-photoupload">
+              Upload a Photo:
+              <input type="file" name="Filedata" />
+          </label>
+      </fieldset>
  
     <div id="demo-status" class="hide">
         <p>

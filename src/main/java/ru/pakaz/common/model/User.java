@@ -93,6 +93,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Where(clause = "deleted=0")
     private List<Album> albums = new ArrayList<Album>();
+    
+    @Transient
+    private int unallocatedPhotosCount = -1;
 
     public String getLogin() {
         return this.login;
@@ -244,5 +247,11 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         // TODO Auto-generated method stub
         return !getTemporary();
+    }
+    public void setUnallocatedPhotosCount( int count ) {
+        this.unallocatedPhotosCount = count;
+    }
+    public int getUnallocatedPhotosCount() {
+        return unallocatedPhotosCount;
     }
 }

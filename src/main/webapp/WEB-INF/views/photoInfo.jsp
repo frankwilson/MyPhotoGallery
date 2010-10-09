@@ -55,22 +55,6 @@
       </tr>
     </table>
 </form:form>
-    <br />
-<form:form commandName="album" action="${pageContext.request.contextPath}/photo_${photo.photoId}/move.html">
-    <div>
-      <input type="submit" value="Переместить в альбом" />
-      <form:select path="albumId">
-        <form:option value="0">Отсутствует</form:option>
-        <form:options items="${albums}" itemLabel="title" itemValue="albumId" />
-      </form:select>
-    </div>
-    <c:if test="${photo.album.preview == photo}">
-    <div>
-      Внимание! данное изображение установлено в качестве изображения для предварительного просмотра в альбоме.
-      При перемещении изображение для предварительного просмотра у данного альбома будет сброшено!
-    </div>
-    </c:if>
-</form:form>
   </div>
   <div>
     <table class="left_panel">

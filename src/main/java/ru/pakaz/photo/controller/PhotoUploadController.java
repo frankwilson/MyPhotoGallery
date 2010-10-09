@@ -1,11 +1,9 @@
 package ru.pakaz.photo.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.support.RequestContext;
@@ -63,10 +59,11 @@ public class PhotoUploadController {
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
+//        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
         Album album = this.albumsManager.getAlbumById( albumId );
-        mav.addObject( "albums", albums );
+//        mav.addObject( "albums", albums );
         mav.addObject( "currentAlbum", album );
+        mav.addObject( "albumUrl", "album_"+ albumId +"/" );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
         return mav;
@@ -98,48 +95,9 @@ public class PhotoUploadController {
      * @return
      */
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)  
-    public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request,
-            HttpServletResponse response, @RequestParam("file") MultipartFile file ) {
+    public View uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
+        return uploadPhoto( request, this.albumsManager.getAlbumById(albumId) );
 
-        if( !file.isEmpty() ) {
-            this.logger.debug( "File is not empty" );
-
-            try {
-                Album album = this.albumsManager.getAlbumById(albumId);
-                
-                Photo newPhoto = new Photo();
-                newPhoto.setUser( this.usersManager.getUserFromSecurityContext() );
-                newPhoto.setAlbum(album);
-                newPhoto.setTitle( file.getOriginalFilename() );
-                newPhoto.setFileName( file.getOriginalFilename() );
-
-                this.photoManager.createPhoto( newPhoto );
-                this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
-                this.photoFileService.savePhoto( file.getBytes(), newPhoto );
-            }
-            catch( IOException e ) {
-                this.logger.debug( "Exception during reading sent file!" );
-                e.printStackTrace();
-            }
-            catch( Exception ex ) {
-                this.logger.debug( "Exception during reading sent file!" );
-                ex.printStackTrace();
-            }
-        }
-        else {
-            this.logger.debug( "File is empty" );
-        }
-
-        try {
-            ModelAndView mav;
-            mav = new ModelAndView( "uploadPhoto" );
-            return mav;
-        }
-        catch( Exception e ) {
-            this.logger.debug( "JUST ERROR!" );
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
@@ -151,6 +109,10 @@ public class PhotoUploadController {
      */
     @RequestMapping(value = "/upload.html", method = RequestMethod.POST)
     protected View doPost(final HttpServletRequest request, HttpServletResponse response) {
+        return uploadPhoto( request, null );
+    }
+    
+    private View uploadPhoto( HttpServletRequest request, Album album ) {
         MappingJacksonJsonView view = new MappingJacksonJsonView();
 
         //проверяем является ли полученный запрос multipart/form-data
@@ -166,9 +128,11 @@ public class PhotoUploadController {
 
         try {
             FileItem file = this.getFileFromRequest(request);
+            User currentUser = this.usersManager.getUserFromSecurityContext();
 
             Photo newPhoto = new Photo();
-            newPhoto.setUser( this.usersManager.getUserFromSecurityContext() );
+            newPhoto.setUser( currentUser );
+            newPhoto.setAlbum( album );
             newPhoto.setTitle( file.getName() );
             newPhoto.setFileName( file.getName() );
 
@@ -214,10 +178,8 @@ public class PhotoUploadController {
             else
                 view.addStaticAttribute("mime", file.getContentType());
             
-            int oldUnallocPhotosCount = Integer.parseInt(
-                    request.getSession().getAttribute("unallocatedPhotosCount").toString()
-                );
-            request.getSession().setAttribute( "unallocatedPhotosCount", oldUnallocPhotosCount + 1 );
+            if( album == null && currentUser.getUnallocatedPhotosCount() != -1 )
+                currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() + 1 );
         }
         catch( Exception e ) {
             e.printStackTrace();
@@ -277,7 +239,7 @@ public class PhotoUploadController {
             List items = upload.parseRequest(request);
             Iterator iter = items.iterator();
 
-            while (iter.hasNext()) {
+            while( iter.hasNext() ) {
                 FileItem item = (FileItem) iter.next();
                 logger.info("form item: "+ item.getFieldName());
 
