@@ -22,9 +22,7 @@
  */
 
 window.addEvent('domready', function() { // wait for the content
-
    // our uploader instance 
-
    var up = new FancyUpload2($('demo-status'), $('demo-list'), { // options object
        // we console.log infos, remove that in production!!
        verbose: true,
@@ -68,7 +66,6 @@ window.addEvent('domready', function() { // wait for the content
            });
 
            // Interactions for the 2 other buttons
-
            $('demo-clear').addEvent('click', function() {
                up.remove(); // remove all files
                return false;
