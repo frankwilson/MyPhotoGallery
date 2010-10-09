@@ -267,10 +267,7 @@ a:hover, a.hover {
 
       <fieldset id="demo-fallback">
           <legend>File Upload</legend>
-          <p>
-              This form is just an example fallback for the unobtrusive behaviour of FancyUpload.
-              If this part is not changed, something must be wrong with your code.
-          </p>
+          <p>Если вы видите этот блок, значит что-то пошло не так</p>
           <label for="demo-photoupload">
               Upload a Photo:
               <input type="file" name="Filedata" />
