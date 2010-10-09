@@ -13,14 +13,6 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/FancyUpload2.js"></script> 
 <script type="text/javascript"> 
 /* <![CDATA[ */
-/**
- * FancyUpload Showcase
- *
- * @license     MIT License
- * @author      Harald Kirschner <mail [at] digitarald [dot] de>
- * @copyright   Authors
- */
-
 window.addEvent('domready', function() { // wait for the content
    // our uploader instance 
    var up = new FancyUpload2($('demo-status'), $('demo-list'), { // options object
