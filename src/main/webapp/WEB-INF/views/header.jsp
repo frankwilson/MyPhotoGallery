@@ -17,11 +17,19 @@
   <title><%=application.getInitParameter("serviceName") %> :: <c:out value="${pageName}"></c:out> </title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style.css">
+  <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/functions.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+    	if( $(".left_panel").length > 0 ) {
+            $(".left_panel_show").show();
+    	}
+    });
+  </script>
 </head>
 <body>
-<div class="top_level">
+<div class="top_level header">
   <div class="site_header" style="float:left;">
     <a href="${pageContext.request.contextPath}/index.html">&nbsp;<%=application.getInitParameter("serviceName") %>&nbsp;</a>
   </div>
@@ -36,7 +44,7 @@
   </div>
   <table class="menu">
     <tr>
-      <td>
+      <td>&#160;
 <c:if test="${user ne null && user.userId gt 0}">
           <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="Личная информация">${user.login}</a> |
           <a href="${pageContext.request.contextPath}/albumsList.html" title="Список альбомов пользователя">Мои альбомы</a>
@@ -45,6 +53,9 @@
           <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (${user.unallocatedPhotosCount})</a> |
           <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a>
 </c:if>
+      </td>
+      <td style="text-align:right; width:203px;">
+        <div class="left_panel_show"><a href="" onClick="toddleLeftPanel(); return false;">&#160;hide left panel&#160;</a></div>
       </td>
     </tr>
   </table>

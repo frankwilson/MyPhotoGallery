@@ -48,24 +48,21 @@
       </tr>
     </table>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;">
-          <div class="main">
+  <div class="left_panel">
+    <div class="left_block">
+      <div class="header">Ссылки</div>
+      <div class="body">
 <c:if test="${isThisUser}">
-            <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">Изменить фотографию</a>
-            <br />
+        <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">Изменить фотографию</a>
+        <br />
   <c:if test="${photo.photoFilesList[0].filename != ''}">
-            <a href="/images/${photo.photoFilesList[0].filename}">Полноразмерное изображение (${photo.photoFilesList[0].photoWidth}x${photo.photoFilesList[0].photoHeight})</a>
+        <a href="/images/${photo.photoFilesList[0].filename}">Полноразмерное изображение (${photo.photoFilesList[0].photoWidth}x${photo.photoFilesList[0].photoHeight})</a>
   </c:if>
-            <br /><br />
-            <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">Удалить фотографию</a>&#160;
-          </div>
+        <br /><br />
+        <a href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">Удалить фотографию</a>&#160;
+      </div>
 </c:if>
-        </td>
-      </tr>
-    </table>
+    </div>
   </div>
 </div>
 <jsp:include page="footer.jsp" />

@@ -1,3 +1,7 @@
+html, body {
+    height:100%;
+}
+
 body {
     background-color: #ffffff;
     margin: 0px;
@@ -19,8 +23,11 @@ form {
   padding:0px;
 }
 
-.main {
-    margin-left: 15px;    
+.footer {
+    height: 60px;
+    clear: both;
+    background-color: #deecaa;
+    border: 1px solid #CCD99C;
 }
 
 .site_header {
@@ -42,23 +49,67 @@ form {
 
 .top_level {
     width: 1000px;
-    background-color: #fafafa;
     margin: 0px auto;
     padding: 0px;
 }
 
 .left_panel {
-    width: 210px;
-    margin: 0px;
+    width: 200px;
+    float: left;
+    margin: 5px;
     padding: 0px;
     vertical-align: top;
-    background-color: #deecaa;
+}
+
+.left_block {
+    border: 1px solid #5CA8E5;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 10px;
+}
+
+.left_block .header {
+    background-color: #6bf;
+    color: #eef;
+    height: 18px;
+    font-weight: bold;
+    padding-top: 6px;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.left_block .body {
+    margin: 5px;
+}
+
+.left_panel .hide {
+    width: 198px;
+    height: 11px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    background-color:#eee;
+    text-align:center;
+    position: relative;
+    bottom: 4px;
+}
+
+.left_panel_show {
+    width: 198px;
+    height: 11px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    background-color:#eee;
+    text-align:center;
+    position: relative;
+    bottom: -7px;
+    display: none;
 }
 
 .content {
     width: 780px;
     float: left;
     margin: 5px;
+    background-color: #fff;
 }
 
 .page_header {
@@ -82,6 +133,7 @@ form {
     font-size: 14px;
     vertical-align: middle; 
     background-color: #deecaa;
+    border: 1px solid #CCD99C;
 }
 
 .menu form {
@@ -118,11 +170,11 @@ a:visited {
 }
 .album_minitables .photo {
     height:170px;
-    background-color:#cfcfcf;
+    background-color:#F2F2F2;
 }
 
 .album_microtables .photo {
-	text-align:center;
+    text-align:center;
     height:150px;
     width:150px;
 }
@@ -145,4 +197,20 @@ a:visited {
 
 .photo img {
     border: 1px solid #aaa;
+}
+
+
+.targetAlbum {
+    width: 186px;
+    height: 160px;
+    margin-top: 5px;
+    padding-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px 5px 0 0;
+    background-color:#ccc;
+    text-align: center;
+}
+
+.full_width {
+    width: 980px;
 }

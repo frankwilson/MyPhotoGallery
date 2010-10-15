@@ -6,12 +6,5 @@
     <h3>Сегодня:</h3>
     <h3>Вчера:</h3>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;"></td>
-      </tr>
-    </table>
-  </div>
 </div>
 <jsp:include page="footer.jsp" />

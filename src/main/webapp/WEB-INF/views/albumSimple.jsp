@@ -124,31 +124,31 @@ $(function() {
     </div>
 </c:forEach>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;">
+  <div class="left_panel">
+    <div class="left_block">
+      <div class="header">Ссылки</div>
 <c:if test="${isThisUser}">
-          <div class="main">
-            <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+      <div class="body">
+        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-            <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
-            <br /><br />
-            <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
+        <br /><br />
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
   </c:if>
-          </div>
-          <div class="main" id="moveAlbumsList">
-            <select id="albumId">
-              <option value="0">Отсутствует</option>
+      </div>
+    </div>
+    <div class="left_block" id="moveAlbumsList">
+      <div class="header">Альбомы</div>
+      <div class="body">
+        <select id="albumId">
+          <option value="0">Отсутствует</option>
 <c:forEach items="${albums}" var="album">
-              <option value="${album.albumId}">${album.title}</option>
+          <option value="${album.albumId}">${album.title}</option>
 </c:forEach>
-            </select>
-          </div>
+        </select>
+      </div>
+    </div>
 </c:if>
-        </td>
-      </tr>
-    </table>
   </div>
 </div>
 

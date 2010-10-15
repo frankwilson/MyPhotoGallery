@@ -58,10 +58,8 @@ public class PhotoUploadController {
 
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "uploadPhoto" );
-//        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
+        ModelAndView mav = new ModelAndView("uploadPhoto");
         Album album = this.albumsManager.getAlbumById( albumId );
-//        mav.addObject( "albums", albums );
         mav.addObject( "currentAlbum", album );
         mav.addObject( "albumUrl", "album_"+ albumId +"/" );
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
@@ -78,9 +76,7 @@ public class PhotoUploadController {
      */
     @RequestMapping(value = "/upload.html", method = RequestMethod.GET)
     public ModelAndView get( HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "uploadPhoto" );
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( this.usersManager.getUserFromSecurityContext() );
-        mav.addObject( "albums", albums );
+        ModelAndView mav = new ModelAndView("uploadPhoto");
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.createAlbum" ) );
 
         return mav;
@@ -113,7 +109,12 @@ public class PhotoUploadController {
     }
     
     private View uploadPhoto( HttpServletRequest request, Album album ) {
-        MappingJacksonJsonView view = new MappingJacksonJsonView();
+//        if( request.getAttribute("single_file") == null ) {
+            MappingJacksonJsonView view = new MappingJacksonJsonView();
+/*        }
+        else {
+            ModelAndView mav = new ModelAndView("uploadPhoto");
+        }*/
 
         //проверяем является ли полученный запрос multipart/form-data
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);

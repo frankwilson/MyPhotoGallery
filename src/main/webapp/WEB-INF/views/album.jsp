@@ -9,17 +9,6 @@
     background-color: #eee;
 }
 
-.targetAlbum {
-    width:160px;
-    height:160px;
-    margin-top:5px;
-    padding-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px 5px 0 0;
-    background-color:#ccc;
-    text-align:center;
-}
-
 .ui-effects-transfer {
     border: 2px dotted gray;
 }
@@ -147,33 +136,33 @@ $(function() {
       </table>
     </div>
 </c:forEach>
+    </div>
   </div>
-  </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;">
+  <div class="left_panel">
 <c:if test="${isThisUser}">
-          <div class="main">
-            <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+    <div class="left_block">
+      <div class="header">Ссылки</div>
+      <div class="body">
+        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-            <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
-            <br /><br />
-            <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
+        <br /><br />
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
   </c:if>
-          </div>
-          <div class="main" id="moveAlbumsList">
-		    <select id="albumId">
-              <option value="0">Отсутствует</option>
+      </div>
+    </div>
+    <div class="left_block" id="moveAlbumsList">
+      <div class="header">Альбомы</div>
+      <div class="body">
+	    <select id="albumId">
+          <option value="0">Отсутствует</option>
 <c:forEach items="${albums}" var="album">
-		      <option value="${album.albumId}">${album.title}</option>
+		  <option value="${album.albumId}">${album.title}</option>
 </c:forEach>
-		    </select>
-          </div>
+        </select>
+      </div>
+    </div>
 </c:if>
-        </td>
-      </tr>
-    </table>
   </div>
 </div>
 

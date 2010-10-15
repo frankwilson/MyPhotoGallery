@@ -13,9 +13,8 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/FancyUpload2.js"></script> 
 <script type="text/javascript"> 
 /* <![CDATA[ */
-window.addEvent('domready', function() { // wait for the content
-   // our uploader instance 
-   var up = new FancyUpload2($('demo-status'), $('demo-list'), { // options object
+window.addEvent('domready', function() {
+   var up = new FancyUpload2($('uploadStatus'), $('filesList'), { // options object
        // we console.log infos, remove that in production!!
        verbose: true,
 
@@ -37,8 +36,8 @@ window.addEvent('domready', function() { // wait for the content
 
        // graceful degradation, onLoad is only called if all went well with Flash
        onLoad: function() {
-           $('demo-status').removeClass('hide'); // we show the actual UI
-           $('demo-fallback').destroy(); // ... and hide the plain form
+           $('uploadStatus').removeClass('hide'); // we show the actual UI
+           $('fallbackBlock').destroy(); // ... and hide the plain form
 
            // We relay the interactions with the overlayed flash to the link
            this.target.addEvents({
@@ -58,18 +57,16 @@ window.addEvent('domready', function() { // wait for the content
            });
 
            // Interactions for the 2 other buttons
-           $('demo-clear').addEvent('click', function() {
-               up.remove(); // remove all files
+           $('clearList').addEvent('click', function() {
+               up.remove();
                return false;
            });
 
-           $('demo-upload').addEvent('click', function() {
-               up.start(); // start upload
+           $('uploadFiles').addEvent('click', function() {
+               up.start();
                return false;
            });
        },
-
-       // Edit the following lines, it is your custom event handling
 
        /**
         * Is called when files were not added, "files" is an array of invalid File classes.
@@ -92,20 +89,13 @@ window.addEvent('domready', function() { // wait for the content
            }, this);
        },
 
-       /**
-        * This one was directly in FancyUpload2 before, the event makes it
-        * easier for you, to add your own response handling (you probably want
-        * to send something else than JSON or different items).
-        */
        onFileSuccess: function(file, response) {
            var json = new Hash(JSON.decode(response, true) || {});
 
            if (json.get('status') == '1') {
-               file.element.addClass('file-success');
-               file.info.set('html', '<strong>Image was uploaded:</strong> ' + json.get('width') + ' x ' + json.get('height') + 'px, <em>' + json.get('mime') + '</em>)');
+               file.info.set('html', '<strong>Загружено:</strong> ' + json.get('width') + ' x ' + json.get('height') + 'px, <em>' + json.get('mime') + '</em>');
            } else {
-               file.element.addClass('file-failed');
-               file.info.set('html', '<strong>An error occured:</strong> ' + (json.get('error') ? (json.get('error') + ' #' + json.get('code')) : response));
+               file.info.set('html', '<strong>Ошибка:</strong> ' + (json.get('error') ? (json.get('error') + ' #' + json.get('code')) : response));
            }
        },
 
@@ -116,123 +106,103 @@ window.addEvent('domready', function() { // wait for the content
        onFail: function(error) {
            switch (error) {
                case 'hidden': // works after enabling the movie and clicking refresh
-                   alert('To enable the embedded uploader, unblock it in your browser and refresh (see Adblock).');
+                   alert('Для использования встроенного загрузчика разблокируйте его в браузере и обновите страницу (см. Adblock).');
                    break;
                case 'blocked': // This no *full* fail, it works after the user clicks the button
-                   alert('To enable the embedded uploader, enable the blocked Flash movie (see Flashblock).');
+                   alert('Для использования встроенного загрузчика включите заблокированный флэш-ролик (см. Flashblock).');
                    break;
                case 'empty': // Oh oh, wrong path
-                   alert('A required file was not found, please be patient and we fix this.');
+                   alert('Необходимый файл не найден, приносим свои извинения. Данное недоразумение будет исправлено в максимально короткие сроки.');
                    break;
                case 'flash': // no flash 9+ :(
-                   alert('To enable the embedded uploader, install the latest Adobe Flash plugin.')
+                   alert('Для использования встроенного загрузчика установите последнюю версию расширения Adobe Flash для вашего браузера.')
            }
        }
-
    });
-
 });
 /* ]]> */
 </script>
 <style>
-/**
- * FancyUpload Showcase
- *
- * @license     MIT License
- * @author      Harald Kirschner <mail [at] digitarald [dot] de>
- * @copyright   Authors
- */
- 
 /* CSS vs. Adblock tabs */
 .swiff-uploader-box a {
     display: none !important;
 }
- 
-/* .hover simulates the flash interactions */
-a:hover, a.hover {
-    color: red;
-}
- 
-#demo-status {
+
+#uploadStatus {
     padding: 10px 15px;
-    width: 420px;
-    border: 1px solid #eee;
+    width: 750px;
+    /*border: 1px solid #eee;*/
 }
  
-#demo-status .progress {
+#uploadStatus .progress {
     background: url(${pageContext.request.contextPath}/img/progress-bar/progress.gif) no-repeat;
-    background-position: +50% 0;
+    #background: url(${pageContext.request.contextPath}/img/progress-bar-sample.png) repeat-x;
     margin-right: 0.5em;
     vertical-align: middle;
 }
  
-#demo-status .progress-text {
+#uploadStatus .progress-text {
     font-size: 0.9em;
-    font-weight: bold;
 }
  
-#demo-list {
+#filesList {
     list-style: none;
-    width: 450px;
+    padding-left: 0px;
+    width: 750px;
     margin: 0;
 }
  
-#demo-list li.validation-error {
-    padding-left: 44px;
-    display: block;
+#filesList li.validation-error {
+    /*display: block;*/
     clear: left;
     line-height: 40px;
     color: #8a1f11;
     cursor: pointer;
     border-bottom: 1px solid #fbc2c4;
-    background: #fbe3e4 url(${pageContext.request.contextPath}/img/failed.png) no-repeat 4px 4px;
 }
  
-#demo-list li.file {
+#filesList li.file {
     border-bottom: 1px solid #eee;
-    background: url(${pageContext.request.contextPath}/img/file.png) no-repeat 4px 4px;
     overflow: auto;
 }
-#demo-list li.file.file-uploading {
-    background-image: url(${pageContext.request.contextPath}/img/uploading.png);
+#filesList li.file.file-uploading {
     background-color: #D9DDE9;
 }
-#demo-list li.file.file-success {
-    background-image: url(${pageContext.request.contextPath}/img/success.png);
+
+td.file-size {
+    width: 70px;
 }
-#demo-list li.file.file-failed {
-    background-image: url(${pageContext.request.contextPath}/img/failed.png);
+td.file-remove {
+    width: 28px;
 }
- 
-#demo-list li.file .file-name {
+td.file-name {
+    padding-right: 10px;
+}
+td.file-info {
+    #font-size: 0.9em;
+}
+
+/*
+#filesList li.file .file-name {
     font-size: 1.2em;
-    margin-left: 44px;
-    display: block;
+    margin-left: 12px;
     clear: left;
-    line-height: 40px;
-    height: 40px;
-    font-weight: bold;
 }
-#demo-list li.file .file-size {
+#filesList li.file .file-size {
     font-size: 0.9em;
     line-height: 18px;
-    float: right;
     margin-top: 2px;
     margin-right: 6px;
 }
-#demo-list li.file .file-info {
-    display: block;
-    margin-left: 44px;
-    font-size: 0.9em;
-    line-height: 20px;
-    clear
-}
-#demo-list li.file .file-remove {
-    clear: right;
-    float: right;
+#filesList li.file .file-remove {
     line-height: 18px;
     margin-right: 6px;
 }
+
+#filesList li.file .file-info {
+    font-size: 0.9em;
+}
+*/
 </style>
 
 <div class="top_level">
@@ -243,56 +213,38 @@ a:hover, a.hover {
          в альбом: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
   </c:if>
       </div>
-      <div class="main">
-  <c:if test="${currentAlbum == null && fn:length(albums) > 0}">
-        Альбом для размещения фотографии:
-        <br /><br />
-        <select name="album">
-          <option value=0>Отсутствует</option>
-    <c:forEach items="${albums}" var="album">
-          <option value="${album.albumId}">${album.title}</option>
-    </c:forEach>
-        </select>
-        <br /><br />
-  </c:if>
-      </div>
 
-      <fieldset id="demo-fallback">
-          <legend>File Upload</legend>
-          <p>Если вы видите этот блок, значит что-то пошло не так</p>
-          <label for="demo-photoupload">
-              Upload a Photo:
-              <input type="file" name="Filedata" />
-          </label>
+      <fieldset id="fallbackBlock">
+        <legend>Загрузка изображения</legend>
+        <p>Если вы видите этот блок, значит что-то пошло не так</p>
+        <label for="photoupload">
+          Загрузить изображение:
+          <input type="file" name="single_file" />
+        </label>
+        <br />
+        <input type="submit" name="upload" value="Загрузить" />
       </fieldset>
 
-    <div id="demo-status" class="hide">
+      <div id="uploadStatus" class="hide">
         <p>
-            <a href="#" id="addFiles">Добавить</a> |
-            <a href="#" id="demo-clear">Очистить список</a> |
-            <a href="#" id="demo-upload">Загрузить</a>
+          <a href="#" id="addFiles">Добавить</a> |
+          <a href="#" id="clearList">Очистить список</a> |
+          <a href="#" id="uploadFiles">Загрузить</a>
         </p>
         <div>
-            <b class="overall-title"></b><br />
-            <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress overall-progress" />
+          <b class="overall-title"></b><br />
+          <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress overall-progress" />
         </div>
         <div>
-            <b class="current-title"></b><br />
-            <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress current-progress" />
+          <b class="current-title"></b><br />
+          <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress current-progress" />
         </div>
         <div class="current-text"></div>
-    </div>
+      </div>
  
-    <ul id="demo-list"></ul>
+      <ul id="filesList"></ul>
 
     </form:form>
-  </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;"></td>
-      </tr>
-    </table>
   </div>
 </div>
 <jsp:include page="footer.jsp" />

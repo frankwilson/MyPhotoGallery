@@ -57,12 +57,5 @@
     </c:if>
 </c:if>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;"></td>
-      </tr>
-    </table>
-  </div>
 </div>
 <jsp:include page="footer.jsp" />

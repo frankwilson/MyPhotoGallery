@@ -28,16 +28,5 @@
       <tr><td colspan=2 style="height:10px;"></td></tr>
     </table>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;">
-          <div class="main">
-            <a href="${pageContext.request.contextPath}/user_${user.userId}/albumsList.html">Альбомы пользователя</a>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
 </div>
 <jsp:include page="footer.jsp" />

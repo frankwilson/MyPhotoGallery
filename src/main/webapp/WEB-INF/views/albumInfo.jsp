@@ -44,13 +44,6 @@
       </tr>
     </table>
   </div>
-  <div>
-    <table class="left_panel">
-      <tr>
-        <td style="vertical-align:top;"></td>
-      </tr>
-    </table>
-  </div>
 </div>
 </form:form>
 <jsp:include page="footer.jsp" />
