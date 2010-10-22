@@ -176,6 +176,11 @@ public class PhotoFileService {
             int height = image.getHeight();
 
             logger.debug( "Source image size is "+ width +"x"+ height );
+
+            if( width <= bigSide && height <= bigSide ) {
+                logger.debug( "Source image has less size than expected destination" );
+                return srcImageData;
+            }
             
             double aspectRatio;
             

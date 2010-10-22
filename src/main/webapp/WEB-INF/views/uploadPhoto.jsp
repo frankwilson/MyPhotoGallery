@@ -106,16 +106,16 @@ window.addEvent('domready', function() {
        onFail: function(error) {
            switch (error) {
                case 'hidden': // works after enabling the movie and clicking refresh
-                   alert('Для использования встроенного загрузчика разблокируйте его в браузере и обновите страницу (см. Adblock).');
+                   $('errorMessage').set('html', 'Для использования встроенного загрузчика разблокируйте его в браузере и обновите страницу (см. Adblock).');
                    break;
                case 'blocked': // This no *full* fail, it works after the user clicks the button
-                   alert('Для использования встроенного загрузчика включите заблокированный флэш-ролик (см. Flashblock).');
+            	   $('errorMessage').set('html', 'Для использования встроенного загрузчика включите заблокированный флэш-ролик (см. Flashblock).');
                    break;
                case 'empty': // Oh oh, wrong path
-                   alert('Необходимый файл не найден, приносим свои извинения. Данное недоразумение будет исправлено в максимально короткие сроки.');
+            	   $('errorMessage').set('html', 'Необходимый файл не найден, приносим свои извинения. Данное недоразумение будет исправлено в максимально короткие сроки.');
                    break;
                case 'flash': // no flash 9+ :(
-                   alert('Для использования встроенного загрузчика установите последнюю версию расширения Adobe Flash для вашего браузера.')
+            	   $('errorMessage').set('html', 'Для использования встроенного загрузчика установите последнюю версию расширения Adobe Flash для вашего браузера.')
            }
        }
    });
@@ -129,7 +129,8 @@ window.addEvent('domready', function() {
 }
 
 #uploadStatus {
-    padding: 10px 15px;
+    padding-left: 15px;
+    padding-bottom: 10px;
     width: 750px;
     /*border: 1px solid #eee;*/
 }
@@ -182,6 +183,9 @@ td.file-info {
     #font-size: 0.9em;
 }
 
+.hide {
+    display: none;
+}
 /*
 #filesList li.file .file-name {
     font-size: 1.2em;
@@ -216,13 +220,21 @@ td.file-info {
 
       <fieldset id="fallbackBlock">
         <legend>Загрузка изображения</legend>
-        <p>Если вы видите этот блок, значит что-то пошло не так</p>
+        <p id="errorMessage">Если вы видите этот блок, значит Flash-загрузчик не доступен.</p>
         <label for="photoupload">
           Загрузить изображение:
           <input type="file" name="single_file" />
         </label>
         <br />
         <input type="submit" name="upload" value="Загрузить" />
+    <c:if test="${fileName != null}">
+        <br /><br />
+        <div id="uploadedFileInfo">
+          Загружен файл <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
+          (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
+        </div>
+    </c:if>
+    <c:if test="${status == 0}">Файл не загружен с ошибкой: ${error}</c:if>
       </fieldset>
 
       <div id="uploadStatus" class="hide">

@@ -22,7 +22,7 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
-    	if( $(".left_panel").length > 0 ) {
+    	if( $(".left_panel") != null && $(".left_panel").length > 0 ) {
             $(".left_panel_show").show();
     	}
     });
