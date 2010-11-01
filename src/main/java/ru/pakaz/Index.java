@@ -1,29 +1,19 @@
 package ru.pakaz;
 
-//import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-//import ru.pakaz.common.dao.UserDao;
+import org.springframework.web.servlet.support.RequestContext;
 
 @Controller
-//@RequestMapping("/index.html")  
 public class Index {
-//    static private Logger logger = Logger.getLogger( Index.class );
-//    private UserDao usersManager;
-
     @RequestMapping(value="/index.html", method=RequestMethod.GET)
-    public ModelAndView get() {
+    public ModelAndView get( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView( "index" );
-        mav.addObject( "pageName", "Главная" );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.mainPage" ) );
         return mav;
     }
-/*
-    public UserDao getUsersManager() {
-        return this.usersManager;
-    }
-    public void setUsersManager( UserDao usersManager ) {
-        this.usersManager = usersManager;
-    }*/
 }

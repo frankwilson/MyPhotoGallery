@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
-<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
 <style>
 .ui-state-active {
@@ -96,8 +96,14 @@ $(function() {
 <div class="top_level">
   <div class="content">
     <div class="page_header">
-      ${album.title}<c:if test="${!isThisUser}">
-      <span class="additional"> пользователя <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">${album.user.login}</a></span>
+      ${album.title}
+      <c:if test="${!isThisUser}">
+        <span class="additional">
+          &#160<spring:message code="page.headers.album.ofUser"/> 
+          <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">
+            ${album.user.login}
+          </a>
+        </span>
       </c:if>
     </div>
 
@@ -116,8 +122,12 @@ $(function() {
         <tr>
           <td class="photo">
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
-              <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
-              <c:if test="${photo.photoFilesList[4].filename != ''}"><img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
+              <c:if test="${photo.photoFilesList[4].filename == ''}">
+                <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
+              </c:if>
+              <c:if test="${photo.photoFilesList[4].filename != ''}">
+                <img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
+              </c:if>
             </a>
           </td>
         </tr>
@@ -141,21 +151,21 @@ $(function() {
   <div class="left_panel">
 <c:if test="${isThisUser}">
     <div class="left_block">
-      <div class="header">Ссылки</div>
+      <div class="header"><spring:message code="page.headers.album.links"/></div>
       <div class="body">
-        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html"><spring:message code="page.headers.album.uploadPhotos"/></a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.headers.album.editAlbum"/></a>
         <br /><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.headers.album.deleteAlbum"/></a>
   </c:if>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">
-      <div class="header">Альбомы</div>
+      <div class="header"><spring:message code="page.headers.album.albums"/></div>
       <div class="body">
 	    <select id="albumId">
-          <option value="0">Отсутствует</option>
+          <option value="0"><spring:message code="page.headers.album.noAlbum"/></option>
 <c:forEach items="${albums}" var="album">
 		  <option value="${album.albumId}">${album.title}</option>
 </c:forEach>

@@ -50,6 +50,9 @@ public class PhotoShowController {
             mav.addObject( "pageName", title );
             mav.addObject( "photo", current );
 
+            /**
+             * Getting full photos list to get links for previous and next photos
+             */
             if( current.getAlbum() != null ) {
                 List<Photo> albumPhotoList = current.getAlbum().getPhotos();
 

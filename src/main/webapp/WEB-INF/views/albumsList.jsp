@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="header.jsp" />
 
-<div class="top_level">
+<div>
   <div class="content">
     <c:if test="${isThisUser}">
       <div class="page_header">Ваши альбомы:</div>
