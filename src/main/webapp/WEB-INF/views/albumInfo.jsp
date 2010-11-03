@@ -7,7 +7,7 @@
 <form:form commandName="album">
 <div class="top_level">
   <div class="content">
-    <div class="page_header">Редактирование альбома:
+    <div class="page_header"><spring:message code="page.albumInfo.albumEdit"/>:
       <a href="${pageContext.request.contextPath}/album_${album.albumId}.html">${album.title}</a>
     </div>
     <table class="main">
@@ -15,23 +15,23 @@
         <col style="width:90px;">
       </colgroup>
       <tr>
-        <td>Превьюшка:</td>
+        <td><spring:message code="page.albumInfo.preview"/>:</td>
         <td>
         <form:select path="preview">
-          <form:option value="0">Отсутствует</form:option>
+          <form:option value="0"><spring:message code="page.albumInfo.noPreview"/></form:option>
           <form:options items="${album.photos}" itemLabel="title" itemValue="photoId" />
         </form:select>
         </td>
       </tr>
       <tr>
-        <td>Название:</td>
+        <td><spring:message code="page.albumInfo.title"/>:</td>
         <td>
           <form:input path="title" cssStyle="width:500px;"/>&#160;
           <form:errors path="title"/>
         </td>
       </tr>
       <tr>
-        <td>Описание:</td>
+        <td><spring:message code="page.albumInfo.description"/>:</td>
         <td>
           <form:textarea path="description" cols="60" rows="4"/>&#160;
           <form:errors path="description"/>
@@ -40,7 +40,7 @@
       <tr><td colspan=2 style="height:10px;"></td></tr>
       <tr>
         <td></td>
-        <td><input type="submit" value="Сохранить" /></td>
+        <td><input type="submit" value="<spring:message code="page.albumInfo.save"/>" /></td>
       </tr>
     </table>
   </div>

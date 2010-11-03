@@ -3,15 +3,16 @@
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
 
 <div>
   <div class="content">
     <c:if test="${isThisUser}">
-      <div class="page_header">Ваши альбомы:</div>
+      <div class="page_header"><spring:message code="page.albumInfo.yourAlbums"/>:</div>
     </c:if>
     <c:if test="${!isThisUser}">
-      <div class="page_header">Альбомы пользователя <c:out value="${albums[0].user.login}"></c:out>:</div>
+      <div class="page_header"><spring:message code="page.albumInfo.albumsOfUser"/> <c:out value="${albums[0].user.login}"></c:out>:</div>
     </c:if>
     <c:if test="${fn:length(albums) gt 0}">
       <div>
@@ -26,8 +27,12 @@
               <tr>
                 <td class="photo">
                   <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">
-                    <c:if test="${currentAlbum.preview eq null}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
-                    <c:if test="${currentAlbum.preview != null}"><img style="margin-top:10px;" src="/images/${currentAlbum.preview.photoFilesList[4].filename}" /></c:if>
+                    <c:if test="${currentAlbum.preview eq null}">
+                      <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
+                    </c:if>
+                    <c:if test="${currentAlbum.preview != null}">
+                      <img style="margin-top:10px;" src="/images/${currentAlbum.preview.photoFilesList[4].filename}" />
+                    </c:if>
                   </a>
                 </td>
               </tr>
@@ -49,11 +54,11 @@
     </c:if>
 <c:if test="${fn:length(albums) eq 0}">
     <c:if test="${isThisUser}">
-      У Вас не создано ни одного альбома!<br /><br />
-      <a href="createAlbum.html">Создать альбом</a>
+      <spring:message code="page.albumInfo.noYourAlbums"/>!<br /><br />
+      <a href="createAlbum.html"><spring:message code="page.albumInfo.createAlbum"/></a>
     </c:if>
     <c:if test="${!isThisUser}">
-      У пользователя нет ни одного альбома!<br /><br />
+      <spring:message code="page.albumInfo.noUserAlbums"/>!<br /><br />
     </c:if>
 </c:if>
   </div>

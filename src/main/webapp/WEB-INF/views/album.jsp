@@ -4,6 +4,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <style>
 .ui-state-active {
     background-color: #eee;
@@ -26,69 +28,6 @@ $(function() {
         pdiv.insertAfter(pdiv.next());
         return false
     });
-
-   	$(".photo a img").draggable({
-        stack: ".photo_frame",
-        revert: true
-    });
-    $(".photo_frame").disableSelection();
-    
-    $("#albumId").change(function(){
-        var albumId = $("#albumId option:selected").val();
-        if( albumId != 0 && $("#album_"+ albumId).get() == '' ) {
-            $(this).after('<div id="album_'+ albumId +'" class="targetAlbum">'+ $("#albumId option:selected").text() +'</div>');
-        }
-
-        $(".targetAlbum").droppable({
-            accept: ".photo a img",
-            hoverClass: "ui-state-active",
-            drop: function( event, ui ) {
-            	$(ui.draggable).draggable( "option", "revert", false );
-                $(ui.draggable).draggable("disable");
-                var re = /^image_(\d+)$/i;
-                var str = $(ui.draggable).attr("id");
-                if( str != undefined ) {
-                    var photoId = str.match( re )[1];
-
-	                $.ajax({
-	                    type: "POST",
-	                    data: "albumId="+ albumId,
-	                    url: './photo_'+ photoId +'/move.html',
-	                    dataType: "json",
-	                    success: function(data) {
-	                    	if( data.moved == true ) {
-	                    		var options = {};
-	                    		$(ui.draggable).effect('fade', options, 'slow');
-                                
-                                options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
-                                $("#photo_"+ photoId).effect('transfer', options, 'slow');
-                                $("#photo_"+ photoId).effect('fade', options, 'slow');
-	                    	}
-	                        else {
-	                            $(ui.draggable).draggable("enable");
-	                            $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-	                        	$(ui.draggable).draggable( "option", "revert", true );
-	                        }
-	                    },
-	                    error: function(xhr, status, trown) {
-	                        if( status != 'success' && xhr.status == 200 ) {
-                                $(ui.draggable).draggable("enable");
-                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-                                $(ui.draggable).draggable( "option", "revert", true );
-	                            alert('Status is not success!');
-	                        }
-	                        else if( xhr.status != 200 ) {
-                                $(ui.draggable).draggable("enable");
-                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-                                $(ui.draggable).draggable( "option", "revert", true );
-	                            alert('Server return status '+ xhr.status +'!');
-	                        }
-	                    }
-	                });
-                }
-            }
-        });
-    });
 });
 
 </script>
@@ -99,7 +38,7 @@ $(function() {
       ${album.title}
       <c:if test="${!isThisUser}">
         <span class="additional">
-          &#160<spring:message code="page.headers.album.ofUser"/> 
+          &#160;<spring:message code="page.album.ofUser"/> 
           <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">
             ${album.user.login}
           </a>
@@ -151,21 +90,21 @@ $(function() {
   <div class="left_panel">
 <c:if test="${isThisUser}">
     <div class="left_block">
-      <div class="header"><spring:message code="page.headers.album.links"/></div>
+      <div class="header"><spring:message code="page.album.links"/></div>
       <div class="body">
-        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html"><spring:message code="page.headers.album.uploadPhotos"/></a>&#160;
+        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html"><spring:message code="page.album.uploadPhotos"/></a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.headers.album.editAlbum"/></a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.album.editAlbum"/></a>
         <br /><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.headers.album.deleteAlbum"/></a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.album.deleteAlbum"/></a>
   </c:if>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">
-      <div class="header"><spring:message code="page.headers.album.albums"/></div>
+      <div class="header"><spring:message code="page.album.albums"/></div>
       <div class="body">
 	    <select id="albumId">
-          <option value="0"><spring:message code="page.headers.album.noAlbum"/></option>
+          <option value="0"><spring:message code="page.album.noAlbum"/></option>
 <c:forEach items="${albums}" var="album">
 		  <option value="${album.albumId}">${album.title}</option>
 </c:forEach>

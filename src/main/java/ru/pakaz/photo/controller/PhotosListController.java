@@ -47,7 +47,7 @@ public class PhotosListController {
         Album album = new Album();
         album.setUser( currentUser );
         album.setTitle( new RequestContext(request).getMessage( "page.title.unallocatedPhotos" ) );
-        album.setDescription( new RequestContext(request).getMessage( "page.description.unallocatedPhotos" ) );
+        album.setDescription( new RequestContext(request).getMessage( "description.unallocatedPhotos" ) );
         album.setPhotos( photos );
         
         mav.addObject( "album", album );

@@ -1,7 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <style>
 .targetAlbum {
     width:160px;
@@ -18,89 +21,16 @@
     border: 2px dotted gray;
 }
 </style>
-<script>
-
-$(function() {
-    $(".photo a img").draggable({
-        stack: ".photo_frame",
-        revert: true
-    });
-    $(".photo_frame").disableSelection();
-    
-    $("#albumId").change(function(){
-        var albumId = $("#albumId option:selected").val();
-        if( albumId != 0 && $("#album_"+ albumId).get() == '' ) {
-            $(this).after('<div id="album_'+ albumId +'" class="targetAlbum" style="display:none;">[<a href="" class="targetAlbumClose">&#160X&#160;</a>]&#160;'+ $("#albumId option:selected").text() +'</div>');
-            $("#album_"+ albumId).show("blind", null, 'fast');
-        }
-        else if( $("#album_"+ albumId).get() != '' && $("#album_"+ albumId).css("display") == "none" ) {
-            $("#album_"+ albumId).show("blind", null, 'fast');
-        }
-        
-        $(".targetAlbumClose").click(function() {
-            $(this).parent().hide("blind", null, "fast");
-            return false;
-        });
-
-        $(".targetAlbum").droppable({
-            accept: ".photo a img",
-            hoverClass: "ui-state-active",
-            drop: function( event, ui ) {
-                $(ui.draggable).draggable( "option", "revert", false );
-                $(ui.draggable).draggable("disable");
-                var re = /^image_(\d+)$/i;
-                var str = $(ui.draggable).attr("id");
-                if( str != undefined ) {
-                    var photoId = str.match( re )[1];
-
-                    $.ajax({
-                        type: "POST",
-                        data: "albumId="+ albumId,
-                        url: './photo_'+ photoId +'/move.html',
-                        dataType: "json",
-                        success: function(data) {
-                            if( data.moved == true ) {
-                                var options = {};
-                                $(ui.draggable).effect('fade', options, 'slow');
-                                
-                                options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
-                                $("#photo_"+ photoId).effect('transfer', options, 'slow');
-                                $("#photo_"+ photoId).effect('fade', options, 'slow');
-                            }
-                            else {
-                                $(ui.draggable).draggable("enable");
-                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-                                $(ui.draggable).draggable( "option", "revert", true );
-                            }
-                        },
-                        error: function(xhr, status, trown) {
-                            if( status != 'success' && xhr.status == 200 ) {
-                                $(ui.draggable).draggable("enable");
-                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-                                $(ui.draggable).draggable( "option", "revert", true );
-                                alert('Status is not success!');
-                            }
-                            else if( xhr.status != 200 ) {
-                                $(ui.draggable).draggable("enable");
-                                $(ui.draggable).animate({top: '0px', left: '0px'}, 'slow');
-                                $(ui.draggable).draggable( "option", "revert", true );
-                                alert('Server return status '+ xhr.status +'!');
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    });
-});
-
-</script>
 
 <div class="top_level">
   <div class="content">
     <div class="page_header">
-      ${album.title}<c:if test="${!isThisUser}">
-      <span class="additional">пользователя <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">${album.user.login}</a></span>
+      ${album.title}
+      <c:if test="${!isThisUser}">
+        <span class="additional">
+          &#160;<spring:message code="page.albumSimple.ofUser"/>
+          <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">${album.user.login}</a>
+        </span>
       </c:if>
     </div>
     <div class="page_description">${album.description}</div>
@@ -115,8 +45,12 @@ $(function() {
         <tr>
           <td class="photo" <%--style="height:170px; background-color:#cfcfcf;" --%>>
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
-              <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
-              <c:if test="${photo.photoFilesList[4].filename != ''}"><img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" /></c:if>
+              <c:if test="${photo.photoFilesList[4].filename == ''}">
+                <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
+              </c:if>
+              <c:if test="${photo.photoFilesList[4].filename != ''}">
+                <img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
+              </c:if>
             </a>
           </td>
         </tr>
@@ -125,23 +59,26 @@ $(function() {
 </c:forEach>
   </div>
   <div class="left_panel">
-    <div class="left_block">
-      <div class="header">Ссылки</div>
 <c:if test="${isThisUser}">
+    <div class="left_block">
+      <div class="header"><spring:message code="page.albumSimple.links"/></div>
       <div class="body">
-        <a href="${pageContext.request.contextPath}<c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">Загрузить фотографии</a>&#160;
+        <a href="${pageContext.request.contextPath}
+          <c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">
+          <spring:message code="page.albumSimple.uploadPhotos"/>
+        </a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html">Изменить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.albumSimple.editAlbum"/></a>
         <br /><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html">Удалить альбом</a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.albumSimple.deleteAlbum"/></a>
   </c:if>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">
-      <div class="header">Альбомы</div>
+      <div class="header"><spring:message code="page.albumSimple.albums"/></div>
       <div class="body">
         <select id="albumId">
-          <option value="0">Отсутствует</option>
+          <option value="0"><spring:message code="page.albumSimple.noAlbum"/></option>
 <c:forEach items="${albums}" var="album">
           <option value="${album.albumId}">${album.title}</option>
 </c:forEach>
