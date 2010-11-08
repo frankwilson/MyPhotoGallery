@@ -38,9 +38,9 @@
 </span>
   <c:if test="${user eq null}">
       <form method="post" action="${pageContext.request.contextPath}/loginCheck.html">
-        Логин:&#160;<input style="height:20px; width:80px;" type="text" name="j_username" value="" id="username"><br />
-        Пароль:&#160;<input style="height:20px; width:80px;" type="password" name="j_password" value="" id="password"><br />
-        <a href="${pageContext.request.contextPath}/registration.html" title="Регистрация">Регистрация</a> | <input style="width:80px;" type="submit" name="Войти" id="enter" value="Войти">
+        <spring:message code="header.loginTitle"/>:&#160;<input style="height:20px; width:80px;" type="text" name="j_username" value="" id="username"><br />
+        <spring:message code="header.passwordTitle"/>:&#160;<input style="height:20px; width:80px;" type="password" name="j_password" value="" id="password"><br />
+        <a href="${pageContext.request.contextPath}/registration.html" title="<spring:message code="header.registration.description"/>"><spring:message code="header.registration.title"/></a> | <input style="width:80px;" type="submit" name="enter" id="enter" value="<spring:message code="header.enterButton"/>">
       </form>
   </c:if>
     </div>
@@ -48,12 +48,12 @@
       <tr>
         <td>&#160;
   <c:if test="${user ne null && user.userId gt 0}">
-            <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="Личная информация">${user.login}</a> |
-            <a href="${pageContext.request.contextPath}/albumsList.html" title="<spring:message code="link.myAlbums.description"/>"><spring:message code="link.myAlbums.title"/></a>
-            [<a href="${pageContext.request.contextPath}/createAlbum.html" title="Добавить альбом">&#160;+&#160;</a>] |
-            <a href="${pageContext.request.contextPath}/${albumUrl}upload.html" title="Загрузить фотографию">Загрузить</a> |
-            <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="Нераспределенные фотографии">Нераспределенные фотографии (${user.unallocatedPhotosCount})</a> |
-            <a href="${pageContext.request.contextPath}/logout.html" title="Выход">Выйти</a>
+            <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="<spring:message code="header.usersInfo.description"/>">${user.login}</a>
+            | <a href="${pageContext.request.contextPath}/albumsList.html" title="<spring:message code="header.myAlbums.description"/>"><spring:message code="header.myAlbums.title"/></a>
+              [<a href="${pageContext.request.contextPath}/createAlbum.html" title="<spring:message code="header.addAlbum.description"/>">&#160;+&#160;</a>]
+            | <a href="${pageContext.request.contextPath}/${albumUrl}upload.html" title="<spring:message code="header.uploadPhoto.description"/>"><spring:message code="header.uploadPhoto.title"/></a>
+            | <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="<spring:message code="header.unsorted.description"/>"><spring:message code="header.unsorted.title"/> (${user.unallocatedPhotosCount})</a>
+            | <a href="${pageContext.request.contextPath}/logout.html" title="<spring:message code="header.logout.description"/>"><spring:message code="header.logout.title"/></a>
   </c:if>
         </td>
         <td style="text-align:right; width:203px;">
