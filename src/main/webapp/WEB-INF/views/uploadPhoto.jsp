@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
-<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="ru.pakaz.photo.model.Album"%>
@@ -93,9 +93,9 @@ window.addEvent('domready', function() {
            var json = new Hash(JSON.decode(response, true) || {});
 
            if (json.get('status') == '1') {
-               file.info.set('html', '<strong>Загружено:</strong> ' + json.get('width') + ' x ' + json.get('height') + 'px, <em>' + json.get('mime') + '</em>');
+               file.info.set('html', '<strong><spring:message code="page.uploadPhoto.uploaded"/>:</strong> ' + json.get('width') + ' x ' + json.get('height') + 'px, <em>' + json.get('mime') + '</em>');
            } else {
-               file.info.set('html', '<strong>Ошибка:</strong> ' + (json.get('error') ? (json.get('error') + ' #' + json.get('code')) : response));
+               file.info.set('html', '<strong><spring:message code="page.uploadPhoto.uploadError"/>:</strong> ' + (json.get('error') ? (json.get('error') + ' #' + json.get('code')) : response));
            }
        },
 
@@ -106,16 +106,16 @@ window.addEvent('domready', function() {
        onFail: function(error) {
            switch (error) {
                case 'hidden': // works after enabling the movie and clicking refresh
-                   $('errorMessage').set('html', 'Для использования встроенного загрузчика разблокируйте его в браузере и обновите страницу (см. Adblock).');
+                   $('errorMessage').set('html', '<spring:message code="page.uploadPhoto.flashHidden"/>.');
                    break;
                case 'blocked': // This no *full* fail, it works after the user clicks the button
-            	   $('errorMessage').set('html', 'Для использования встроенного загрузчика включите заблокированный флэш-ролик (см. Flashblock).');
+            	   $('errorMessage').set('html', '<spring:message code="page.uploadPhoto.flashBlocked"/>.');
                    break;
                case 'empty': // Oh oh, wrong path
-            	   $('errorMessage').set('html', 'Необходимый файл не найден, приносим свои извинения. Данное недоразумение будет исправлено в максимально короткие сроки.');
+            	   $('errorMessage').set('html', '<spring:message code="page.uploadPhoto.flashEmpty"/>.');
                    break;
                case 'flash': // no flash 9+ :(
-            	   $('errorMessage').set('html', 'Для использования встроенного загрузчика установите последнюю версию расширения Adobe Flash для вашего браузера.')
+            	   $('errorMessage').set('html', '<spring:message code="page.uploadPhoto.flashOther"/>.')
            }
        }
    });
@@ -186,62 +186,41 @@ td.file-info {
 .hide {
     display: none;
 }
-/*
-#filesList li.file .file-name {
-    font-size: 1.2em;
-    margin-left: 12px;
-    clear: left;
-}
-#filesList li.file .file-size {
-    font-size: 0.9em;
-    line-height: 18px;
-    margin-top: 2px;
-    margin-right: 6px;
-}
-#filesList li.file .file-remove {
-    line-height: 18px;
-    margin-right: 6px;
-}
-
-#filesList li.file .file-info {
-    font-size: 0.9em;
-}
-*/
 </style>
 
 <div class="top_level">
   <div class="content">
     <form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/${albumUrl}upload.html;jsessionid=${pageContext.session.id}">
-      <div class="page_header">Загрузка фотографии
+      <div class="page_header"><spring:message code="page.uploadPhoto.title"/>
   <c:if test="${currentAlbum != null}">
-         в альбом: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+         <spring:message code="page.uploadPhoto.toAlbum"/>: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
   </c:if>
       </div>
 
       <fieldset id="fallbackBlock">
-        <legend>Загрузка изображения</legend>
-        <p id="errorMessage">Если вы видите этот блок, значит Flash-загрузчик не доступен.</p>
+        <legend><spring:message code="page.uploadPhoto.singleTitle"/></legend>
+        <p id="errorMessage"><spring:message code="page.uploadPhoto.flashError"/>.</p>
         <label for="photoupload">
-          Загрузить изображение:
+          <spring:message code="page.uploadPhoto.uploadPhoto"/>:
           <input type="file" name="single_file" />
         </label>
         <br />
-        <input type="submit" name="upload" value="Загрузить" />
+        <input type="submit" name="upload" value="<spring:message code="page.uploadPhoto.uploadButton"/>" />
     <c:if test="${fileName != null}">
         <br /><br />
         <div id="uploadedFileInfo">
-          Загружен файл <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
+          <spring:message code="page.uploadPhoto.fileUploaded"/>: <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
           (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
         </div>
     </c:if>
-    <c:if test="${status == 0}">Файл не загружен с ошибкой: ${error}</c:if>
+    <c:if test="${status == 0}"><spring:message code="page.uploadPhoto.fileUploadErr"/>: ${error}</c:if>
       </fieldset>
 
       <div id="uploadStatus" class="hide">
         <p>
-          <a href="#" id="addFiles">Добавить</a> |
-          <a href="#" id="clearList">Очистить список</a> |
-          <a href="#" id="uploadFiles">Загрузить</a>
+          <a href="#" id="addFiles"><spring:message code="page.uploadPhoto.addPhoto"/></a> |
+          <a href="#" id="clearList"><spring:message code="page.uploadPhoto.clearList"/></a> |
+          <a href="#" id="uploadFiles"><spring:message code="page.uploadPhoto.upload"/></a>
         </p>
         <div>
           <b class="overall-title"></b><br />

@@ -20,10 +20,10 @@
 <form:form commandName="user">
 <div class="top_level">
   <div class="content">
-    <div class="page_header">Регистрация:</div>
+    <div class="page_header"><spring:message code="page.registration.title"/>:</div>
     <table class="main" style="width:100%;">
       <tr>
-        <td style="width:100px;"><span style="color:#a44">*</span>Логин:</td>
+        <td style="width:100px;"><span style="color:#a44">*</span><spring:message code="page.registration.login"/>:</td>
         <td>
           <form:input path="login" maxlength="32" autocomplete="off" cssStyle="width:250px;" />
           <form:errors path="login"/>
@@ -38,14 +38,14 @@
       </tr>
       <tr><td colspan=3 style="height:10px;"></td></tr>
       <tr>
-        <td>Пароль:</td>
+        <td><spring:message code="page.registration.password"/>:</td>
         <td>
           <form:password path="password" maxlength="32" autocomplete="off" cssStyle="width:250px;" />
           <form:errors path="password"/>
         </td>
       </tr>
       <tr>
-        <td colspan=2>Если вы не введете пароль, он будет автоматически сгенерирован.</td>
+        <td colspan=2><spring:message code="page.registration.emptyPassword"/>.</td>
       </tr>
       <tr><td colspan=3 style="height:10px;"></td></tr>
       <tr>
@@ -54,14 +54,14 @@
       </tr>
     </table>
     <br />
-    После нажатия кнопки "Зарегистрироваться" Вам будет отправлено электронное письмо с логином, паролем и ссылкой подтверждения.
+    <spring:message code="page.registration.afterSendInfo"/>.
   </div>
 </div>
 </form:form>
 <script type="text/javascript">
 
-var loginOccupied = "Логин занят. Пожалуйста, выберите другой.";
-var emailOccupied = "Пользователь с таким адресом уже зарегистрирован.";
+var loginOccupied = "<spring:message code="page.registration.loginOccupied"/>.";
+var emailOccupied = "<spring:message code="page.registration.emailExists"/>.";
 
 $('#login').change( function(event) {
     checkValueExists('login');

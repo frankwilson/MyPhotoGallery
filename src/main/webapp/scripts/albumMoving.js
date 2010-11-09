@@ -1,4 +1,4 @@
-
+$(function() {
    	$(".photo a img").draggable({
         stack: ".photo_frame",
         revert: true

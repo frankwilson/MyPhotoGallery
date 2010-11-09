@@ -9,10 +9,10 @@
 <div>
   <div class="content">
     <c:if test="${isThisUser}">
-      <div class="page_header"><spring:message code="page.albumInfo.yourAlbums"/>:</div>
+      <div class="page_header"><spring:message code="page.albumsList.yourAlbums"/>:</div>
     </c:if>
     <c:if test="${!isThisUser}">
-      <div class="page_header"><spring:message code="page.albumInfo.albumsOfUser"/> <c:out value="${albums[0].user.login}"></c:out>:</div>
+      <div class="page_header"><spring:message code="page.albumsList.albumsOfUser"/> <c:out value="${albums[0].user.login}"></c:out>:</div>
     </c:if>
     <c:if test="${fn:length(albums) gt 0}">
       <div>
@@ -54,11 +54,11 @@
     </c:if>
 <c:if test="${fn:length(albums) eq 0}">
     <c:if test="${isThisUser}">
-      <spring:message code="page.albumInfo.noYourAlbums"/>!<br /><br />
-      <a href="createAlbum.html"><spring:message code="page.albumInfo.createAlbum"/></a>
+      <spring:message code="page.albumsList.noYourAlbums"/>!<br /><br />
+      <a href="createAlbum.html"><spring:message code="page.albumsList.createAlbum"/></a>
     </c:if>
     <c:if test="${!isThisUser}">
-      <spring:message code="page.albumInfo.noUserAlbums"/>!<br /><br />
+      <spring:message code="page.albumsList.noUserAlbums"/>!<br /><br />
     </c:if>
 </c:if>
   </div>

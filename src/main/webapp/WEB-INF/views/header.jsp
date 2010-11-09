@@ -34,7 +34,6 @@
       <a href="${pageContext.request.contextPath}/index.html">&nbsp;<%=application.getInitParameter("serviceName") %>&nbsp;</a>
     </div>
     <div style="text-align:right; padding-right:10px; padding-top:5px;"><span style="float: right">
-    <a href="?lang=en">en</a> | <a href="?lang=ru">ru</a>
 </span>
   <c:if test="${user eq null}">
       <form method="post" action="${pageContext.request.contextPath}/loginCheck.html">

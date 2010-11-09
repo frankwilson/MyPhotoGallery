@@ -6,16 +6,16 @@
 
 <div class="top_level">
   <div class="content">
-    <div class="page_header">Редактирование фотографии:
+    <div class="page_header"><spring:message code="page.photoInfo.title"/>:
       <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html">${photo.title}</a>
       <br />
       <span class="additional">
-        из <c:choose>
-          <c:when test="${photo.album == null}">нераспределенных фотографий</c:when>
-          <c:otherwise>альбома <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
+        <spring:message code="page.photoInfo.from"/> <c:choose>
+          <c:when test="${photo.album == null}"><spring:message code="page.photoInfo.ofUnsorted"/></c:when>
+          <c:otherwise><spring:message code="page.photoInfo.ofAlbum"/> <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
         </c:choose>
         <c:if test="${isThisUser eq false}">
-        пользователя <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>
+        <spring:message code="page.photoInfo.ofUser"/> <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>
         </c:if>
       </span>
     </div>
@@ -25,7 +25,7 @@
         <col style="width:90px;">
       </colgroup>
       <tr>
-        <td>Превьюшка:</td>
+        <td><spring:message code="page.photoInfo.preview"/>:</td>
         <td class="photo">
           <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
             <c:if test="${photo.photoFilesList[4].filename == ''}"><img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" /></c:if>
@@ -34,14 +34,14 @@
         </td>
       </tr>
       <tr>
-        <td>Название:</td>
+        <td><spring:message code="page.photoInfo.title"/>:</td>
         <td>
           <form:input path="title" cssStyle="width:500px;"/>&#160;
           <form:errors path="title"/>
         </td>
       </tr>
       <tr>
-        <td>Описание:</td>
+        <td><spring:message code="page.photoInfo.description"/>:</td>
         <td>
           <form:textarea path="description" cols="60" rows="4"/>&#160;
           <form:errors path="description"/>
@@ -50,7 +50,7 @@
       <tr><td colspan=2 style="height:10px;"></td></tr>
       <tr>
         <td></td>
-        <td><input type="submit" value="Сохранить" /></td>
+        <td><input type="submit" value="<spring:message code="page.photoInfo.save"/>" /></td>
       </tr>
     </table>
 </form:form>
