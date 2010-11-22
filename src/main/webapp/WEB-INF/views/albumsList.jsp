@@ -1,11 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" isELIgnored ="false" %>
-<%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
-
+<script>
+$(function() {
+    $(".albumDelLink").click(function(){
+        var albumTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
+        return confirm("<spring:message code="confirm.album.deleteQuestion"/> '"+ albumTitle +"'?");
+    });
+});
+</script>
 <div>
   <div class="content">
     <c:if test="${isThisUser}">
@@ -20,13 +26,13 @@
       <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
         <div style="float:left;">
             <div class="photo_icons">
-              [<a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
+              [<a class="albumDelLink" href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
               [<a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
             </div>
             <table class="album_minitables">
               <tr>
                 <td class="photo">
-                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">
+                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html" title="${currentAlbum.title}">
                     <c:if test="${currentAlbum.preview eq null}">
                       <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
                     </c:if>
@@ -38,7 +44,7 @@
               </tr>
               <tr>
                 <td style="height:32px;vertical-align:top;">
-                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+                  <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title} (${fn:length(currentAlbum.photos)})</a>
                 </td>
               </tr>
               <tr style="height:100%;">

@@ -28,6 +28,15 @@ $(function() {
         pdiv.insertAfter(pdiv.next());
         return false
     });
+    
+    $(".albumDelLink").click(function(){
+        return confirm("<spring:message code="confirm.album.deleteQuestion"/> '${album.title}'?");
+    });
+
+    $(".photoDelLink").click(function(){
+    	var photoTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
+        return confirm("<spring:message code="confirm.photo.deleteQuestion"/> '"+ photoTitle +"'?");
+    });
 });
 
 </script>
@@ -52,7 +61,7 @@ $(function() {
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" class="photo_frame ui-widget-content" id="photo_${photo.photoId}">
       <div class="photo_icons">
-        [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
+        [<a class="photoDelLink" href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
         <a href="" class="left">&#8592;</a>&#160;
         <a href="" class="right">&#8594;</a>&#160;
@@ -96,7 +105,7 @@ $(function() {
   <c:if test="${album.albumId > 0}"><br />
         <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.album.editAlbum"/></a>
         <br /><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.album.deleteAlbum"/></a>
+        <a class="albumDelLink" href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.album.deleteAlbum"/></a>
   </c:if>
       </div>
     </div>

@@ -4,7 +4,23 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
 
-<form:form commandName="user">
+<script>
+$(function() {
+    $("#userUpdate").submit(function() {
+        if( $("#old_pass").val().length > 0 && $("#new_pass").val().length > 0 ) {
+            if( $("#old_pass").val() == $("#new_pass").val() ) {
+                alert("<spring:message code="page.userInfoForm.passesEqual"/>");
+                return false; 
+            }
+            else {
+                return confirm("<spring:message code="confirm.password.changeQuestion"/>?");
+            }
+        }
+    });
+});
+</script>
+
+<form:form commandName="user" id="userUpdate">
 <div class="top_level">
   <div class="content">
     <div class="page_header"><spring:message code="page.userInfoForm.title"/>:</div>
@@ -54,13 +70,13 @@
       <tr>
         <td><spring:message code="page.userInfoForm.oldPassword"/>:</td>
         <td>
-          <input type="password" autocomplete="off" name="old_pass">
+          <input type="password" autocomplete="off" name="old_pass" id="old_pass">
         </td>
       </tr>
       <tr>
         <td><spring:message code="page.userInfoForm.newPassword"/>:</td>
         <td>
-          <input type="password" autocomplete="off" name="new_pass">
+          <input type="password" autocomplete="off" name="new_pass" id="new_pass">
         </td>
       </tr>
       <tr><td colspan=2 style="height:10px;"></td></tr>

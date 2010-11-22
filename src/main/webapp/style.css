@@ -24,10 +24,10 @@ form {
 }
 
 .footer {
-    height: 60px;
+    height: 40px;
     background-color: #deecaa;
     border: 1px solid #CCD99C;
-    line-height:60px;
+    line-height:40px;
     text-align:right;
 }
 
