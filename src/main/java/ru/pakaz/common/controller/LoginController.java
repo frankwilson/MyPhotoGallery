@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
+
 import ru.pakaz.common.dao.UserDao;
 import ru.pakaz.common.model.User;
 
@@ -49,7 +51,7 @@ public class LoginController {
         
         mav.setViewName("login");
 
-        mav.addObject( "pageName", "Логин" );
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.login" ) );
         return mav;
     }
 }

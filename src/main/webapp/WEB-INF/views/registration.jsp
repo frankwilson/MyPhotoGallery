@@ -50,7 +50,7 @@
       <tr><td colspan=3 style="height:10px;"></td></tr>
       <tr>
         <td></td>
-        <td><input style="height:25px; width:180px;" type="submit" value="Зарегистрироваться" id="register"></td>
+        <td><input style="height:25px; width:180px;" type="submit" value="<spring:message code="page.registration.registerButton"/>" id="register"></td>
       </tr>
     </table>
     <br />

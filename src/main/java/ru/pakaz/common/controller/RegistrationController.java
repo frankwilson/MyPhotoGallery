@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import ru.pakaz.common.dao.RoleDao;
@@ -68,6 +69,7 @@ public class RegistrationController {
             mav.addObject( "user", new User() );
         }
 
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.registration" ) );
         return mav;
     }
 
@@ -124,7 +126,8 @@ public class RegistrationController {
             mav.setViewName("registration");
 //            mav.addObject( "user", user );
         }
-
+        
+        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.registration" ) );
         return mav;
     }
 

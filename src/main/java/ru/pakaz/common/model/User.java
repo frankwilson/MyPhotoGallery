@@ -116,13 +116,13 @@ public class User implements UserDetails {
     public void setPassword( String password ) {
     	logger.debug( "Password: "+ password );
     	this.plainPassword = password;
-    	
-        Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+    	if( password != null ) {
+    	    // Хэшируем пароль
+            Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+            password = encoder.encodePassword( this.getPassword(), this.getLogin() );
+            logger.debug( "Password hash: "+ password );
+    	}
 
-        password = encoder.encodePassword( this.getPassword(), this.getLogin() );
-
-        logger.debug( "Password hash: "+ password );
-        
         this.password = password;
     }
 

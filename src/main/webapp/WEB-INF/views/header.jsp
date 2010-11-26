@@ -39,7 +39,9 @@
       <form method="post" action="${pageContext.request.contextPath}/loginCheck.html">
         <spring:message code="header.loginTitle"/>:&#160;<input style="height:20px; width:80px;" type="text" name="j_username" value="" id="username"><br />
         <spring:message code="header.passwordTitle"/>:&#160;<input style="height:20px; width:80px;" type="password" name="j_password" value="" id="password"><br />
-        <a href="${pageContext.request.contextPath}/registration.html" title="<spring:message code="header.registration.description"/>"><spring:message code="header.registration.title"/></a> | <input style="width:80px;" type="submit" name="enter" id="enter" value="<spring:message code="header.enterButton"/>">
+        <a href="${pageContext.request.contextPath}/passwordRestore.html" title="<spring:message code="header.restorePass.description"/>"><spring:message code="header.restorePass.title"/></a>
+        | <a href="${pageContext.request.contextPath}/registration.html" title="<spring:message code="header.registration.description"/>"><spring:message code="header.registration.title"/></a>
+        | <input style="width:80px;" type="submit" name="enter" id="enter" value="<spring:message code="header.enterButton"/>">
       </form>
   </c:if>
     </div>
