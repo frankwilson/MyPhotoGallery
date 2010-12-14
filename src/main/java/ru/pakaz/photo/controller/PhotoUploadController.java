@@ -50,12 +50,11 @@ public class PhotoUploadController {
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
-     * 
+     *
      * @param albumId
      * @param request
      * @return
      */
-
     @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.GET)
     public ModelAndView getWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView("uploadPhoto");
@@ -69,8 +68,7 @@ public class PhotoUploadController {
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
-     * 
-     * @param albumId
+     *
      * @param request
      * @return
      */
@@ -84,13 +82,12 @@ public class PhotoUploadController {
 
     /**
      * Загрузка фотографии в альбом
-     * 
+     *
      * @param albumId
-     * @param result
      * @param request
      * @return
      */
-    @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)  
+    @RequestMapping(value = "/album_{albumId}/upload.html", method = RequestMethod.POST)
     public ModelAndView uploadWithAlbum( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
         return uploadPhoto( request, this.albumsManager.getAlbumById(albumId) );
 
@@ -98,7 +95,7 @@ public class PhotoUploadController {
 
     /**
      * Загрузка фотографии во временный альбом
-     * 
+     *
      * @param request
      * @param response
      * @return
@@ -107,12 +104,12 @@ public class PhotoUploadController {
     protected ModelAndView upload(HttpServletRequest request, HttpServletResponse response) {
         return uploadPhoto( request, null );
     }
-    
+
     private ModelAndView uploadPhoto( HttpServletRequest request, Album album ) {
         ModelAndView mav = new ModelAndView();
 
         MappingJacksonJsonView view = new MappingJacksonJsonView();
-        
+
         try {
             view = (MappingJacksonJsonView)parsePhoto( request, album );
         }
@@ -132,7 +129,7 @@ public class PhotoUploadController {
 
         mav.setViewName( "uploadPhoto" );
         Map attributes = view.getStaticAttributes();
-        
+
         if( (Boolean)attributes.get("single").equals( true ) ) {
             logger.debug( "We have single_file attribute!" );
             mav.addObject( "status", attributes.get("status") );
@@ -155,15 +152,15 @@ public class PhotoUploadController {
 
         return mav;
     }
-    
+
     /**
      * Обработка полученного массива байт
-     * 
+     *
      * @param request
      * @param album
      * @return
      */
-    private View parsePhoto( HttpServletRequest request, Album album ) 
+    private View parsePhoto( HttpServletRequest request, Album album )
             throws UserNotFoundException, ContentIsNotMultipartException, Exception {
         MappingJacksonJsonView view = new MappingJacksonJsonView();
 
@@ -200,7 +197,7 @@ public class PhotoUploadController {
             this.photoManager.createPhoto( newPhoto );
             this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
             this.photoFileService.savePhoto( file.get(), newPhoto );
-            
+
             view.addStaticAttribute("photoId", newPhoto.getPhotoId());
             view.addStaticAttribute("status", 1);
             view.addStaticAttribute("name", file.getName());
@@ -220,7 +217,7 @@ public class PhotoUploadController {
 
             view.addStaticAttribute("width", maxWidth);
             view.addStaticAttribute("height", maxHeight);
-            
+
             MagicMatch mime = null;
             try {
                 mime = Magic.getMagicMatch(file.get());
@@ -228,31 +225,31 @@ public class PhotoUploadController {
             catch (Exception e) {
                 logger.warn("Can't get MIME-type!");
             }
-            
+
             if( mime != null )
                 view.addStaticAttribute("mime", mime.getMimeType());
             else
                 view.addStaticAttribute("mime", file.getContentType());
-            
+
             if( album == null && currentUser.getUnallocatedPhotosCount() != -1 )
                 currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() + 1 );
         }
         catch( Exception e ) {
             throw e;
         }
-        
+
         return view;
     }
-    
+
     private FileItem getFileFromRequest( final HttpServletRequest request ) throws Exception {
-        // Создаём класс фабрику 
+        // Создаём класс фабрику
         DiskFileItemFactory factory = new DiskFileItemFactory();
 
         // Максимальный буфера данных в байтах,
         // при его привышении данные начнут записываться на диск во временную директорию
         // устанавливаем один мегабайт
         factory.setSizeThreshold(1024*1024);
-        
+
         // устанавливаем временную директорию
         File tempDir = (File)request.getSession().getServletContext().getAttribute("javax.servlet.context.tempdir");
         factory.setRepository(tempDir);
@@ -260,9 +257,9 @@ public class PhotoUploadController {
 
         //Создаём сам загрузчик
         ServletFileUpload upload = new ServletFileUpload(factory);
-        
+
         //максимальный размер данных который разрешено загружать в байтах
-        //по умолчанию -1, без ограничений. Устанавливаем 10 мегабайт. 
+        //по умолчанию -1, без ограничений. Устанавливаем 10 мегабайт.
         upload.setSizeMax(1024 * 1024 * 200);
 
         try {/*
@@ -272,7 +269,7 @@ public class PhotoUploadController {
                 // items uploaded progress, percent
                 private long uploaded = -1;
                 private long total = 0;
-                
+
                 private HttpSession session = request.getSession();
 
                 public void update(long pBytesRead, long pContentLength, int pItems) {
@@ -301,7 +298,7 @@ public class PhotoUploadController {
                     return item;
                 }
             }
-            
+
             return null;
         }
         catch (Exception e) {

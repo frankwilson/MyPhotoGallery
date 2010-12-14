@@ -1,20 +1,18 @@
 package ru.pakaz.common.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
 /**
  * Класс для отправки сообщений электронной почты
@@ -100,68 +98,41 @@ public class MailService {
      * @return
      */
     public boolean sendMailMessage( String message, String dstAddress, String subject ) {
-
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-        sender.setDefaultEncoding("UTF-8");
-        MimeMessage emess = sender.createMimeMessage();
-
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(emess, true);
-            helper.setTo( dstAddress );
-            helper.setFrom( MAIL_SRC_ADDR );
-            helper.setSubject( subject );
+            Properties props = new Properties();
 
-            logger.debug( "Mail message: \n"+ message );
-            helper.setText( message, true);
-        }
-        catch( MailException ex ) {
-            logger.error( "Email was not sent:\n"+ ex.getMessage() );
-            return false;
-        }
-        catch( MessagingException e ) {
-            logger.error( "Can't attach message to email:\n "+ e.getMessage() );
-            return false;
-        }
-        
-        setGoogleParams( sender );
+            props.put("mail.smtp.host",      MAIL_SERVER );
+            //props.put("mail.smtp.user",      MAIL_USERNAME);
+            //props.put("mail.smtp.password",  MAIL_PASSWORD);
+            props.put("mail.smtp.port",      MAIL_PORT );
+            props.put("mail.smtp.auth",      "true" );
+            props.put("mail.smtp.localhost", "pakaz.ru" );
+            props.put("mail.smtp.starttls.enable", "true" );
 
-        try {
-            sender.send(emess);
+            props.put("mail.debug", "true");
+            
+            Session mailSession = Session.getDefaultInstance(props);
+            mailSession.setDebug(true);
+            Transport transport = mailSession.getTransport("smtp");
+
+            MimeMessage emess = new MimeMessage(mailSession);
+            emess.setFrom( new InternetAddress( MAIL_SRC_ADDR ) );
+            emess.setSubject(subject, "UTF-8");
+            emess.setText(message, "UTF-8", "html");
+
+            emess.addRecipient(Message.RecipientType.TO, new InternetAddress(dstAddress));
+//logger.debug( MAIL_USERNAME +" : "+ MAIL_PASSWORD );
+            transport.connect(MAIL_USERNAME, MAIL_PASSWORD);
+
+            transport.sendMessage(emess, emess.getRecipients(Message.RecipientType.TO));
+            transport.close();
+
+            logger.debug( "Mail message:\n"+ message );
             return true;
         }
-        catch( MailException e ) {
-            logger.error( "Email was not sent:\n"+ e.getMessage() );
+        catch( MessagingException e ) {
+            logger.error( "Can't attach message to email:\n "+ e.getClass().getName() +": "+ e.getMessage() );
             return false;
         }
-    }
-    
-    /**
-     * Настройки для отправки через гугловый почтовый сервер
-     * 
-     * @param sender
-     */
-    private void setGoogleParams( JavaMailSenderImpl sender ) {
-
-        Properties props = new Properties();
-
-        props.put("mail.smtps.host",     MAIL_SERVER );
-        props.put("mail.smtps.user",     MAIL_USERNAME);
-        props.put("mail.smtps.password", MAIL_PASSWORD);
-        props.put("mail.smtps.port",     MAIL_PORT );
-        props.put("mail.smtps.auth", "true" );
-        props.put("mail.smtps.starttls.enable", "true" );
-
-        props.put("mail.debug", "true");
-
-        props.put("mail.smtp.localhost", "pakaz.ru" );
-
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication( MAIL_USERNAME, MAIL_PASSWORD ); 
-            }
-        });
-
-        sender.setSession(session);
-        session.setDebug(true);
     }
 }

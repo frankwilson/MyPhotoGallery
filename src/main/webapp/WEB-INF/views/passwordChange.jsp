@@ -13,7 +13,7 @@
     <br />
     <br /></c:if>
     <spring:message code="page.changePassword.description"/>
-    <br><br>
+    <br><br><c:if test="${resetCodeResult == null || resetCodeResult == false}">
     <table class="main">
       <colgroup>
         <col style="width:110px;">
@@ -21,7 +21,7 @@
       <tr>
         <td><spring:message code="page.changePassword.newPassword"/>:</td>
         <td>
-          <form:input path="password" maxlength="32" autocomplete="off" cssStyle="width:250px;" />
+          <form:input path="password" type="password" maxlength="32" autocomplete="off" cssStyle="width:250px;" />
           <form:errors path="password"/>
         </td>
       </tr>
@@ -31,7 +31,7 @@
           <input style="width: 80px;" type="submit" value="<spring:message code="page.changePassword.changeBut"/>">
         </td>
       </tr>
-    </table>
+    </table></c:if>
   </div>
 </div>
 </form:form>

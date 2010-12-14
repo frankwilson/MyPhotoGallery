@@ -92,7 +92,8 @@ public class PasswordRestoreController {
             User userByLogin = null;
             User userByEmail = null;
             User currentUser = null;
-    
+
+            // Если у нас есть имя пользователя — проверяем его
             if( user.getLogin() != null && !user.getLogin().equals("") ) {
                 userByLogin = usersManager.getUserByLogin( user.getLogin() );
                 if( userByLogin == null ) {
@@ -100,7 +101,8 @@ public class PasswordRestoreController {
                     logger.debug("User with login "+ user.getLogin() +" does not exist");
                 }
             }
-    
+
+            // Если у нас есть адрес электронной почты — проверяем его
             if( user.getEmail() != null && !user.getEmail().equals("") && !result.hasFieldErrors("email") ) {
                 userByEmail = usersManager.getUserByEmail( user.getEmail() );
                 if( userByEmail == null ) {
@@ -121,7 +123,6 @@ public class PasswordRestoreController {
                 }
             }
             else if( userByLogin == null && userByEmail != null ) {
-                result.recordSuppressedField("login");
                 currentUser = userByEmail;
             }
             else if( userByLogin != null && userByEmail == null ) {
@@ -129,32 +130,39 @@ public class PasswordRestoreController {
                     result.reject("error.user.email.isEmpty");
                 }
                 else {
-                    result.recordSuppressedField("email");
                     currentUser = userByLogin;
                 }
             }
     
             if( currentUser != null ) {
+/*
                 currentUser.setTemporary(true);
                 currentUser.setBlocked(true);
-                
+
                 if( this.sendEmailMessage(currentUser) ) {
                     logger.debug("Message sent");
                     this.usersManager.updateUser( request, currentUser );
                     mav.addObject( "sendMessageResult", true );
                 }
                 else {
+                    logger.debug("Message not sent");
                     mav.addObject( "sendMessageResult", false );
                 }
+*/
             }
         }
-        
+
         mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.restorePassword" ) );
         return mav;
     }
 
+    /**
+     * Метод, отправляющий письмо с магической ссылкой на восстановление пароля
+     * 
+     * @param recipient
+     * @return
+     */
     public boolean sendEmailMessage( User recipient ) {
-
         ClassPathResource ctx = new ClassPathResource("passwordRestoreMessage.html");
         StringBuilder message = new StringBuilder();
 
@@ -189,13 +197,11 @@ public class PasswordRestoreController {
                 // Обращение к сервису для отправки электронной почты
                 MailService sender = MailService.getInstance();
                 if( sender != null ) {
-                    sender.sendMailMessage( 
+                    return sender.sendMailMessage( 
                             message.toString(), 
                             recipient.getEmail(), 
                             "Restoring password on photo.pakaz.ru" 
                     );
-
-                    return true;
                 }
                 else {
                     return false;

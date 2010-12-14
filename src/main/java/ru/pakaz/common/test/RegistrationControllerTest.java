@@ -2,9 +2,12 @@ package ru.pakaz.common.test;
 
 import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.MailException;
@@ -17,51 +20,50 @@ import junit.framework.TestCase;
 public class RegistrationControllerTest extends TestCase {
 
     public void testSendMailThroughGoogle() {
-        JavaMailSenderImpl sender = new JavaMailSenderImpl();
-
-        sender.setDefaultEncoding("UTF-8");
-
         Properties props = new Properties();
 
-        props.put("mail.smtps.host", "smtp.gmail.com");
-        props.put("mail.smtps.auth", "true");
-
-        props.put("mail.smtps.starttls.enable", "true");
-
-        props.put("mail.smtps.user",     "photo@pakaz.ru");
-        props.put("mail.smtps.password", "frankw1987");
+        props.put("mail.smtp.host",            "smtp.gmail.com");
+        props.put("mail.smtp.auth",            "true");
+        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtps.user",            "wilson@pakaz.ru");
+//        props.put("mail.smtps.password",        "frankw1987");
+        props.put("mail.smtp.port",            "587" );
+        props.put("mail.smtp.localhost",       "pakaz.ru" );
 
         props.put("mail.debug", "true");
-        props.put("mail.smtps.port", "465" );
 
-        props.put("mail.smtp.localhost", "pakaz.ru" );
 
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() 
-        {
-            protected PasswordAuthentication getPasswordAuthentication() { 
-                return new PasswordAuthentication("photo@pakaz.ru","frankw1987"); 
-            }
-        });
-        session.setDebug(true);
-        sender.setSession(session);
-
-        MimeMessage emess = sender.createMimeMessage();
 
         StringBuilder message = new StringBuilder();
         message.append( "Привет, мир! Это тест гугловской почты!" );
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(emess, true);
-            helper.setTo( "frankw@mail.ru" );
-            helper.setFrom( "Photo.Pakaz.Ru <photo@pakaz.ru>" );
-            helper.setSubject( "Registering on photo.pakaz.ru" );
+            Session mailSession = Session.getDefaultInstance(props);
+/*
+            Session mailSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() { 
+                    return new PasswordAuthentication("wilson@pakaz.ru","frankw1987"); 
+                }
+            });*/
+
+            mailSession.setDebug(true);
+            Transport transport = mailSession.getTransport("smtp");
+
+            MimeMessage emess = new MimeMessage(mailSession);
+            emess.setSubject("Registering on photo.pakaz.ru", "UTF-8");
+            emess.setText(message.toString(), "UTF-8", "html");
+
+            emess.addRecipient(Message.RecipientType.TO, new InternetAddress("pv.kazantsev@gmail.com"));
+
+            //transport.connect("smtp.gmail.com", 587, "wilson@pakaz.ru", "frankw1987");
+            transport.connect("wilson@pakaz.ru", "frankw1987");
+            //transport.connect();
+
+            transport.sendMessage(emess, emess.getRecipients(Message.RecipientType.TO));
+            transport.close();
 
             System.out.println( "Mail message: \n"+ message.toString() );
-            helper.setText( message.toString(), true);
 
-            System.out.println( helper.getEncoding() );
-
-            sender.send(emess);
         }
         catch(MailException ex) {
             System.out.println("Email was not sent:");

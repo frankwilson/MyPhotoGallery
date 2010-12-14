@@ -11,6 +11,9 @@
 <c:if test="${sendMessageResult == true}"><spring:message code="page.restorePassword.sendSuccess"/>.</c:if>
 <c:if test="${sendMessageResult == false}"><spring:message code="page.restorePassword.sendError"/>.</c:if>
     <br />
+    <br /></c:if><c:if test="${resetCodeResult != null}">
+<c:if test="${resetCodeResult == false}"><spring:message code="page.restorePassword.resetCodeFalse"/>.</c:if>
+    <br />
     <br /></c:if>
     <spring:message code="page.restorePassword.description"/>
     <br><br>
