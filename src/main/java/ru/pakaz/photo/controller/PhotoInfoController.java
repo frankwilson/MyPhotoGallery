@@ -68,41 +68,50 @@ public class PhotoInfoController {
      * @return
      */
     @RequestMapping(value = "/photo_{photoId}/delete.html", method = RequestMethod.GET)
-    public ModelAndView delete( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
-
-        ModelAndView mav = new ModelAndView();
+    public View delete( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
+//        ModelAndView mav = new ModelAndView();
+        MappingJacksonJsonView view = new MappingJacksonJsonView();
 
         Photo photo = this.photoManager.getPhotoById(photoId);
 
         if( photo != null ) {
-            photo.setDeleted(true);
-            this.photoManager.updatePhoto(photo);
-            logger.debug("Photo "+ photoId +" Deleted");
+            try {
+                photo.setDeleted(true);
+                this.photoManager.updatePhoto(photo);
+                logger.debug("Photo "+ photoId +" Deleted");
+    
+                if( photo.getAlbum() != null && photo.getAlbum().getPreview() == photo ) {
+                    // Если удаляемая фотография является превьюшкой 
+                    // для альбома, в котором она находилась, обнуляем превью
+                    photo.getAlbum().setPreview(null);
+                    this.albumManager.updateAlbum( photo.getAlbum() );
+                }
+    
+                if( photo.getAlbum() != null ) {
+    //                mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
+                }
+                else {
+    //                mav.setViewName( "redirect:/unallocatedPhotos.html" );
+                    
+                    // Уменьшаем счетчик нераспределенных фотографий
+                    if( photo.getUser().getUnallocatedPhotosCount() != -1 )
+                        photo.getUser().setUnallocatedPhotosCount( photo.getUser().getUnallocatedPhotosCount() - 1 );
+                }
 
-            if( photo.getAlbum() != null && photo.getAlbum().getPreview() == photo ) {
-                // Если удаляемая фотография является превьюшкой 
-                // для альбома, в котором она находилась, обнуляем превью
-                photo.getAlbum().setPreview(null);
-                this.albumManager.updateAlbum( photo.getAlbum() );
+                view.addStaticAttribute( "deleted", true );
             }
-
-            if( photo.getAlbum() != null )
-                mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
-            else {
-                mav.setViewName( "redirect:/unallocatedPhotos.html" );
-                
-                // Уменьшаем счетчик нераспределенных фотографий
-                
-                if( photo.getUser().getUnallocatedPhotosCount() != -1 )
-                    photo.getUser().setUnallocatedPhotosCount( photo.getUser().getUnallocatedPhotosCount() - 1 );
+            catch( Exception e ) {
+                logger.error( "Exception during photo deleting: "+ e.getMessage() );
+                view.addStaticAttribute( "deleted", false );
             }
         }
         else {
             logger.debug("Photo "+ photoId +" does not exist");
-            mav.setViewName( "redirect:/albumsList.html" );
+            view.addStaticAttribute( "deleted", false );
+//            mav.setViewName( "redirect:/albumsList.html" );
         }
         
-        return mav;
+        return view;
     }
 
     /**
@@ -153,6 +162,7 @@ public class PhotoInfoController {
 
 //        ModelAndView mav = new ModelAndView();
         MappingJacksonJsonView view = new MappingJacksonJsonView();
+        logger.debug( "Destination album is ("+ album.getAlbumId() +") "+ album.getTitle() );
 
         int albumId    = album.getAlbumId();
         Photo dbPhoto  = this.photoManager.getPhotoById(photoId);
@@ -183,11 +193,13 @@ public class PhotoInfoController {
             dbPhoto.setAlbum(dstAlbum);
             this.photoManager.updatePhoto(dbPhoto);
             
+            logger.debug( "Photo successfully moved" );
             view.addStaticAttribute( "moved", true );
             
 //            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
         }
         else {
+            logger.error( "Photo not moved" );
 //            result.rejectValue( "title", "error.photo.titleIsTooShort" );
             view.addStaticAttribute( "moved", false );
 //            mav.setViewName( "photoInfo" );

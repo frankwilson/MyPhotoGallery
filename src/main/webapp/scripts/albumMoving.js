@@ -24,16 +24,21 @@ $(function() {
             accept: ".photo a img",
             hoverClass: "ui-state-active",
             drop: function( event, ui ) {
+            	var re = /^album_(\d+)$/i;
+            	var str = $(this).attr("id");
+            	var dstAlbumId = str.match(re)[1];
+
             	$(ui.draggable).draggable( "option", "revert", false );
                 $(ui.draggable).draggable("disable");
+
                 var re = /^image_(\d+)$/i;
                 var str = $(ui.draggable).attr("id");
                 if( str != undefined ) {
-                    var photoId = str.match( re )[1];
+                    var photoId = str.match(re)[1];
 
 	                $.ajax({
 	                    type: "POST",
-	                    data: "albumId="+ albumId,
+	                    data: "albumId="+ dstAlbumId,
 	                    url: './photo_'+ photoId +'/move.html',
 	                    dataType: "json",
 	                    success: function(data) {
@@ -41,7 +46,7 @@ $(function() {
 	                    		var options = {};
 	                    		$(ui.draggable).effect('fade', options, 'slow');
                                 
-                                options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
+                                options = { to: '#album_'+ dstAlbumId, className: "ui-effects-transfer" };
                                 $("#photo_"+ photoId).effect('transfer', options, 'slow');
                                 $("#photo_"+ photoId).effect('fade', options, 'slow');
 	                    	}
@@ -69,5 +74,36 @@ $(function() {
                 }
             }
         });
+    });
+
+    $(".photoDelLink").click(function(){
+        var photoTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
+        if( confirm(deleteConfirm +" '"+ photoTitle +"'?") ) {
+            var re = /^photo_(\d+)$/i;
+            var str = $(this).parent().parent().attr("id");
+            var photoId = str.match(re)[1];
+
+            $.ajax({
+                type: "GET",
+                url: './photo_'+ photoId +'/delete.html',
+                dataType: "json",
+                success: function(data) {
+                    if( data.deleted == true ) {
+                        options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
+                        $("#photo_"+ photoId).effect('fade', options, 'slow');
+                    }
+                    else {
+                    }
+                },
+                error: function(xhr, status, trown) {
+                	if( status != 'success' && xhr.status == 200 ) {
+                        alert('Status is not success!');
+                    }
+                    else if( xhr.status != 200 ) {
+                        alert('Server return status '+ xhr.status +'!');
+                    }
+	            }
+            });
+        }
     });
 });

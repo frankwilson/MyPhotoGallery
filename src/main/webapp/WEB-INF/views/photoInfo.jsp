@@ -10,9 +10,9 @@
       <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html">${photo.title}</a>
       <br />
       <span class="additional">
-        <spring:message code="page.photoInfo.from"/> <c:choose>
+        <spring:message code="page.photoInfo.from"/>&#160;<c:choose>
           <c:when test="${photo.album == null}"><spring:message code="page.photoInfo.ofUnsorted"/></c:when>
-          <c:otherwise><spring:message code="page.photoInfo.ofAlbum"/> <a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
+          <c:otherwise><spring:message code="page.photoInfo.ofAlbum"/>&#160;<a href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html">${photo.album.title}</a></c:otherwise>
         </c:choose>
         <c:if test="${isThisUser eq false}">
         <spring:message code="page.photoInfo.ofUser"/> <a href="${pageContext.request.contextPath}/user_${photo.user.userId}.html">${photo.user.login}</a>

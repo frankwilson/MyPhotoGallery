@@ -168,13 +168,11 @@ public class RegistrationController {
                 // Обращение к сервису для отправки электронной почты
                 MailService sender = MailService.getInstance();
                 if( sender != null ) {
-                    sender.sendMailMessage( 
+                    return sender.sendMailMessage( 
                             message.toString(), 
                             recipient.getEmail(), 
                             "Registering on photo.pakaz.ru" 
                     );
-
-                    return true;
                 }
                 else {
                     return false;

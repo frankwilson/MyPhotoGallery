@@ -215,3 +215,18 @@ a:visited {
 .full_width {
     width: 980px;
 }
+
+.ui-effects-transfer {
+    border: 2px dotted gray;
+}
+.ui-state-active {
+    background-color: #eee;
+}
+
+.photo_desc {
+    height: 30px;
+    vertical-align:top;
+    overflow: hidden;
+    width:187px;
+}
+	

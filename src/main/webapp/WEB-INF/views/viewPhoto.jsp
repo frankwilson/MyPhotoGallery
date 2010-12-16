@@ -8,7 +8,23 @@
 <script>
 $(function() {
     $(".photoDelLink").click(function(){
-        return confirm("<spring:message code="confirm.photo.deleteQuestion"/> '${photo.title}'?");
+        if( confirm("<spring:message code="confirm.photo.deleteQuestion"/> '${photo.title}'?") ) {
+            $.ajax({
+                type: "GET",
+                url: './photo_${photo.photoId}/delete.html',
+                dataType: "json",
+                success: function(data) {
+                    if( data.deleted == true ) {
+                    	<c:if test="${photo.album != null}">
+                        location.href="${pageContext.request.contextPath}/album_${photo.album.albumId}.html";
+                        </c:if>
+                        <c:if test="${photo.album == null}">
+                        location.href="${pageContext.request.contextPath}/unallocatedPhotos.html";
+                        </c:if>
+                    }
+                }
+            });
+        }
     });
 });
 </script>
@@ -61,7 +77,7 @@ $(function() {
         <a href="/images/${photo.photoFilesList[0].filename}"><spring:message code="page.viewPhoto.fullsizePhoto"/> (${photo.photoFilesList[0].photoWidth}x${photo.photoFilesList[0].photoHeight})</a>
   </c:if>
         <br /><br />
-        <a class="photoDelLink" href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html"><spring:message code="page.viewPhoto.deletePhoto"/></a>&#160;
+        <a class="photoDelLink" href="javascript:void();"><spring:message code="page.viewPhoto.deletePhoto"/></a>&#160;
 </c:if>
       </div>
     </div>

@@ -6,20 +6,6 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <style>
-.targetAlbum {
-    width:160px;
-    height:160px;
-    margin-top:5px;
-    padding-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px 5px 0 0;
-    background-color:#ccc;
-    text-align:center;
-}
-
-.ui-effects-transfer {
-    border: 2px dotted gray;
-}
 </style>
 
 <script>
@@ -27,12 +13,9 @@ $(function() {
     $(".albumDelLink").click(function(){
         return confirm("<spring:message code="confirm.album.deleteQuestion"/> '${album.title}'?");
     });
-
-    $(".photoDelLink").click(function(){
-        var photoTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
-        return confirm("<spring:message code="confirm.photo.deleteQuestion"/> '"+ photoTitle +"'?");
-    });
 });
+
+var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </script>
 
 <div class="top_level">
@@ -51,7 +34,7 @@ $(function() {
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" id="photo_${photo.photoId}">
       <div class="photo_icons">
-        [<a class="photoDelLink" href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
+        [<a class="photoDelLink" href="javascript:void(0);<%--${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html--%>">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
       </div>
       <table class="album_microtables">

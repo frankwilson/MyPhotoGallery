@@ -7,13 +7,6 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <style>
-.ui-state-active {
-    background-color: #eee;
-}
-
-.ui-effects-transfer {
-    border: 2px dotted gray;
-}
 </style>
 <script>
 
@@ -32,13 +25,9 @@ $(function() {
     $(".albumDelLink").click(function(){
         return confirm("<spring:message code="confirm.album.deleteQuestion"/> '${album.title}'?");
     });
-
-    $(".photoDelLink").click(function(){
-    	var photoTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
-        return confirm("<spring:message code="confirm.photo.deleteQuestion"/> '"+ photoTitle +"'?");
-    });
 });
 
+var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </script>
 
 <div class="top_level">
@@ -61,7 +50,7 @@ $(function() {
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" class="photo_frame ui-widget-content" id="photo_${photo.photoId}">
       <div class="photo_icons">
-        [<a class="photoDelLink" href="${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html">&#160;X&#160;</a>]
+        [<a class="photoDelLink" href="javascript:void(0);">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
         <a href="" class="left">&#8592;</a>&#160;
         <a href="" class="right">&#8594;</a>&#160;
@@ -80,8 +69,8 @@ $(function() {
           </td>
         </tr>
         <tr>
-          <td style="height:32px; vertical-align:top;">
-            <div style="overflow:hidden; width:187px;">
+          <td>
+            <div class="photo_desc">
               <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" style="">${photo.title}</a>
             </div>
           </td>

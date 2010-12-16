@@ -17,8 +17,10 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/style.css">
   <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/functions.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+<%--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>--%>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery.min_1.4.2.js"></script>
+<%--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>--%>
+  <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery-ui.min_1.8.5.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
     	if( $(".left_panel") != null && $(".left_panel").length > 0 ) {
