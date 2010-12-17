@@ -13,13 +13,13 @@ import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
-import ru.pakaz.photo.service.PhotoFileService;
+import ru.pakaz.photo.service.PhotoFileServiceIM;
 import junit.framework.TestCase;
 
 public class PhotoFileServiceTest extends TestCase {
     private Logger logger = Logger.getLogger( PhotoFileServiceTest.class );
 
-    PhotoFileService service = new PhotoFileService();
+    PhotoFileServiceIM service = new PhotoFileServiceIM();
 
     @Autowired
     private UserDao usersManager = new UserDao();
@@ -88,7 +88,8 @@ public class PhotoFileServiceTest extends TestCase {
             assertTrue( mime.getMimeType().equals("image/jpeg") );
             
             extension = mime.getExtension();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         
@@ -96,7 +97,12 @@ public class PhotoFileServiceTest extends TestCase {
     }
 
     public void testResizeImage() {
-        File srcFile = new File( "/home/wilson/Картинки/5014051.png" );
+        logger.info( "This: "+ System.getProperty("java.library.path") );
+        
+        /*File srcFile = new File( "/home/wilson/Pictures/5014051.png" );
+        File dstFile = new File( "/home/wilson/Pictures/5014051_resized2.png" );*/
+        File srcFile = new File( "/home/wilson/Pictures/120520101307.jpg" );
+        File dstFile = new File( "/home/wilson/Pictures/120520101307_resized3.jpg" );
         assertTrue( srcFile.exists() );
 
         FileInputStream in;
@@ -116,7 +122,7 @@ public class PhotoFileServiceTest extends TestCase {
         assertNotNull( buf );
         assertTrue( buf.length > 0 );
         
-        byte[] resizeResult = this.service.resizeImage( buf, 665 );
+        byte[] resizeResult = this.service.resizeImage( buf, 640 );
         assertNotNull( resizeResult );
         assertTrue( resizeResult.length > 0 );
 
@@ -127,7 +133,15 @@ public class PhotoFileServiceTest extends TestCase {
             logger.info(mime.getMimeType());
             
             logger.info(mime.getExtension());
-        } catch (Exception e) {
+            
+            if(dstFile.getParentFile().canWrite()) {
+                this.service.saveFile( resizeResult, dstFile.getCanonicalPath() );
+            }
+            else {
+                logger.error( "Can't write image!" );
+            }
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

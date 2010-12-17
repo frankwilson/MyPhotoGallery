@@ -33,7 +33,7 @@ import ru.pakaz.photo.dao.PhotoDao;
 import ru.pakaz.photo.model.Album;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
-import ru.pakaz.photo.service.PhotoFileService;
+import ru.pakaz.photo.service.PhotoFileServiceIM;
 
 @Controller
 public class PhotoUploadController {
@@ -46,7 +46,7 @@ public class PhotoUploadController {
     @Autowired
     private PhotoDao photoManager;
     @Autowired
-    private PhotoFileService photoFileService;
+    private PhotoFileServiceIM photoFileService;
 
     /**
      * Загрузка фотографии в определенный параметром albumId альбом
@@ -164,6 +164,8 @@ public class PhotoUploadController {
             throws UserNotFoundException, ContentIsNotMultipartException, Exception {
         MappingJacksonJsonView view = new MappingJacksonJsonView();
 
+        long time = System.nanoTime();
+        
         //проверяем является ли полученный запрос multipart/form-data
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         if (!isMultipart)
@@ -238,6 +240,8 @@ public class PhotoUploadController {
             throw e;
         }
 
+        this.logger.debug("Uploading finished for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
+        
         return view;
     }
 
@@ -337,7 +341,7 @@ public class PhotoUploadController {
     public void setPhotoDao( PhotoDao photoDao ) {
         this.photoManager = photoDao;
     }
-    public void setPhotoFileService( PhotoFileService photoFileService ) {
+    public void setPhotoFileService( PhotoFileServiceIM photoFileService ) {
         this.photoFileService = photoFileService;
     }
 }

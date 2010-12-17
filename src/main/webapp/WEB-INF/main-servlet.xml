@@ -50,7 +50,7 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="photoFileService" class="ru.pakaz.photo.service.PhotoFileService">
+    <bean id="photoFileService" class="ru.pakaz.photo.service.PhotoFileServiceIM">
         <property name="destinationPath" value="/var/www/images" />
     </bean>
 </beans>

@@ -149,7 +149,7 @@ window.addEvent('domready', function() {
 #filesList {
     list-style: none;
     padding-left: 0px;
-    width: 750px;
+    width: 850px;
     margin: 0;
 }
  
@@ -178,6 +178,7 @@ td.file-remove {
 }
 td.file-name {
     padding-right: 10px;
+    width: 500px;
 }
 td.file-info {
     #font-size: 0.9em;
