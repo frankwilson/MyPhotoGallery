@@ -4,12 +4,10 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
-
+<c:if test="${isThisUser}">
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
-<style>
-</style>
-<script>
 
+<script>
 $(function() {
     $(".left").click(function(){
         var pdiv = $(this).parent('div').parent('div');
@@ -29,17 +27,14 @@ $(function() {
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </script>
-
+</c:if>
 <div class="top_level">
   <div class="content">
     <div class="page_header">
       ${album.title}
       <c:if test="${!isThisUser}">
         <span class="additional">
-          &#160;<spring:message code="page.album.ofUser"/> 
-          <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">
-            ${album.user.login}
-          </a>
+          <spring:message code="page.album.ofUser" />&#160;<a href="${pageContext.request.contextPath}/${album.user.login}/albumsList.html">${album.user.login}</a>
         </span>
       </c:if>
     </div>
@@ -49,12 +44,14 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
     <div id="sortable">
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" class="photo_frame ui-widget-content" id="photo_${photo.photoId}">
+<c:if test="${isThisUser}">
       <div class="photo_icons">
         [<a class="photoDelLink" href="javascript:void(0);">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
-        <a href="" class="left">&#8592;</a>&#160;
-        <a href="" class="right">&#8594;</a>&#160;
+        <a href="javascript:void(0);" class="left">&#8592;</a>&#160;
+        <a href="javascript:void(0);" class="right">&#8594;</a>&#160;
       </div>
+</c:if>
       <table class="album_minitables">
         <tr>
           <td class="photo">
@@ -85,8 +82,9 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </c:forEach>
     </div>
   </div>
-  <div class="left_panel">
+
 <c:if test="${isThisUser}">
+  <div class="left_panel">
     <div class="left_block">
       <div class="header"><spring:message code="page.album.links"/></div>
       <div class="body">
@@ -109,8 +107,8 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
         </select>
       </div>
     </div>
-</c:if>
   </div>
+</c:if>
 </div>
 
 <jsp:include page="footer.jsp" />

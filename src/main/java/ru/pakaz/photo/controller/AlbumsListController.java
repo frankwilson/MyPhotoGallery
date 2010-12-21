@@ -59,31 +59,52 @@ public class AlbumsListController {
      * @return
      */
     @RequestMapping(value = "/user_{userId}/albumsList.html", method = RequestMethod.GET)
-    public ModelAndView showUserAlbumsList( @PathVariable("userId") int userId, HttpServletRequest request ) {
-        ModelAndView mav = new ModelAndView( "albumsList" );
-        
-        User user;
-        user = this.usersManager.getUserFromSecurityContext();
-        if( user != null && user.getUserId() == userId ) {
-        	mav.setViewName("redirect:/albumsList.html");
-        	return mav;
+    public ModelAndView showAlbumsListById( @PathVariable("userId") int userId, HttpServletRequest request ) {
+        User user = this.usersManager.getUserById( userId );
+        return getUserAlbumsList( user, request );
+    }
+    
+    /**
+     * Метод подготавливает к выводу список альбомов указанного пользователя
+     * 
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/{userLogin}/albumsList.html", method = RequestMethod.GET)
+    public ModelAndView showAlbumsListByLogin( @PathVariable("userLogin") String userLogin, HttpServletRequest request ) {
+        User user = this.usersManager.getUserByLogin( userLogin );
+        return getUserAlbumsList( user, request );
+    }
+    
+    public ModelAndView getUserAlbumsList( User user, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView();
+
+        User currentUser = this.usersManager.getUserFromSecurityContext();
+        if( user != null && currentUser != null && user.getUserId() == currentUser.getUserId() ) {
+            mav.setViewName("redirect:/albumsList.html");
+            return mav;
         }
-        else if( user != null )
-            mav.addObject( "isThisUser", userId == user.getUserId() );
+        else if( user != null ) {
+            mav.addObject( "isThisUser", false );
 
-        user = this.usersManager.getUserById(userId);
-        ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
+            ArrayList<Album> albums = this.albumsManager.getAlbumsByUser( user );
 
-        logger.debug( "We got albums list" );
-        if( albums != null ) {
-            logger.debug( "Albums list is not null and have "+ albums.size() +" elements" );
-            mav.addObject( "albums", albums );
+            logger.debug( "We got albums list" );
+            if( albums != null ) {
+                logger.debug( "Albums list is not null and have "+ albums.size() +" elements" );
+                mav.addObject( "albums", albums );
+            }
+
+            String title = new RequestContext(request).getMessage( "page.title.albumsList" );
+            logger.debug( "Adding title string to the view: '"+ title +"'" );
+
+            mav.addObject( "pageName", title );
+            mav.setViewName( "albumsList" );
         }
-
-        String title = new RequestContext(request).getMessage( "page.title.albumsList" );
-        logger.debug( "Adding title string to the view: '"+ title +"'" );
-
-        mav.addObject( "pageName", title );
+        else {
+            mav.setViewName( "userNotFound" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userNotFound" ) );
+        }
 
         return mav;
     }

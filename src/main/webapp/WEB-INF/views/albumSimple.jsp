@@ -3,11 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <jsp:include page="header.jsp" />
-
+<c:if test="${isThisUser}">
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
-<style>
-</style>
-
 <script>
 $(function() {
     $(".albumDelLink").click(function(){
@@ -17,7 +14,7 @@ $(function() {
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </script>
-
+</c:if>
 <div class="top_level">
   <div class="content">
     <div class="page_header">
@@ -33,10 +30,12 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
     <%-- здесь будет список страниц для постраничного вывода --%>
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" id="photo_${photo.photoId}">
+<c:if test="${isThisUser}">
       <div class="photo_icons">
         [<a class="photoDelLink" href="javascript:void(0);<%--${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html--%>">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
       </div>
+</c:if>
       <table class="album_microtables">
         <tr>
           <td class="photo" <%--style="height:170px; background-color:#cfcfcf;" --%>>

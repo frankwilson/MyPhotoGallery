@@ -12,22 +12,23 @@
       </colgroup>
       <tr>
         <td style="width:150px; height:22px;"><spring:message code="page.userInfo.login"/>:</td>
-        <td>${user.login}</td>
+        <td>${viewedUser.login}</td>
       </tr>
       <tr>
         <td><spring:message code="page.userInfo.nickname"/>:</td>
-        <td>${user.nickName}</td>
+        <td>${viewedUser.nickName}</td>
       </tr>
       <tr>
         <td><spring:message code="page.userInfo.firstName"/>:</td>
-        <td>${user.firstName}</td>
+        <td>${viewedUser.firstName}</td>
       </tr>
       <tr>
         <td><spring:message code="page.userInfo.lastName"/>:</td>
-        <td>${user.lastName}</td>
+        <td>${viewedUser.lastName}</td>
       </tr>
       <tr><td colspan=2 style="height:10px;"></td></tr>
     </table>
+    <div><a href="${pageContext.request.contextPath}/${viewedUser.login}/albumsList.html">Список альбомов пользователя</a></div>
   </div>
 </div>
 <jsp:include page="footer.jsp" />

@@ -72,13 +72,30 @@ public class UserInfoController {
     }
 
     @RequestMapping(value = "/user_{userId}/info.html", method = RequestMethod.GET)  
-    public ModelAndView info( @PathVariable("userId") int userId, HttpServletRequest request ) {
+    public ModelAndView infoById( @PathVariable("userId") int userId, HttpServletRequest request ) {
         User user = this.usersManager.getUserById(userId);
 
+        return this.getUserInfo( user, request );
+    }
+
+    @RequestMapping(value = "/{userLogin}/info.html", method = RequestMethod.GET)  
+    public ModelAndView infoByLogin( @PathVariable("userLogin") String userLogin, HttpServletRequest request ) {
+        User user = this.usersManager.getUserByLogin(userLogin);
+        
+        return this.getUserInfo( user, request );
+    }
+    
+    public ModelAndView getUserInfo(User user, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName( "userInfo" );
-        mav.addObject( "user", user );
-        mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfo" ) +" "+ user.getLogin() );
+        if( user != null ) {
+            mav.setViewName( "userInfo" );
+            mav.addObject( "viewedUser", user );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userInfo" ) +" "+ user.getLogin() );
+        }
+        else {
+            mav.setViewName( "userNotFound" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.userNotFound" ) );
+        }
 
         return mav;
     }

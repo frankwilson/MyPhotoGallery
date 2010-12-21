@@ -78,6 +78,7 @@ public class PhotoShowController {
         else {
             // Если фотография не существует или удалена
             mav.setViewName( "photoNotFound" );
+            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoNotFound" ) );
         }
         
         return mav;

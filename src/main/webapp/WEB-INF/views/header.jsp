@@ -26,6 +26,9 @@
     	if( $(".left_panel") != null && $(".left_panel").length > 0 ) {
             $(".left_panel_show").show();
     	}
+    	else {
+    		$(".content").addClass('full_width');
+    	}
     });
   </script>
 </head>
@@ -54,6 +57,7 @@
             <a href="${pageContext.request.contextPath}/changeUsersInfo.html" title="<spring:message code="header.usersInfo.description"/>">${user.login}</a>
             | <a href="${pageContext.request.contextPath}/albumsList.html" title="<spring:message code="header.myAlbums.description"/>"><spring:message code="header.myAlbums.title"/></a>
               [<a href="${pageContext.request.contextPath}/createAlbum.html" title="<spring:message code="header.addAlbum.description"/>">&#160;+&#160;</a>]
+              [<a href="${pageContext.request.contextPath}/${user.login}/albumsList.html" title="<spring:message code="header.albumsLink.description"/>">&#160;&#8599;&#160;</a>]
             | <a href="${pageContext.request.contextPath}/${albumUrl}upload.html" title="<spring:message code="header.uploadPhoto.description"/>"><spring:message code="header.uploadPhoto.title"/></a>
             | <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="<spring:message code="header.unsorted.description"/>"><spring:message code="header.unsorted.title"/> (${user.unallocatedPhotosCount})</a>
             | <a href="${pageContext.request.contextPath}/logout.html" title="<spring:message code="header.logout.description"/>"><spring:message code="header.logout.title"/></a>
