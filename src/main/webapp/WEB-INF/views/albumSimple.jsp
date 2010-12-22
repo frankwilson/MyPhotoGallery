@@ -13,6 +13,7 @@ $(function() {
 });
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
+var currentAlbumId = ${album.albumId};
 </script>
 </c:if>
 <div class="top_level">
@@ -38,13 +39,13 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
 </c:if>
       <table class="album_microtables">
         <tr>
-          <td class="photo" <%--style="height:170px; background-color:#cfcfcf;" --%>>
+          <td class="photo">
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
               <c:if test="${photo.photoFilesList[4].filename == ''}">
-                <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
+                <img src="${pageContext.request.contextPath}/img/album_no_preview.png" />
               </c:if>
               <c:if test="${photo.photoFilesList[4].filename != ''}">
-                <img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
+                <img id="image_${photo.photoId}" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
               </c:if>
             </a>
           </td>

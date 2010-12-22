@@ -76,8 +76,9 @@ window.addEvent('domready', function() {
         */ 
        onSelectFail: function(files) {
            files.each(function(file) {
-               new Element('li', {
+               new Element('td', {
                    'class': 'validation-error',
+                   'colspan': '4',
                    html: file.validationErrorMessage || file.validationError,
                    title: MooTools.lang.get('FancyUpload', 'removeTitle'),
                    events: {
@@ -94,7 +95,13 @@ window.addEvent('domready', function() {
 
            if (json.get('status') == '1') {
                file.info.set('html', '<strong><spring:message code="page.uploadPhoto.uploaded"/>:</strong> ' + json.get('width') + ' x ' + json.get('height') + 'px, <em>' + json.get('mime') + '</em>');
-           } else {
+
+               if( <c:if test="${currentAlbum != null}">${currentAlbum.albumId}</c:if><c:if test="${currentAlbum == null}">0</c:if> == 0 ){
+                   unallocatedPhotosCount++;
+                   $("unallocatedPhotosCount").set('html', unallocatedPhotosCount);
+               }
+           }
+           else {
                file.info.set('html', '<strong><spring:message code="page.uploadPhoto.uploadError"/>:</strong> ' + (json.get('error') ? (json.get('error') + ' #' + json.get('code')) : response));
            }
        },
@@ -136,8 +143,7 @@ window.addEvent('domready', function() {
 }
  
 #uploadStatus .progress {
-    background: url(${pageContext.request.contextPath}/img/progress-bar/progress.gif) no-repeat;
-    #background: url(${pageContext.request.contextPath}/img/progress-bar-sample.png) repeat-x;
+    background: url(${pageContext.request.contextPath}/img/progress-bar.png) repeat-x;
     margin-right: 0.5em;
     vertical-align: middle;
 }
@@ -149,11 +155,11 @@ window.addEvent('domready', function() {
 #filesList {
     list-style: none;
     padding-left: 0px;
-    width: 850px;
+    #width: 850px;
     margin: 0;
 }
  
-#filesList li.validation-error {
+#filesList tr.validation-error {
     /*display: block;*/
     clear: left;
     line-height: 40px;
@@ -162,11 +168,11 @@ window.addEvent('domready', function() {
     border-bottom: 1px solid #fbc2c4;
 }
  
-#filesList li.file {
+#filesList tr.file td {
     border-bottom: 1px solid #eee;
     overflow: auto;
 }
-#filesList li.file.file-uploading {
+#filesList tr.file.file-uploading {
     background-color: #D9DDE9;
 }
 
@@ -178,7 +184,8 @@ td.file-remove {
 }
 td.file-name {
     padding-right: 10px;
-    width: 500px;
+    min-width: 120px;
+    max-width: 600px;
 }
 td.file-info {
     #font-size: 0.9em;
@@ -189,54 +196,54 @@ td.file-info {
 }
 </style>
 
+<form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/${albumUrl}upload.html;jsessionid=${pageContext.session.id}">
 <div class="top_level">
   <div class="content">
-    <form:form enctype="multipart/form-data" id="upload_form" action="${pageContext.request.contextPath}/${albumUrl}upload.html;jsessionid=${pageContext.session.id}">
-      <div class="page_header"><spring:message code="page.uploadPhoto.title"/>
-  <c:if test="${currentAlbum != null}">
-         <spring:message code="page.uploadPhoto.toAlbum"/>: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
-  </c:if>
-      </div>
+    <div class="page_header"><spring:message code="page.uploadPhoto.title"/>
+<c:if test="${currentAlbum != null}">
+       <spring:message code="page.uploadPhoto.toAlbum"/>: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
+</c:if>
+    </div>
 
-      <fieldset id="fallbackBlock">
-        <legend><spring:message code="page.uploadPhoto.singleTitle"/></legend>
-        <p id="errorMessage"><spring:message code="page.uploadPhoto.flashError"/>.</p>
-        <label for="photoupload">
-          <spring:message code="page.uploadPhoto.uploadPhoto"/>:
-          <input type="file" name="single_file" />
-        </label>
-        <br />
-        <input type="submit" name="upload" value="<spring:message code="page.uploadPhoto.uploadButton"/>" />
+    <fieldset id="fallbackBlock">
+      <legend><spring:message code="page.uploadPhoto.singleTitle"/></legend>
+      <p id="errorMessage"><spring:message code="page.uploadPhoto.flashError"/>.</p>
+      <label for="photoupload">
+        <spring:message code="page.uploadPhoto.uploadPhoto"/>:
+        <input type="file" name="single_file" />
+      </label>
+      <br />
+      <input type="submit" name="upload" value="<spring:message code="page.uploadPhoto.uploadButton"/>" />
     <c:if test="${fileName != null}">
-        <br /><br />
-        <div id="uploadedFileInfo">
-          <spring:message code="page.uploadPhoto.fileUploaded"/>: <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
-          (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
-        </div>
+      <br /><br />
+      <div id="uploadedFileInfo">
+        <spring:message code="page.uploadPhoto.fileUploaded"/>: <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
+        (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
+      </div>
     </c:if>
     <c:if test="${status == 0}"><spring:message code="page.uploadPhoto.fileUploadErr"/>: ${error}</c:if>
-      </fieldset>
+    </fieldset>
 
-      <div id="uploadStatus" class="hide">
-        <p>
-          <a href="#" id="addFiles"><spring:message code="page.uploadPhoto.addPhoto"/></a> |
-          <a href="#" id="clearList"><spring:message code="page.uploadPhoto.clearList"/></a> |
-          <a href="#" id="uploadFiles"><spring:message code="page.uploadPhoto.upload"/></a>
-        </p>
-        <div>
-          <b class="overall-title"></b><br />
-          <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress overall-progress" />
-        </div>
-        <div>
-          <b class="current-title"></b><br />
-          <img src="${pageContext.request.contextPath}/img/progress-bar/bar.gif" class="progress current-progress" />
-        </div>
-        <div class="current-text"></div>
+    <div id="uploadStatus" class="hide">
+      <p>
+        <a href="#" id="addFiles"><spring:message code="page.uploadPhoto.addPhoto"/></a> |
+        <a href="#" id="clearList"><spring:message code="page.uploadPhoto.clearList"/></a> |
+        <a href="#" id="uploadFiles"><spring:message code="page.uploadPhoto.upload"/></a>
+      </p>
+      <div style="vertical-align:middle;">
+        <div style="line-height:22px;"><b class="overall-title"></b></div>
+        <img src="${pageContext.request.contextPath}/img/progress-bar-frame.png" class="progress overall-progress" />
       </div>
+      <div style="vertical-align:middle;">
+        <div style=" line-height:22px;"><b class="current-title"></b></div>
+        <img src="${pageContext.request.contextPath}/img/progress-bar-frame.png" class="progress current-progress" />
+      </div>
+      <div class="current-text"></div>
+    </div>
  
-      <ul id="filesList"></ul>
-
-    </form:form>
+    <table class="main" id="filesList"></table>
   </div>
 </div>
+</form:form>
+
 <jsp:include page="footer.jsp" />

@@ -49,6 +49,11 @@ $(function() {
                                 options = { to: '#album_'+ dstAlbumId, className: "ui-effects-transfer" };
                                 $("#photo_"+ photoId).effect('transfer', options, 'slow');
                                 $("#photo_"+ photoId).effect('fade', options, 'slow');
+                                
+                                if( currentAlbumId == 0 ){
+                                	unallocatedPhotosCount--;
+                                	$("#unallocatedPhotosCount").html(unallocatedPhotosCount);
+                                }
 	                    	}
 	                        else {
 	                            $(ui.draggable).draggable("enable");
@@ -91,8 +96,14 @@ $(function() {
                     if( data.deleted == true ) {
                         options = { to: '#album_'+ albumId, className: "ui-effects-transfer" };
                         $("#photo_"+ photoId).effect('fade', options, 'slow');
+
+                        if( currentAlbumId == 0 ){
+                        	unallocatedPhotosCount--;
+                        	$("#unallocatedPhotosCount").html(unallocatedPhotosCount);
+                        }
                     }
                     else {
+                    	// Out message to show that photo was not moved
                     }
                 },
                 error: function(xhr, status, trown) {

@@ -12,12 +12,16 @@ $(function() {
     $(".left").click(function(){
         var pdiv = $(this).parent('div').parent('div');
         pdiv.insertBefore(pdiv.prev());
-        return false
     });
     $(".right").click(function(){
         var pdiv = $(this).parent('div').parent('div');
+        var PhotoFwdId  = pdiv.attr("id");
+        var PhotoBackId = pdiv.next().attr("id");
+        
+        alert(PhotoFwdId);
+        alert(PhotoBackId);
+        
         pdiv.insertAfter(pdiv.next());
-        return false
     });
     
     $(".albumDelLink").click(function(){
@@ -26,6 +30,7 @@ $(function() {
 });
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
+var currentAlbumId = ${album.albumId};
 </script>
 </c:if>
 <div class="top_level">
@@ -57,10 +62,10 @@ var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
           <td class="photo">
             <a href="${pageContext.request.contextPath}/photo_${photo.photoId}.html" title="${photo.title}">
               <c:if test="${photo.photoFilesList[4].filename == ''}">
-                <img style="margin-top:10px;" src="${pageContext.request.contextPath}/img/album_no_preview.png" />
+                <img src="${pageContext.request.contextPath}/img/album_no_preview.png" />
               </c:if>
               <c:if test="${photo.photoFilesList[4].filename != ''}">
-                <img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
+                <img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
               </c:if>
             </a>
           </td>

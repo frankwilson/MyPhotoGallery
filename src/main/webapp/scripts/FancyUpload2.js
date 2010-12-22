@@ -141,49 +141,24 @@ FancyUpload2.File = new Class({
             'remove': this.onRemove
         });
 
-        this.element = new Element('li', {'class': 'file'}).adopt(
-            this.element = new Element('table', {'class': 'file'}).adopt(
-                new Element('tr').adopt(
-                    new Element('td', {'class': 'file-remove'}).adopt(
-                        new Element('a', {
-                            href: '#',
-                            html: "&#160;X&#160;",
-                            title: MooTools.lang.get('FancyUpload', 'remove'),
-                            events: {
-                                click: function() {
-                                    this.remove();
-                                    return false;
-                                }.bind(this)
-                            }
-                        })
-                    ),
-                    new Element('td', {'class': 'file-size', 'html': Swiff.Uploader.formatUnit(this.size, 'b')}),
-                    new Element('td', {'class': 'file-name', 'html': MooTools.lang.get('FancyUpload', 'fileName').substitute(this)}),
-                    this.info = new Element('td', {'class': 'file-info'})
-                )
-            )
+        this.element = new Element('tr', {'class': 'file'}).adopt(
+            new Element('td', {'class': 'file-remove'}).adopt(
+                new Element('a', {
+                    href: '#',
+                    html: "&#160;X&#160;",
+                    title: MooTools.lang.get('FancyUpload', 'remove'),
+                    events: {
+                        click: function() {
+                            this.remove();
+                            return false;
+                        }.bind(this)
+                    }
+                })
+            ),
+            new Element('td', {'class': 'file-size', 'html': Swiff.Uploader.formatUnit(this.size, 'b')}),
+            new Element('td', {'class': 'file-name', 'html': MooTools.lang.get('FancyUpload', 'fileName').substitute(this)}),
+            this.info = new Element('td', {'class': 'file-info'})
         ).inject(this.base.list);
-                
-/*
-        this.element = new Element('li', {'class': 'file'}).adopt(
-            new Element('span', {'class': 'file-size', 'html': Swiff.Uploader.formatUnit(this.size, 'b')}),
-            new Element('a', {
-                'class': 'file-remove',
-                href: '#',
-                html: MooTools.lang.get('FancyUpload', 'remove'),
-                title: "&#160;X&#160;",
-                events: {
-                    click: function() {
-                        this.remove();
-                        return false;
-                    }.bind(this)
-                }
-            }),
-            new Element('span', {'class': 'file-name', 'html': MooTools.lang.get('FancyUpload', 'fileName').substitute(this)}),
-            new Element('br'),
-            this.info
-        ).inject(this.base.list);
-*/
     },
     
     validate: function() {
@@ -203,13 +178,20 @@ FancyUpload2.File = new Class({
             bytesLoaded: Swiff.Uploader.formatUnit(this.progress.bytesLoaded, 'b'),
             timeRemaining: (this.progress.timeRemaining) ? Swiff.Uploader.formatUnit(this.progress.timeRemaining, 's') : '-'
         }));
+
         this.base.currentProgress.start(this.progress.percentLoaded);
+        
+        if( this.progress.percentLoaded == 100 ) {
+        	this.base.currentTitle.set('html', MooTools.lang.get('FancyUpload', 'currentFileConverting').substitute(this));
+        	this.base.currentProgress.set(this.progress.percentLoaded);
+        }
     },
     
     onComplete: function() {
         this.element.removeClass('file-uploading');
         
         this.base.currentText.set('html', MooTools.lang.get('FancyUpload', 'uploadComplete'));
+        this.base.currentTitle.set('html', MooTools.lang.get('FancyUpload', 'currentTitle'));
         this.base.currentProgress.start(100);
         
         if (this.response.error) {
@@ -245,6 +227,7 @@ FancyUpload2.File = new Class({
         'progressOverall': 'Всего ({total})',
         'currentTitle': 'Текущий файл',
         'currentFile': 'Загружается "{name}"',
+        'currentFileConverting': 'Загружается "{name}" (сохранение)',
         'currentProgress': 'Загружено: {bytesLoaded} на скорости {rate}, осталось {timeRemaining}.',
         'fileName': '{name}',
         'remove': 'Удалить',

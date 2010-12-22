@@ -23,13 +23,14 @@
   <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/jquery-ui.min_1.8.5.js"></script>
   <script type="text/javascript">
     $(document).ready(function(){
-    	if( $(".left_panel") != null && $(".left_panel").length > 0 ) {
-            $(".left_panel_show").show();
+    	if( jQuery(".left_panel") != null && jQuery(".left_panel").length > 0 ) {
+    		jQuery(".left_panel_show").show();
     	}
     	else {
-    		$(".content").addClass('full_width');
+    		jQuery(".content").addClass('full_width');
     	}
     });
+    var unallocatedPhotosCount = ${user.unallocatedPhotosCount};
   </script>
 </head>
 <body>
@@ -59,7 +60,7 @@
               [<a href="${pageContext.request.contextPath}/createAlbum.html" title="<spring:message code="header.addAlbum.description"/>">&#160;+&#160;</a>]
               [<a href="${pageContext.request.contextPath}/${user.login}/albumsList.html" title="<spring:message code="header.albumsLink.description"/>">&#160;&#8599;&#160;</a>]
             | <a href="${pageContext.request.contextPath}/${albumUrl}upload.html" title="<spring:message code="header.uploadPhoto.description"/>"><spring:message code="header.uploadPhoto.title"/></a>
-            | <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="<spring:message code="header.unsorted.description"/>"><spring:message code="header.unsorted.title"/> (${user.unallocatedPhotosCount})</a>
+            | <a href="${pageContext.request.contextPath}/unallocatedPhotos.html" title="<spring:message code="header.unsorted.description"/>"><spring:message code="header.unsorted.title"/> (<span id="unallocatedPhotosCount">${user.unallocatedPhotosCount}</span>)</a>
             | <a href="${pageContext.request.contextPath}/logout.html" title="<spring:message code="header.logout.description"/>"><spring:message code="header.logout.title"/></a>
   </c:if>
         </td>

@@ -65,6 +65,7 @@ form {
 .left_block {
     border: 1px solid #5CA8E5;
     border-radius: 10px 10px 0 0;
+    -moz-border-radius: 10px 10px 0 0;
     margin-bottom: 10px;
 }
 
@@ -75,8 +76,8 @@ form {
     font-weight: bold;
     padding-top: 6px;
     text-align: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-radius: 8px 8px 0 0;
+    -moz-border-radius: 8px 8px 0 0;
 }
 
 .left_block .body {
@@ -174,10 +175,19 @@ a:visited {
     background-color:#F2F2F2;
 }
 
+.album_microtables {
+	height: 160px;
+}
+
 .album_microtables .photo {
     text-align:center;
-    height:150px;
-    width:150px;
+    height:152px;
+    width:152px;
+}
+
+.album_microtables .photo img {/*
+	margin-top:10px;
+	position: relative;*/
 }
 
 .photo_caption {
@@ -194,7 +204,7 @@ a:visited {
     text-align: left;
     height: 0px;
     font-size: 9px;  
-    text-shadow: 0px 0px 3px #eee;
+    text-shadow: 1px 1px 2px #aaa;
     z-index: 100;
 }
 
