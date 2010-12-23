@@ -43,7 +43,10 @@ public class PhotoFile implements Comparable<PhotoFile> {
     
     @Column
     private String filename = "";
-
+    
+    @Column
+    private int filesize = 0;
+/*
     private static String rootPhotoCatalog;
 
     public static String getRootPhotoCatalog() {
@@ -52,7 +55,7 @@ public class PhotoFile implements Comparable<PhotoFile> {
     public static void setRootPhotoCatalog( String rootPhotoCatalog ) {
         PhotoFile.rootPhotoCatalog = rootPhotoCatalog;
     }
-
+*/
     public int getFileId() {
         return this.fileId;
     }
@@ -96,6 +99,13 @@ public class PhotoFile implements Comparable<PhotoFile> {
     }
     public String getFilename() {
         return this.filename;
+    }
+
+    public void setFilesize( int filesize ) {
+        this.filesize = filesize;
+    }
+    public int getFilesize() {
+        return filesize;
     }
 
     @Override

@@ -95,6 +95,14 @@ public class UserDao extends HibernateDaoSupport {
         
         return user;
     }
+    
+    public Long getTotalUsersCount() {
+        Long result = (Long)sessionFactory.getCurrentSession()
+            .createQuery("SELECT COUNT(userId) FROM User")
+            .uniqueResult();
+
+        return result;
+    }
 
     /**
      * Сохранение нового пользователя в базу

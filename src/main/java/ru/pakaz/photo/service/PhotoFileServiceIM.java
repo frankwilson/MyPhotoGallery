@@ -109,6 +109,7 @@ public class PhotoFileServiceIM {
         }
 
         original.setParentPhoto( this.resultPhoto );
+        original.setFilesize( data.length );
 
         MagicMatch mime;
         String extension = null;
@@ -341,7 +342,7 @@ public class PhotoFileServiceIM {
         
         if( file.getFilename() == null || file.getFilename().equals("") ) {
             do {
-                dstPath = RandomStringUtils.randomAlphabetic(4) +"/"+ RandomStringUtils.randomAlphanumeric(12);
+                dstPath = RandomStringUtils.randomAlphabetic(3) +"/"+ RandomStringUtils.randomAlphanumeric(5);
                 dstFile = new File( this.destinationPath, dstPath );
             }
             while( dstFile.exists() );

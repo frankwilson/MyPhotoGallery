@@ -37,6 +37,22 @@ public class PhotoFileDao extends HibernateDaoSupport {
         }
     }
     
+    public Long getTotalPhotosCount() {
+        Long result = (Long)sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(distinct parentPhoto) FROM PhotoFile")
+                .uniqueResult();
+
+        return result;
+    }
+    
+    public Long getTotalPhotosSize() {
+        Long result = (Long)sessionFactory.getCurrentSession()
+                .createQuery("SELECT SUM(filesize) FROM PhotoFile")
+                .uniqueResult();
+
+        return result;
+    }
+    
     @Transactional
     public void createFile( PhotoFile file ) {
         getHibernateTemplate().setFlushMode( HibernateTemplate.FLUSH_ALWAYS );
