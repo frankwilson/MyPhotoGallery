@@ -38,17 +38,35 @@ public class PhotoFileDao extends HibernateDaoSupport {
     }
     
     public Long getTotalPhotosCount() {
-        Long result = (Long)sessionFactory.getCurrentSession()
+        Long result = null;
+
+        if( sessionFactory.getCurrentSession() == null )
+            return null;
+        
+        Object res = sessionFactory.getCurrentSession()
                 .createQuery("SELECT COUNT(distinct parentPhoto) FROM PhotoFile")
                 .uniqueResult();
+
+        if( res != null ) {
+            result = (Long)res;
+        }
 
         return result;
     }
     
     public Long getTotalPhotosSize() {
-        Long result = (Long)sessionFactory.getCurrentSession()
+        Long result = null;
+        
+        if( sessionFactory.getCurrentSession() == null )
+            return null;
+
+        Object res = sessionFactory.getCurrentSession()
                 .createQuery("SELECT SUM(filesize) FROM PhotoFile")
                 .uniqueResult();
+
+        if( res != null ) {
+            result = (Long)res;
+        }
 
         return result;
     }

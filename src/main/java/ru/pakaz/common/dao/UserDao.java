@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ru.pakaz.common.model.User;
+import ru.pakaz.photo.model.Photo;
 
 /**
  * Класс управления пользователями
@@ -102,6 +104,37 @@ public class UserDao extends HibernateDaoSupport {
             .uniqueResult();
 
         return result;
+    }
+
+    /**
+     * Users list
+     * @return
+     */
+    @SuppressWarnings( "unchecked" )
+    public List<User> getUsersList( int partNum, int partSize ) {
+        int fromIndex = partSize * (partNum - 1);
+        int toIndex = partSize * partNum;
+
+        List<User> users;
+
+        try {
+            users = sessionFactory.getCurrentSession()
+                .createQuery("FROM User WHERE")
+                .list().subList( fromIndex, toIndex );
+    
+            if( users != null ) {
+                return users;
+            }
+            else {
+                logger.debug( "There is no users!" );
+                return null;
+            }
+        }
+        catch( HibernateException ex ) {
+            logger.error( ex.getMessage() );
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**

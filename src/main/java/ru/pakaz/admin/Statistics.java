@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import ru.pakaz.common.dao.UserDao;
-import ru.pakaz.photo.dao.PhotoDao;
+import ru.pakaz.photo.dao.PhotoFileDao;
 
 @Controller
 public class Statistics {
@@ -17,7 +17,7 @@ public class Statistics {
     @Autowired
     private UserDao usersManager;
     @Autowired
-    private PhotoDao photoManager;
+    private PhotoFileDao photoManager;
 
     @RequestMapping(value = "/admin/main.html", method = RequestMethod.GET)
     public ModelAndView getMainPage() {
