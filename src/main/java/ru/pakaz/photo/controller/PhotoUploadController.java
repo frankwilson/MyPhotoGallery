@@ -116,21 +116,24 @@ public class PhotoUploadController {
         catch(UserNotFoundException e) {
             view.addStaticAttribute("status", 0);
             view.addStaticAttribute("error", "We have no active user!");
+            logger.error("We have no active user!");
         }
         catch(ContentIsNotMultipartException e) {
             view.addStaticAttribute("status", 0);
             view.addStaticAttribute("error", "This is not multipart data!");
+            logger.error("This is not multipart data!");
         }
         catch (Exception e) {
             view.addStaticAttribute("status", 0);
             view.addStaticAttribute("error", "Internal error!");
-            logger.debug( e.getStackTrace() );
+            logger.error("Internal error!");
+            e.printStackTrace();
         }
 
         mav.setViewName( "uploadPhoto" );
         Map attributes = view.getStaticAttributes();
 
-        if( (Boolean)attributes.get("single").equals( true ) ) {
+        if( attributes != null && attributes.containsKey("single") && (Boolean)attributes.get("single").equals(true) ) {
             logger.debug( "We have single_file attribute!" );
             mav.addObject( "status", attributes.get("status") );
             if( attributes.get("status").toString().equals("0") ) {
@@ -196,9 +199,15 @@ public class PhotoUploadController {
             newPhoto.setAlbum( album );
             newPhoto.setTitle( file.getName() );
             newPhoto.setFileName( file.getName() );
+            
             this.photoManager.createPhoto( newPhoto );
             this.logger.debug("We've created new Photo with ID "+ newPhoto.getPhotoId());
             this.photoFileService.savePhoto( file.get(), newPhoto );
+            
+            if( album != null && album.getAlbumId() != 0 && album.getPreview() == null ) {
+            	album.setPreview(newPhoto);
+            	this.albumsManager.updateAlbum(album);
+            }
 
             view.addStaticAttribute("photoId", newPhoto.getPhotoId());
             view.addStaticAttribute("status", 1);

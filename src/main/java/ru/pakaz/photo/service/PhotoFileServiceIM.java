@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
 
 import magick.ImageInfo;
 import magick.MagickImage;
@@ -18,6 +20,9 @@ import net.sf.jmimemagic.MagicMatch;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+
+import ru.pakaz.common.service.MailService;
 import ru.pakaz.photo.dao.PhotoFileDao;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;
@@ -32,8 +37,26 @@ public class PhotoFileServiceIM {
     
     private Photo resultPhoto;
 
-    public PhotoFileServiceIM() {
+    static {
         System.setProperty( "jmagick.systemclassloader", "no" );
+    }
+    
+    public PhotoFileServiceIM() {
+    	// Loading path to photos directory from properties file
+        Properties properties = new Properties();
+        ClassPathResource ctx = new ClassPathResource("settings.properties");
+        try {
+            properties.load( new InputStreamReader( ctx.getInputStream(), "UTF-8" ) );
+
+            if( properties.get("images.path") != null )
+            	this.destinationPath = properties.get("images.path").toString();
+            else {
+            	logger.error("Image path is null!");
+            }
+        }
+        catch( IOException e ) {
+            logger.error( "Can't load properties:\n"+ e.getMessage() );
+        }
     }
     
     public void savePhoto( byte[] data, Photo resultPhoto ) throws Exception {
@@ -357,16 +380,5 @@ public class PhotoFileServiceIM {
         }
         
         return dstFile.getAbsolutePath();
-    }
-
-    public PhotoFileDao getPhotoFileManager() {
-        return this.photoFilesManager;
-    }
-    public void setUserDao( PhotoFileDao photoFilesManager ) {
-        this.photoFilesManager = photoFilesManager;
-    }
-
-    public void setDestinationPath( String destinationPath ) {
-        this.destinationPath = destinationPath;
     }
 }

@@ -50,6 +50,7 @@ public class RegistrationControllerTest extends TestCase {
             Transport transport = mailSession.getTransport("smtp");
 
             MimeMessage emess = new MimeMessage(mailSession);
+            emess.setFrom(new InternetAddress("photo@pakaz.ru"));
             emess.setSubject("Registering on photo.pakaz.ru", "UTF-8");
             emess.setText(message.toString(), "UTF-8", "html");
 

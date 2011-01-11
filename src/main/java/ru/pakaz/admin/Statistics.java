@@ -17,14 +17,14 @@ public class Statistics {
     @Autowired
     private UserDao usersManager;
     @Autowired
-    private PhotoFileDao photoManager;
+    private PhotoFileDao photoFileManager;
 
     @RequestMapping(value = "/admin/main.html", method = RequestMethod.GET)
     public ModelAndView getMainPage() {
         ModelAndView mav = new ModelAndView("admin/adminMainPage");
         
         logger.debug( "Try to get total photos count" );
-        Long photosCount = this.photoManager.getTotalPhotosCount();
+        Long photosCount = this.photoFileManager.getTotalPhotosCount();
 
         if( photosCount != null ) {
             logger.debug( photosCount );
@@ -36,7 +36,7 @@ public class Statistics {
         }
 
         logger.debug( "Try to get total photos size" );
-        Long photosSize = this.photoManager.getTotalPhotosSize();
+        Long photosSize = this.photoFileManager.getTotalPhotosSize();
 
         if( photosSize != null ) {
             String photosSizeText = "";

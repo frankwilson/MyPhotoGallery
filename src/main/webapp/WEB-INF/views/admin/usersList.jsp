@@ -9,12 +9,26 @@
     <div class="page_description"><spring:message code="page.admin.usersList.description"/></div>
     <div>
       <table>
-<c:forEach items="usersList" var="user">
+        <colgroup>
+          <col style="width:25px;" />
+          <col style="width:100px;" />
+          <col style="width:100px;" />
+          <col style="width:120px;" />
+        </colgroup>
+        <tr>
+          <td>ID</td>
+          <td>Login</td>
+          <td>e-mail</td>
+          <td>Nickname</td>
+          <td>Name</td>
+        </tr>
+<c:forEach items="${usersList}" var="user">
         <tr>
           <td>${user.userId}</td>
           <td>${user.login}</td>
-          <td>${user.firstName} ${user.lastName}</td>
+          <td>${user.nickName}</td>
           <td>${user.email}</td>
+          <td>${user.firstName} ${user.lastName}</td>
         </tr>
 </c:forEach>
       </table>

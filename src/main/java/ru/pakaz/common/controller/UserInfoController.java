@@ -58,7 +58,7 @@ public class UserInfoController {
             logger.debug("New password: "+ request.getParameter("new_pass"));
             String newPass = request.getParameter("new_pass");
 
-            if( dbUser.getPassword().equals(oldPass) && newPass.length() > 0 ) {
+            if( !dbUser.getPassword().equals(oldPass) && newPass.length() > 0 ) {
                 dbUser.setPassword( newPass );
             }
 

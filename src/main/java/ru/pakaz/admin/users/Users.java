@@ -24,9 +24,28 @@ public class Users {
     @RequestMapping(value = "/admin/users.html", method = RequestMethod.GET)
     public ModelAndView showUsersList( HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView("admin/usersList");
-        List<User> usersList = this.usersManager.getUsersList(0, 20);
         
-        mav.addObject( usersList );
+        logger.debug("Try to get users list...");
+        
+        List<User> usersList = this.usersManager.getUsersList(1, 20);
+        
+        if( usersList != null ) {
+        	logger.debug("We have "+ usersList.size() +" users.");
+
+        	for (User user : usersList) {
+        		if( user == null ) {
+        			logger.debug("User is null!");
+        		}
+        		else {
+        			logger.info( "User '"+ user.getNickName() +"' loaded." );
+        		}
+        	}
+        }
+        else {
+        	logger.debug("We have no users");
+        }
+
+        mav.addObject( "usersList", usersList );
         
         return mav;
     }

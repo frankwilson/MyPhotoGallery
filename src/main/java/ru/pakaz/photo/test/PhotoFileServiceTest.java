@@ -40,9 +40,7 @@ public class PhotoFileServiceTest extends TestCase {
         
         path = this.service.getFilePath( testFile );
         assertNull( path );
-        
-        this.service.setDestinationPath( "/var/www/images/" );
-        
+
         path = this.service.getFilePath( testFile );
         assertNotNull( path );
         assertFalse( path.equals("") );
@@ -55,10 +53,7 @@ public class PhotoFileServiceTest extends TestCase {
     public void testSaveFile() {
         File srcFile = new File( "/home/wilson/Картинки/mota_ru_9110910-1600x1200.jpg" );
         assertTrue( srcFile.exists() );
-        
-        String dstPath = "/var/www/images/";
-        this.service.setDestinationPath(dstPath);
-        
+
         FileInputStream in;
         byte[] buf = null;
 
