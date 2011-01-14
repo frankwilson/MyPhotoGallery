@@ -1,6 +1,7 @@
 package ru.pakaz.common.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import ru.pakaz.common.model.Role;
+import ru.pakaz.common.model.User;
 
 public class RoleDao extends HibernateDaoSupport {
 
@@ -63,5 +65,25 @@ public class RoleDao extends HibernateDaoSupport {
         }
 
         return role;
+    }
+    
+    @SuppressWarnings( "unchecked" )
+    public List<Role> getRolesList() {
+        List<Role> roles;
+
+        try {
+            roles = sessionFactory.getCurrentSession()
+                .createQuery("FROM Role")
+                .list();
+
+            logger.debug("We have "+ roles.size() + " roles");
+            
+            return roles;
+        }
+        catch( HibernateException ex ) {
+            logger.error( ex.getMessage() );
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

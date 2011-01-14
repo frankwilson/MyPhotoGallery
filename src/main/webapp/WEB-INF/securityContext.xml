@@ -20,6 +20,7 @@
         <intercept-url pattern="/createAlbum.html"          access="ROLE_USER"/>
         <intercept-url pattern="/albumsList.html"           access="ROLE_USER"/>
         <intercept-url pattern="/upload.html"               access="ROLE_USER"/>
+        <intercept-url pattern="/admin/**"                  access="ROLE_ADMIN"/>
         <intercept-url pattern="/**"        access="IS_AUTHENTICATED_ANONYMOUSLY" />
  
         <custom-filter position="LAST" ref="checkUnallocatedPhotosCount" />

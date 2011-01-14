@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import ru.pakaz.common.model.User;
-import ru.pakaz.photo.model.Photo;
 
 /**
  * Класс управления пользователями
@@ -112,15 +111,16 @@ public class UserDao extends HibernateDaoSupport {
      */
     @SuppressWarnings( "unchecked" )
     public List<User> getUsersList( int partNum, int partSize ) {
-        int fromIndex = partSize * (partNum - 1);
-        int toIndex = partSize * partNum;
+        int fromIndex = partSize * (partNum -1);
+        int toIndex   = partSize * partNum -1;
 
         List<User> users;
-        List<User> returnUsers;
 
         try {
             users = sessionFactory.getCurrentSession()
-                .createQuery("FROM User")
+                .createQuery("FROM User") // WHERE blocked = false
+                .setFirstResult( fromIndex )
+                .setMaxResults( toIndex )
                 .list();
             
             logger.debug("We have "+ users.size() + " users total. Get slice...");
@@ -129,19 +129,10 @@ public class UserDao extends HibernateDaoSupport {
             	logger.debug( "There is no users!" );
             	return null;
             }
-            else if( users.size() <= fromIndex ) {
-            	returnUsers = users.subList(users.size() - partSize, users.size() -1);
-            }
-            else if( users.size() > toIndex ) {
-            	returnUsers = users.subList(fromIndex, toIndex);
-            }
-            else {
-            	returnUsers = users;
-            }
-            
-            logger.debug("We have "+ returnUsers.size() + " users");
 
-            return returnUsers;
+            logger.debug("We have "+ users.size() + " users");
+
+            return users;
         }
         catch( HibernateException ex ) {
             logger.error( ex.getMessage() );

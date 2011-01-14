@@ -35,7 +35,7 @@ public class UserInfoValidator implements org.springframework.validation.Validat
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.user.email.tooShort");
         if( errors.hasFieldErrors("email") ) {
         }
-        else if( !errors.hasFieldErrors("email") && !this.isEmailValid( email ) ) {
+        else if( !errors.hasFieldErrors("email") && !this.isEmailValid( email.toLowerCase() ) ) {
             logger.error( "Ошибка валидации e-mail! адрес ( "+ email +" ) не соответствует маске!" );
             errors.rejectValue( "email", "error.user.email.formatError" );
         }
@@ -48,11 +48,11 @@ public class UserInfoValidator implements org.springframework.validation.Validat
         }
         else if( (login == null || login.length() < 3)) {
             logger.error( "Ошибка валидации логина! он пустой или слишком коротки (до 3-х символов)!" );
-            errors.rejectValue(login, "error.user.login.tooShort");
+            errors.rejectValue("login", "error.user.login.tooShort");
         }
         else if( !login.matches(LOGIN_PATTERN) ) {
             logger.error( "Ошибка валидации логина! Присутствуют недопустимые символы!" );
-            errors.rejectValue(login, "error.user.login.incorrect");
+            errors.rejectValue("login", "error.user.login.incorrect");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "error.login.emptyPasswd");

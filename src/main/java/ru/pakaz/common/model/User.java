@@ -3,6 +3,7 @@ package ru.pakaz.common.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,6 +71,9 @@ public class User implements UserDetails {
     
     @Column
     private boolean blocked = false;
+    
+    @Column
+    private boolean deleted = false;
     
     @Column(name="created")
     @Temporal(value=TemporalType.TIMESTAMP)
@@ -173,6 +177,14 @@ public class User implements UserDetails {
     public boolean getBlocked() {
         return this.blocked;
     }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean getDeleted() {
+        return this.deleted;
+    }
     
     public List<Album> getAlbums() {
         return this.albums;
@@ -208,6 +220,10 @@ public class User implements UserDetails {
 
     public void setRoles( Set<Role> roles ) {
         this.roles = roles;
+    }
+
+    public void setRoles( List<Role> roles ) {
+        this.roles = new HashSet<Role>(roles);
     }
 
     @Override
