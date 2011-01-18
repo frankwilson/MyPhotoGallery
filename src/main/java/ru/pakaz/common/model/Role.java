@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /*
 CREATE TABLE `Roles` (
- `id` int(11) NOT NULL,
+ `id` int(11) NOT NULL AUTO_INCREMENT,
  `name` varchar(20) COLLATE utf8_bin DEFAULT NULL,
  `description` varchar(100) COLLATE utf8_bin DEFAULT NULL,
  `enabled` tinyint(1) DEFAULT '1',
@@ -36,7 +36,7 @@ public class Role implements Serializable {
     @Column(name = "id")
     private int roleId;
 	
-	@Column(nullable=false, length=20, unique=false)
+	@Column(nullable=false, length=20, unique=true)
     private String name;
 	
 	@Column(nullable=true, length=100, unique=false)
@@ -52,14 +52,6 @@ public class Role implements Serializable {
 	@Column
 	@Temporal(value=TemporalType.TIMESTAMP)
 	private Date updated;
-	
-	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-	@JoinTable(
-		name="UserRoles",
-		joinColumns=@JoinColumn(name="roleId"),
-		inverseJoinColumns=@JoinColumn(name="userId")
-	)
-	private Set<User> users;
 	
 	public int getRoleId() {
         return roleId;
@@ -107,13 +99,5 @@ public class Role implements Serializable {
     
     public void setUpdated( Date updated ) {
     	this.updated = updated;
-    }
-    
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }

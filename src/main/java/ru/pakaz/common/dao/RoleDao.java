@@ -6,33 +6,15 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import ru.pakaz.common.model.Role;
-import ru.pakaz.common.model.User;
 
 public class RoleDao extends HibernateDaoSupport {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    public void save( Role role ) {
-        try {
-    		role.setUpdated( new Date() );
-            sessionFactory.getCurrentSession().save(role);
-        }
-        catch( HibernateException e ) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void delete( Role role ) {
-        sessionFactory.getCurrentSession().delete(role);
-    }
-
-    public void delete(int roleId) {
-        sessionFactory.getCurrentSession().delete( this.getRoleById(roleId) );
-    }
     
     public Role getRoleByName( String roleName ) {
         Role role;
@@ -84,6 +66,30 @@ public class RoleDao extends HibernateDaoSupport {
             logger.error( ex.getMessage() );
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public void save( Role role ) {
+        try {
+            role.setCreated( new Date() );
+            getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
+            getHibernateTemplate().save( role );
+            getHibernateTemplate().flush();
+        }
+        catch( HibernateException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update( Role role ) {
+        try {
+            role.setUpdated( new Date() );
+            getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_ALWAYS);
+            getHibernateTemplate().update( role );
+            getHibernateTemplate().flush();
+        }
+        catch( HibernateException e ) {
+            e.printStackTrace();
         }
     }
 }

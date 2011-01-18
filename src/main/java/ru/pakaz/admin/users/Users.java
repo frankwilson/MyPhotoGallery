@@ -1,6 +1,5 @@
 package ru.pakaz.admin.users;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -95,15 +94,15 @@ public class Users {
     public ModelAndView editUser( @PathVariable("userId") int userId, HttpServletRequest request ) {
         ModelAndView mav = new ModelAndView("admin/userEdit");
         
-        User user = this.usersManager.getUserById(userId);
-        if( user == null ) {
+        User dbUser = this.usersManager.getUserById(userId);
+        if( dbUser == null ) {
             mav.setViewName("admin/somethingNotFound");
             mav.addObject("errorMessage", new RequestContext(request).getMessage("admin.description.userNotFound"));
             mav.addObject("errorPageTitle", new RequestContext(request).getMessage("admin.title.userEdit"));
             mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.userNotFound"));
         }
         else {
-            mav.addObject("user", user);
+            mav.addObject("user", dbUser);
             mav.addObject("roles", this.rolesManager.getRolesList());
             mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.userEdit"));
         }
@@ -117,7 +116,7 @@ public class Users {
         ModelAndView mav = new ModelAndView("admin/userEdit");
         
         User dbUser = this.usersManager.getUserById(userId);
-        if( user == null ) {
+        if( dbUser == null ) {
             mav.setViewName("admin/somethingNotFound");
             mav.addObject("errorMessage", new RequestContext(request).getMessage("admin.description.userNotFound"));
             mav.addObject("errorPageTitle", new RequestContext(request).getMessage("admin.title.userEdit"));
@@ -183,9 +182,8 @@ public class Users {
         
         mav.addObject("user", newUser);
         mav.addObject("roles", this.rolesManager.getRolesList());
-        mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.addUser"));
+        mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.userAdd"));
 
-        mav.addObject("roles", this.rolesManager.getRolesList());
         return mav;
     }
     
@@ -233,7 +231,7 @@ public class Users {
 
         mav.addObject("roles", this.rolesManager.getRolesList());
         mav.addObject("user", user);
-        mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.addUser"));
+        mav.addObject("pageName", new RequestContext(request).getMessage("admin.title.userAdd"));
 
         return mav;
     }

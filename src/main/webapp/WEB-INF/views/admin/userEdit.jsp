@@ -11,7 +11,12 @@
 <form:form commandName="user" id="userUpdate">
 <div class="top_level">
   <div class="content">
-    <div class="page_header"><spring:message code="page.admin.userEdit.title"/>:</div>
+    <div class="page_header"><c:if test="${user.userId > 0}">
+      <spring:message code="page.admin.userEdit.title"/>
+    </c:if>
+    <c:if test="${user.userId == 0}">
+      <spring:message code="page.admin.userAdd.title"/>
+    </c:if>:</div>
     <table class="main" style="width:600px;">
       <colgroup>
         <col style="width:90px;">
@@ -102,7 +107,7 @@
         </td>
       </tr>
       <tr>
-        <td><spring:message code="page.admin.userEdit.Roles"/>:</td>
+        <td><spring:message code="page.admin.userEdit.roles"/>:</td>
         <td>
           <form:select path="roles" multiple="multiple" items="${roles}" itemLabel="name" itemValue="roleId" />
           <form:errors path="roles"/>
@@ -111,7 +116,14 @@
       <tr><td colspan=2 style="height:10px;"></td></tr>
       <tr>
         <td></td>
-        <td><input type="submit" value="<spring:message code="page.admin.userEdit.save"/>" /></td>
+        <td>
+          <c:if test="${user.userId > 0}">
+          <input type="submit" value="<spring:message code="page.admin.userEdit.save"/>" />
+          </c:if>
+          <c:if test="${user.userId == 0}">
+          <input type="submit" value="<spring:message code="page.admin.userAdd.add"/>" />
+          </c:if>
+        </td>
       </tr>
     </table>
   </div>

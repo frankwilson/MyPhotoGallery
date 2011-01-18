@@ -52,10 +52,21 @@ form {
     text-shadow: 2px 2px 3px #999999;
 }
 
+.content {
+    width: 780px;
+    float: left;
+    margin: 5px;
+    background-color: #fff;
+}
+
 .top_level {
     width: 1000px;
     margin: 0px auto;
     padding: 0px;
+}
+
+.full_width {
+    width: 990px;
 }
 
 .left_panel {
@@ -109,13 +120,6 @@ form {
     position: relative;
     bottom: -7px;
     display: none;
-}
-
-.content {
-    width: 780px;
-    float: left;
-    margin: 5px;
-    background-color: #fff;
 }
 
 .page_header {
@@ -224,12 +228,9 @@ a:visited {
     padding-top: 5px;
     border: 1px solid #ccc;
     border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
     background-color:#ccc;
     text-align: center;
-}
-
-.full_width {
-    width: 980px;
 }
 
 .ui-effects-transfer {
@@ -261,7 +262,6 @@ table.admin_table {
     margin: 0px;
     padding: 2px 10px 2px 2px;
     background-color: #eee;
-    #border: 1px solid #ccc;
 }
 
 .admin_table th {
@@ -270,7 +270,7 @@ table.admin_table {
     font-size: 14px;
 }
 
-.admin_table .userId {
+.admin_table .id {
 	text-align: right;
 }
 
@@ -285,4 +285,17 @@ table.admin_table {
 
 .admin_table .bool.upd_err {
     background-color: #e55;
+}
+
+.button_link {
+	padding: 5px 10px 5px 10px;
+	border: 2px solid #CCD99C;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    text-align: center;
+}
+
+.messageBoard .on {
+	text-align: center;
+	padding: 10px;
 }

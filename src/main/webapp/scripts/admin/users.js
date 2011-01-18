@@ -1,9 +1,9 @@
 $(function() {
 	$(".userDelLink").click(function(){
-        var userLogin = $(".userLogin", $(this).parent().parent()).text();
+        var userLogin = $(".login", $(this).parent().parent()).text();
 
         if( confirm(deleteConfirm +" '"+ userLogin +"'?") ) {
-            var userId = $(".userId", $(this).parent().parent()).text();
+            var userId = $(".id", $(this).parent().parent()).text();
 
             $.ajax({
                 type: "GET",

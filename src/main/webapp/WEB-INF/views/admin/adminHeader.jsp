@@ -27,7 +27,7 @@
 </head>
 <body>
 <div class="top_level" style="height:100%;">
-  <div class=" header">
+  <div class="header">
     <div class="site_header" style="float:left;">
       <a href="${pageContext.request.contextPath}/index.html">&nbsp;<%=application.getInitParameter("serviceName") %>&nbsp;</a>
     </div>
@@ -65,6 +65,7 @@
         </td>
       </tr>
     </table>
+    <div class="messageBoard"></div>
   </div>
 <!-- Body starts here -->
 
