@@ -1,3 +1,4 @@
+
 function toddleLeftPanel() {
 	if( $(".left_panel").css("display") == "none" ) {
 		$(".content").removeClass('full_width')

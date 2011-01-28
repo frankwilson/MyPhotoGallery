@@ -120,9 +120,12 @@ public class PhotoFileServiceIM {
      */
     public PhotoFile saveOriginal( byte[] data ) {
         PhotoFile original = new PhotoFile();
+        logger.debug( "We have file with "+ data.length +" bytes of size" );
         
         try {
-            this.getImageParams( data, original );
+            if( this.getImageParams( data, original ) == null ) {
+                return null;
+            }
         }
         catch( IOException iox ) {
             logger.error("Error while reading image parameters: ");
@@ -277,10 +280,15 @@ public class PhotoFileServiceIM {
     public BufferedImage getImageParams( byte[] data, PhotoFile file ) throws IOException {
         InputStream in = new ByteArrayInputStream( data );
 
-        BufferedImage image = javax.imageio.ImageIO.read(in);        
-        file.setPhotoHeight( image.getHeight() );
-        file.setPhotoWidth( image.getWidth() );
-        
+        BufferedImage image = javax.imageio.ImageIO.read(in);
+        if( image != null ) {
+            file.setPhotoHeight( image.getHeight() );
+            file.setPhotoWidth( image.getWidth() );
+        }
+        else {
+            logger.error( "We have empty image file!" );
+        }
+
         return image;
     }
     
