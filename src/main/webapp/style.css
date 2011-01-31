@@ -290,12 +290,27 @@ table.admin_table {
 .button_link {
 	padding: 5px 10px 5px 10px;
 	border: 2px solid #CCD99C;
-    border-radius: 8px;
     -moz-border-radius: 8px;
+    border-radius: 8px;
     text-align: center;
 }
 
 .messageBoard .on {
 	text-align: center;
 	padding: 10px;
+}
+
+.tabs_links {
+    padding: 5px 5px 5px 5px;
+    border: 2px solid #CCD99C;
+    -moz-border-radius-topleft: 8px;
+    -moz-border-radius-topright: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    text-align: center;
+	
+}
+
+.tabs_links a {
+	padding: 0px 5px;
 }

@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
-import ru.pakaz.common.service.MailService;
 import ru.pakaz.photo.dao.PhotoFileDao;
 import ru.pakaz.photo.model.Photo;
 import ru.pakaz.photo.model.PhotoFile;

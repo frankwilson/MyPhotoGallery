@@ -5,16 +5,16 @@
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="ru.pakaz.photo.model.Album"%>
 <jsp:include page="header.jsp" />
-<%-- 
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/mootools.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Swiff.Uploader.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Fx.ProgressBar.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/Lang.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/FancyUpload2.js"></script>
---%> 
+ 
 <script type="text/javascript"> 
 /* <![CDATA[ */
-<%--
+
 window.addEvent('domready', function() {
     var up = new FancyUpload2($('uploadStatus'), $('filesList'), { // options object
         verbose: false,
@@ -102,7 +102,7 @@ window.addEvent('domready', function() {
             }
         }
     });
-}); --%>
+});
 /* ]]> */
 
 </script>
@@ -182,30 +182,18 @@ td.file-info {
        <spring:message code="page.uploadPhoto.toAlbum"/>: <a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}.html">${currentAlbum.title}</a>
 </c:if>
     </div>
-    <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#flashUploader').show();">Flash</a> |
-    <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#multipleFileUploader').show();">Multiple files</a> | 
-    <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#singleFileUploader').hide();">Single file</a>
+    <span class="tabs_links">
+      <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#multipleFileUploader').show();"><spring:message code="page.uploadPhoto.MultipleUpload"/></a> |
+      <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#flashUploader').show();"><spring:message code="page.uploadPhoto.flashUpload"/></a> | 
+      <a href="javascript:void(0);" onClick="jQuery('.uploaderForm').hide(); jQuery('#singleFileUploader').show();"><spring:message code="page.uploadPhoto.singleUpload"/></a>
+    </span>
+
+    <br />
 
     <div id="flashUploader" class="uploaderForm" style="display:none;">
-      <fieldset id="fallbackBlock">
-        <legend><spring:message code="page.uploadPhoto.singleTitle"/></legend>
-        <p id="errorMessage"><spring:message code="page.uploadPhoto.flashError"/>.</p>
-        <label for="photoupload">
-          <spring:message code="page.uploadPhoto.uploadPhoto"/>:
-          <input type="file" name="single_file" />
-        </label>
-        <br />
-        <input type="submit" name="upload" value="<spring:message code="page.uploadPhoto.uploadButton"/>" />
-      <c:if test="${fileName != null}">
-        <br /><br />
-        <div id="uploadedFileInfo">
-          <spring:message code="page.uploadPhoto.fileUploaded"/>: <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
-          (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
-        </div>
-      </c:if>
-      <c:if test="${status == 0}"><spring:message code="page.uploadPhoto.fileUploadErr"/>: ${error}</c:if>
-      </fieldset>
-  
+      <span id="fallbackBlock">
+        <span id="errorMessage"><spring:message code="page.uploadPhoto.flashError"/>.</span>
+      </span>
       <div id="uploadStatus" class="hide">
         <p>
           <a href="#" id="addFiles"><spring:message code="page.uploadPhoto.addPhoto"/></a> |
@@ -227,29 +215,50 @@ td.file-info {
     </div>
 
     <div id="multipleFileUploader" class="uploaderForm" style="display:none;">
-      <div>
+      <div style="padding-top:1em;">
+        <spring:message code="page.uploadPhoto.uploadPhoto"/>:&#160;
         <input type="file" name="file" id="file-field" multiple="true" />
-        <input type="button" name="uploadFile" id="uploadFile" value="Upload">
+        <br />
+        <input type="button" name="uploadFile" id="uploadFile" value="<spring:message code="page.uploadPhoto.uploadButton"/>">
       </div>
       <div id="img-container">
         <ul id="img-list"></ul>
       </div>
     </div>
+    
+    <div id="singleFileUploader" class="uploaderForm" style="display:none;">
+      <div style="padding-top:1em;">
+        <spring:message code="page.uploadPhoto.uploadPhoto"/>:&#160;
+        <input type="file" name="single_file" />
+        <br />
+        <input type="submit" name="upload" value="<spring:message code="page.uploadPhoto.uploadButton"/>" />
+      <c:if test="${fileName != null}">
+        <br /><br />
+        <div id="uploadedFileInfo">
+          <spring:message code="page.uploadPhoto.fileUploaded"/>: <a href="${pageContext.request.contextPath}/photo_${photoId}.html">${fileName}</a>
+          (${width}x${height}<c:if test="${mime != null}">, ${mime}</c:if>)
+        </div>
+      </c:if>
+      <c:if test="${status == 0}"><spring:message code="page.uploadPhoto.fileUploadErr"/>: ${error}</c:if>
+      </div>
+    </div>
+    <br />
   </div>
 </div>
+
 </form:form>
 <script type="text/javascript">
 <!--
 // Проверяем поддержку File API 
 if (window.File && window.FileReader && window.FileList && window.Blob) {
     // Стандарный input для файлов
-    var fileInput = $('#file-field');
+    var fileInput = jQuery('#file-field');
 
     // ul-список, содержащий миниатюрки выбранных файлов
-    var imgList = $('ul#img-list');
+    var imgList = jQuery('ul#img-list');
 
     // Контейнер, куда можно помещать файлы методом drag and drop
-    var dropBox = $('#img-container');
+    var dropBox = jQuery('#img-container');
 
     // Обработка события выбора файлов в стандартном поле
     fileInput.bind({
@@ -261,14 +270,14 @@ if (window.File && window.FileReader && window.FileList && window.Blob) {
     // Обработка событий drag and drop при перетаскивании файлов на элемент dropBox
     dropBox.bind({
         dragenter: function() {
-            $(this).addClass('highlighted');
+        	jQuery(this).addClass('highlighted');
             return false;
         },
         dragover: function() {
             return false;
         },
         dragleave: function() {
-            $(this).removeClass('highlighted');
+        	jQuery(this).removeClass('highlighted');
             return false;
         },
         drop: function(e) {
@@ -282,11 +291,10 @@ else {
     alert('File API не поддерживается данным браузером');
 }
 
-$("#uploadFile").click(function(){
+jQuery("#uploadFile").click(function(){
 	imgList.find('li').each(function() {
 		var uploadItem = this;
-	    var pBar = $(uploadItem).find('.progress');
-	    alert('Начинаем загрузку `'+ uploadItem.file.name+ '`...');
+	    var pBar = jQuery(uploadItem).find('.progress');
     	uploadFile(uploadItem.file, "${pageContext.request.contextPath}/${albumUrl}upload.html;jsessionid=${pageContext.session.id}");
     });
 });
