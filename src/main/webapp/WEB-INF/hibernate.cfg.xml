@@ -6,7 +6,6 @@
     <session-factory>
         <property name="hibernate.show_sql">true</property>
         <property name="connection.characterEncoding">utf-8</property>
-        <!--<property name="connection.characterEncoding">cp1251</property>-->
         <mapping class="ru.pakaz.common.model.User" />
         <mapping class="ru.pakaz.common.model.Role" />
         <mapping class="ru.pakaz.photo.model.Album" />

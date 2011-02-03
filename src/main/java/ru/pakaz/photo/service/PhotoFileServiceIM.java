@@ -34,7 +34,7 @@ public class PhotoFileServiceIM {
 
     private String destinationPath;
     
-    private Photo resultPhoto;
+//    private Photo resultPhoto;
 
     static {
         System.setProperty( "jmagick.systemclassloader", "no" );
@@ -59,7 +59,7 @@ public class PhotoFileServiceIM {
     }
     
     public void savePhoto( byte[] data, Photo resultPhoto ) throws Exception {
-        this.resultPhoto = resultPhoto;
+//        this.resultPhoto = resultPhoto;
         
         this.logger.debug("And here we got Photo with ID "+ resultPhoto.getPhotoId() +" and bytes of data");
 
@@ -69,20 +69,26 @@ public class PhotoFileServiceIM {
         if( original == null )
             throw new Exception("Broken image file!");
 
-        original.setParentPhoto( resultPhoto );
-
-        this.logger.debug("So original photo we've saved with photoFileId "+ original.getFileId());
-        this.logger.debug("And it have parentPhotoId "+ original.getParentPhoto().getPhotoId());
-        this.logger.debug("We have saved file for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         resultPhoto.addPhotoFile( original );
+        original.setParentPhoto( resultPhoto );
+        photoFilesManager.createFile( original );
+        logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
+
+        this.logger.debug("So we've saved original photo with photoFileId "+ original.getFileId());
+        this.logger.debug("And it has parentPhotoId "+ original.getParentPhoto().getPhotoId());
+        this.logger.debug("We have saved file for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
 
         PhotoFile scaled = null;
         
         time = System.nanoTime();
 
         scaled = scalePhoto( data, 640 );
-        if( scaled != null )
+        if( scaled != null ) {
             resultPhoto.addPhotoFile( scaled );
+            scaled.setParentPhoto( resultPhoto );
+            photoFilesManager.createFile( scaled );
+            this.logger.debug( "We've saved photo file with ID "+ scaled.getFileId() +" to the photo with ID "+ resultPhoto.getPhotoId() );
+        }
 
         data = null;
         byte[] scaledBig = readFile(scaled);
@@ -91,22 +97,34 @@ public class PhotoFileServiceIM {
         time = System.nanoTime();
 
         scaled = scalePhoto( scaledBig, 480 );
-        if( scaled != null )
+        if( scaled != null ) {
             resultPhoto.addPhotoFile( scaled );
+            scaled.setParentPhoto( resultPhoto );
+            photoFilesManager.createFile( scaled );
+            this.logger.debug( "We've saved photo file with ID "+ scaled.getFileId() +" to the photo with ID "+ resultPhoto.getPhotoId() );
+        }
         
         this.logger.debug("scaled from big to middle size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         time = System.nanoTime();
 
         scaled = scalePhoto( scaledBig, 320 );
-        if( scaled != null )
+        if( scaled != null ) {
             resultPhoto.addPhotoFile( scaled );
+            scaled.setParentPhoto( resultPhoto );
+            photoFilesManager.createFile( scaled );
+            this.logger.debug( "We've saved photo file with ID "+ scaled.getFileId() +" to the photo with ID "+ resultPhoto.getPhotoId() );
+        }
         
         this.logger.debug("scaled from big to small size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
         time = System.nanoTime();
 
         scaled = scalePhoto( scaledBig, 150 );
-        if( scaled != null )
+        if( scaled != null ) {
             resultPhoto.addPhotoFile( scaled );
+            scaled.setParentPhoto( resultPhoto );
+            photoFilesManager.createFile( scaled );
+            this.logger.debug( "We've saved photo file with ID "+ scaled.getFileId() +" to the photo with ID "+ resultPhoto.getPhotoId() );
+        }
         
         this.logger.debug("scaled from big to preview size for "+ Double.valueOf(System.nanoTime() - time) / 1000000 +" ms");
     }
@@ -133,7 +151,6 @@ public class PhotoFileServiceIM {
             return null;
         }
 
-        original.setParentPhoto( this.resultPhoto );
         original.setFilesize( data.length );
 
         MagicMatch mime;
@@ -149,9 +166,6 @@ public class PhotoFileServiceIM {
         if( extension != null ) {
             this.saveFile( data, getFilePath(original) +"."+ extension );
             original.setFilename( original.getFilename() +"."+ extension );
-
-            photoFilesManager.createFile( original );
-            logger.debug( "Saved PhotoFile ID: "+ original.getFileId() );
 
             return original;
         }

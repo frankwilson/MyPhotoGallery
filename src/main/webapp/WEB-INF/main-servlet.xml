@@ -42,9 +42,7 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-    <bean id="photoFileDao" class="ru.pakaz.photo.dao.PhotoFileDao">
-        <property name="sessionFactory" ref="sessionFactory" />
-    </bean>
+    <bean id="photoFileDao" class="ru.pakaz.photo.dao.PhotoFileDao" />
 
     <bean id="photoDao" class="ru.pakaz.photo.dao.PhotoDao">
         <property name="sessionFactory" ref="sessionFactory" />
