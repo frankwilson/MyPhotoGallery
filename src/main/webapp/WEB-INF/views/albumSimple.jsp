@@ -6,6 +6,9 @@
 <c:if test="${isThisUser}">
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <script>
+var allowMultiselect = false;
+var selectedCount = 0;
+
 $(function() {
     $(".albumDelLink").click(function(){
         return confirm("<spring:message code="confirm.album.deleteQuestion"/> '${album.title}'?");
@@ -32,8 +35,9 @@ var currentAlbumId = ${album.albumId};
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" id="photo_${photo.photoId}">
 <c:if test="${isThisUser}">
+      <input type="hidden" class="photo_id" value="${photo.photoId}" />
       <div class="photo_icons">
-        [<a class="photoDelLink" href="javascript:void(0);<%--${pageContext.request.contextPath}/photo_${photo.photoId}/delete.html--%>">&#160;X&#160;</a>]
+        [<a class="photoDelLink" href="javascript:void(0);">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
       </div>
 </c:if>
@@ -68,6 +72,9 @@ var currentAlbumId = ${album.albumId};
         <br /><br />
         <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.albumSimple.deleteAlbum"/></a>
   </c:if>
+        <br />
+        <input type="checkbox" name="allowMultipleSelection" id="allowMultipleSelection" />
+        <label for="allowMultipleSelection">Allow multiple selection</label>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">

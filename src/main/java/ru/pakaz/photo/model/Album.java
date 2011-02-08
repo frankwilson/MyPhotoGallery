@@ -106,5 +106,15 @@ public class Album {
 
     public void setDeleted(boolean isDeleted) {
         this.deleted = isDeleted;
+        
+        if( isDeleted == true ) {
+            for( Photo albumPhoto : this.photos ) {
+                albumPhoto.setDeleted( true );
+            }
+        }
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 }

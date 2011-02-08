@@ -16,10 +16,10 @@ $(function() {
         var pdiv = $(this).parent('div').parent('div');
         var PhotoFwdId  = pdiv.attr("id");
         var PhotoBackId = pdiv.next().attr("id");
-        
+
         alert(PhotoFwdId);
         alert(PhotoBackId);
-        
+
         pdiv.insertAfter(pdiv.next());
     });
     

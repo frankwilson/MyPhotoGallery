@@ -22,6 +22,11 @@ table tr td {
     border-collapse: collapse;
 }
 
+input[type="checkbox"] {
+    margin: 0px;
+    vertical-align: bottom;
+}
+
 form {
   margin:0px;
   padding:0px;

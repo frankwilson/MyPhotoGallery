@@ -119,7 +119,15 @@ public class Photo {
     
     public void setDeleted( boolean isDeleted ) {
         this.deleted = isDeleted;
+
+        for( PhotoFile file : this.files ) {
+            file.setDeleted( isDeleted );
+        }
     }
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setPositionInAlbum( int positionInAlbum ) {
         this.positionInAlbum = positionInAlbum;
     }
