@@ -8,8 +8,33 @@
 <script>
 $(function() {
     $(".albumDelLink").click(function(){
-        var albumTitle = $( "td.photo > a", $(this).parent().parent()).attr('title');
-        return confirm("<spring:message code="confirm.album.deleteQuestion"/> '"+ albumTitle +"'?");
+    	var albumId = $(this).parent().parent().find(".album_id").val();
+        var albumTitle = $("#album_"+ albumId).find("td.photo > a").attr('title');
+
+        if( confirm("<spring:message code="confirm.album.deleteQuestion"/> '"+ albumTitle +"'?") ) {
+            $.ajax({
+                type: "GET",
+                url: './album_'+ albumId +'/delete.html',
+                dataType: "json",
+                success: function(data) {
+                    if( data.deleted == true ) {
+                        options = { /*to: '#album_'+ albumId, className: "ui-effects-transfer"*/ };
+                        $("#album_"+ albumId).effect('fade', options, 'slow');
+                    }
+                    else {
+                        // Out message to show that album was not moved
+                    }
+                },
+                error: function(xhr, status, trown) {
+                    if( status != 'success' && xhr.status == 200 ) {
+                        alert('Status is not success!');
+                    }
+                    else if( xhr.status != 200 ) {
+                        alert('Server return status '+ xhr.status +'!');
+                    }
+                }
+            });
+        }
     });
 });
 </script>
@@ -24,15 +49,16 @@ $(function() {
     </c:if>
     <c:if test="${fn:length(albums) gt 0}">
     <div>
-      <c:forEach items="${albums}" var="currentAlbum">
+<c:forEach items="${albums}" var="currentAlbum">
     <%-- Следующий блок - повторяющаяся табличка, содержащая информацию об альбоме --%>
-      <div style="float:left;">
-        <c:if test="${isThisUser}">
+      <div style="float:left;" id="album_${currentAlbum.albumId}">
+<c:if test="${isThisUser}">
+        <input type="hidden" class="album_id" value="${currentAlbum.albumId}" />
         <div class="photo_icons">
-          [<a class="albumDelLink" href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/delete.html">&#160;X&#160;</a>]
+          [<a class="albumDelLink" href="javascript:void(0);">&#160;X&#160;</a>]
           [<a href="${pageContext.request.contextPath}/album_${currentAlbum.albumId}/info.html">&#160;E&#160;</a>]
         </div>
-        </c:if>
+</c:if>
         <table class="album_minitables">
           <tr>
             <td class="photo">
@@ -61,7 +87,7 @@ $(function() {
           </tr>
         </table>
       </div>
-      </c:forEach>
+</c:forEach>
     </div>
     </c:if>
     <c:if test="${fn:length(albums) eq 0}">

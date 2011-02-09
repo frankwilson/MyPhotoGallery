@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.support.RequestContext;
+import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 
 import ru.pakaz.photo.dao.AlbumDao;
 import ru.pakaz.photo.dao.PhotoDao;
@@ -51,16 +53,31 @@ public class AlbumInfoController {
     }
     
     @RequestMapping(value = "/album_{albumId}/delete.html", method = RequestMethod.GET)
-    public void delete( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
+    public View delete( @PathVariable("albumId") int albumId, HttpServletRequest request ) {
+        MappingJacksonJsonView view = new MappingJacksonJsonView();
+
         Album album = this.albumManager.getAlbumById( albumId );
+
         if( album != null ) {
-            album.setDeleted(true);
-            this.albumManager.updateAlbum(album);
-            logger.debug("Album "+ albumId +" Deleted");
+            try {
+                album.setDeleted(true);
+                album.setPreview(null);
+                this.albumManager.updateAlbum(album);
+                logger.debug("Album "+ albumId +" Deleted");
+
+                view.addStaticAttribute( "deleted", true );
+            }
+            catch( Exception e ) {
+                logger.error( "Exception during album deleting: "+ e.getMessage() );
+                view.addStaticAttribute( "deleted", false );
+            }
         }
         else {
             logger.debug("Album "+ albumId +" does not exist");
+            view.addStaticAttribute( "deleted", false );
         }
+        
+        return view;
     }
 
     @RequestMapping(value = "/album_{albumId}/info.html", method = RequestMethod.POST)  

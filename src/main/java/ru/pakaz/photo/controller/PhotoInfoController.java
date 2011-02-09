@@ -69,7 +69,6 @@ public class PhotoInfoController {
      */
     @RequestMapping(value = "/photo_{photoId}/delete.html", method = RequestMethod.GET)
     public View delete( @PathVariable("photoId") int photoId, HttpServletRequest request ) {
-//        ModelAndView mav = new ModelAndView();
         MappingJacksonJsonView view = new MappingJacksonJsonView();
 
         Photo photo = this.photoManager.getPhotoById(photoId);
@@ -88,11 +87,8 @@ public class PhotoInfoController {
                 }
     
                 if( photo.getAlbum() != null ) {
-    //                mav.setViewName( "redirect:/album_"+ photo.getAlbum().getAlbumId() +".html" );
                 }
                 else {
-    //                mav.setViewName( "redirect:/unallocatedPhotos.html" );
-                    
                     // Уменьшаем счетчик нераспределенных фотографий
                     if( photo.getUser().getUnallocatedPhotosCount() != -1 )
                         photo.getUser().setUnallocatedPhotosCount( photo.getUser().getUnallocatedPhotosCount() - 1 );
@@ -108,7 +104,6 @@ public class PhotoInfoController {
         else {
             logger.debug("Photo "+ photoId +" does not exist");
             view.addStaticAttribute( "deleted", false );
-//            mav.setViewName( "redirect:/albumsList.html" );
         }
         
         return view;
@@ -160,7 +155,6 @@ public class PhotoInfoController {
     public View move( @PathVariable("photoId") int photoId,@ModelAttribute("album") Album album, 
             BindingResult result, HttpServletRequest request ) {
 
-//        ModelAndView mav = new ModelAndView();
         MappingJacksonJsonView view = new MappingJacksonJsonView();
         logger.debug( "Destination album is ("+ album.getAlbumId() +") "+ album.getTitle() );
 
@@ -177,33 +171,36 @@ public class PhotoInfoController {
                 if( currentUser.getUnallocatedPhotosCount() != -1 )
                     currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() - 1 );
         }
-        else
-            // После перемещения фотографии Нераспределенный альбом увеличиваем значение его размера в сессии
-            if( currentUser.getUnallocatedPhotosCount() != -1 )
+        else {
+            // После перемещения фотографии в Нераспределенный альбом увеличиваем значение его размера в сессии
+            if( currentUser.getUnallocatedPhotosCount() != -1 ) {
                 currentUser.setUnallocatedPhotosCount( currentUser.getUnallocatedPhotosCount() + 1 );
+            }
+        }
         
         if( dstAlbum == null || dbPhoto.getUser() == dstAlbum.getUser() ) {
+            dbPhoto.setAlbum(dstAlbum);
+            this.photoManager.updatePhoto(dbPhoto);
+
             if( dbPhoto.getAlbum() != null && dbPhoto.getAlbum().getPreview() == dbPhoto ) {
                 // Если перемещаемая фотография является превьюшкой 
                 // для альбома, в котором она находилась, обнуляем превью
                 dbPhoto.getAlbum().setPreview(null);
                 this.albumManager.updateAlbum( dbPhoto.getAlbum() );
             }
-            
-            dbPhoto.setAlbum(dstAlbum);
-            this.photoManager.updatePhoto(dbPhoto);
+
+            if( dstAlbum != null && dstAlbum.getPreview() == null ) {
+                dstAlbum.setPreview( dbPhoto );
+                this.albumManager.updateAlbum( dstAlbum );
+            }
             
             logger.debug( "Photo successfully moved" );
             view.addStaticAttribute( "moved", true );
-            
-//            mav.setViewName( "redirect:/photo_"+ photoId +".html" );
+
         }
         else {
             logger.error( "Photo not moved" );
-//            result.rejectValue( "title", "error.photo.titleIsTooShort" );
             view.addStaticAttribute( "moved", false );
-//            mav.setViewName( "photoInfo" );
-//            mav.addObject( "pageName", new RequestContext(request).getMessage( "page.title.photoInfo" ) );
         }
 
         return view;

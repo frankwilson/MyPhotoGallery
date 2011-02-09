@@ -17,8 +17,8 @@ $(function() {
         var PhotoFwdId  = pdiv.attr("id");
         var PhotoBackId = pdiv.next().attr("id");
 
-        alert(PhotoFwdId);
-        alert(PhotoBackId);
+        console.log(PhotoFwdId);
+        console.log(PhotoBackId);
 
         pdiv.insertAfter(pdiv.next());
     });
@@ -29,7 +29,10 @@ $(function() {
 });
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
+var moveHereTitle = '<spring:message code="page.album.moveHere"/>';
+var selectedCount = 0;
 var currentAlbumId = ${album.albumId};
+var allowMultiselect = false;
 </script>
 </c:if>
 <div class="top_level">
@@ -49,6 +52,7 @@ var currentAlbumId = ${album.albumId};
 <c:forEach items="${album.photos}" var="photo">
     <div style="float:left;" class="photo_frame ui-widget-content" id="photo_${photo.photoId}">
 <c:if test="${isThisUser}">
+      <input type="hidden" class="photo_id" value="${photo.photoId}" />
       <div class="photo_icons">
         [<a class="photoDelLink" href="javascript:void(0);">&#160;X&#160;</a>]
         [<a href="${pageContext.request.contextPath}/photo_${photo.photoId}/info.html">&#160;E&#160;</a>]
@@ -64,7 +68,7 @@ var currentAlbumId = ${album.albumId};
                 <img src="${pageContext.request.contextPath}/img/album_no_preview.png" />
               </c:if>
               <c:if test="${photo.photoFilesList[4].filename != ''}">
-                <img style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
+                <img id="image_${photo.photoId}" style="margin-top:10px;" src="/images/${photo.photoFilesList[4].filename}" alt="${photo.title}" border="0" />
               </c:if>
             </a>
           </td>
@@ -98,15 +102,25 @@ var currentAlbumId = ${album.albumId};
         <br /><br />
         <a class="albumDelLink" href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.album.deleteAlbum"/></a>
   </c:if>
+        <br />
+        <input type="checkbox" name="allowMultipleSelection" id="allowMultipleSelection" />
+        <label for="allowMultipleSelection"><spring:message code="page.album.multipleSelection"/></label>
+        <div style="display:none;" id="selectBlock">
+          <input type="button" id="selectAllPhotos" value="<spring:message code="page.album.selectAllPhotos"/>">
+          <br />
+          <input type="button" id="invertSelection" value="<spring:message code="page.album.invertSelection"/>">
+        </div>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">
       <div class="header"><spring:message code="page.album.albums"/></div>
       <div class="body">
-	    <select id="albumId">
+        <select id="albumId">
           <option value="0"><spring:message code="page.album.noAlbum"/></option>
-<c:forEach items="${albums}" var="album">
-		  <option value="${album.albumId}">${album.title}</option>
+<c:forEach items="${albums}" var="albumItem">
+<c:if test="${album.albumId != albumItem.albumId}">
+          <option value="${albumItem.albumId}">${albumItem.title}</option>
+</c:if>
 </c:forEach>
         </select>
       </div>

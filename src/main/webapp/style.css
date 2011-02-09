@@ -189,13 +189,17 @@ a:visited {
 }
 
 .album_microtables {
-	height: 160px;
+	height: 154px;
 }
 
 .album_microtables .photo {
     text-align:center;
-    height:152px;
-    width:152px;
+    height:154px;
+    width:154px;
+}
+
+.album_microtables.hover {
+    background-color: #deecaa;
 }
 
 .album_microtables .photo img {/*

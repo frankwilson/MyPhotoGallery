@@ -6,17 +6,17 @@
 <c:if test="${isThisUser}">
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/albumMoving.js"></script>
 <script>
-var allowMultiselect = false;
-var selectedCount = 0;
-
 $(function() {
     $(".albumDelLink").click(function(){
-        return confirm("<spring:message code="confirm.album.deleteQuestion"/> '${album.title}'?");
+        return confirm('<spring:message code="confirm.album.deleteQuestion"/> "${album.title}"?');
     });
 });
 
 var deleteConfirm = "<spring:message code="confirm.photo.deleteQuestion"/>";
+var moveHereTitle = '<spring:message code="page.album.moveHere"/>';
+var selectedCount = 0;
 var currentAlbumId = ${album.albumId};
+var allowMultiselect = false;
 </script>
 </c:if>
 <div class="top_level">
@@ -25,7 +25,7 @@ var currentAlbumId = ${album.albumId};
       ${album.title}
       <c:if test="${!isThisUser}">
         <span class="additional">
-          &#160;<spring:message code="page.albumSimple.ofUser"/>
+          &#160;<spring:message code="page.album.ofUser"/>
           <a href="${pageContext.request.contextPath}/user_${album.user.userId}/albumsList.html">${album.user.login}</a>
         </span>
       </c:if>
@@ -61,27 +61,32 @@ var currentAlbumId = ${album.albumId};
   <div class="left_panel">
 <c:if test="${isThisUser}">
     <div class="left_block">
-      <div class="header"><spring:message code="page.albumSimple.links"/></div>
+      <div class="header"><spring:message code="page.album.links"/></div>
       <div class="body">
         <a href="${pageContext.request.contextPath}
           <c:if test="${album.albumId > 0}">/album_${album.albumId}</c:if>/upload.html">
-          <spring:message code="page.albumSimple.uploadPhotos"/>
+          <spring:message code="page.album.uploadPhotos"/>
         </a>&#160;
   <c:if test="${album.albumId > 0}"><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.albumSimple.editAlbum"/></a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/info.html"><spring:message code="page.album.editAlbum"/></a>
         <br /><br />
-        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.albumSimple.deleteAlbum"/></a>
+        <a href="${pageContext.request.contextPath}/album_${album.albumId}/delete.html"><spring:message code="page.album.deleteAlbum"/></a>
   </c:if>
         <br />
         <input type="checkbox" name="allowMultipleSelection" id="allowMultipleSelection" />
-        <label for="allowMultipleSelection">Allow multiple selection</label>
+        <label for="allowMultipleSelection"><spring:message code="page.album.multipleSelection"/></label>
+        <div style="display:none;" id="selectBlock">
+          <input type="button" id="selectAllPhotos" value="<spring:message code="page.album.selectAllPhotos"/>">
+          <br />
+          <input type="button" id="invertSelection" value="<spring:message code="page.album.invertSelection"/>">
+        </div>
       </div>
     </div>
     <div class="left_block" id="moveAlbumsList">
-      <div class="header"><spring:message code="page.albumSimple.albums"/></div>
+      <div class="header"><spring:message code="page.album.albums"/></div>
       <div class="body">
         <select id="albumId">
-          <option value="0"><spring:message code="page.albumSimple.noAlbum"/></option>
+          <option value="0"><spring:message code="page.album.noAlbum"/></option>
 <c:forEach items="${albums}" var="album">
           <option value="${album.albumId}">${album.title}</option>
 </c:forEach>
